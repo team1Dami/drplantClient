@@ -5,8 +5,18 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 /**
+ * * This entity class encapsulates the data of each equipment.
+ * <ul>
+ * <li><strong>equipment_id:</strong> The id of the equipment.</li>
+ * <li><strong>equipment_name:</strong> The name of the equipment</li>
+ * <li><strong>equipment_description:</strong> The description of the
+ * equipment</li>
+ * <li><strong>use:</strong> The use you can give to the equipment</li>
+ * <li><strong>price:</strong>The equipment price</li>
+ * <li><strong>image:</strong>An image of the equipment</li>
+ * </ul>
  *
- * @author saray
+ * @author Eneko
  */
 public class Equipment {
     
