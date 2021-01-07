@@ -8,7 +8,28 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 /**
- *
+ * This class encapsultaes the data of each user:
+ * <ul>
+ *  <li><strong>id:</strong> It's the id of the user. It's the identifier</li>
+ *  <li><strong>login:</strong> It's the user's login</li>
+ *  <li><strong>email:</strong> It's the user's email</li>
+ *  <li><strong>fullname:</strong> It's the user's fullname</li>
+ *  <li><strong>status:</strong> It's the user's status, that can be:
+ *      <ul>
+ *          <li>ENABLE</li>
+ *          <li>DISABLE</li>
+ *      </ul>
+ *  </li>
+ *  <li><strong>privilege:</strong> It's the user's privilege, that can be:
+ *      <ul>
+ *          <li>USER</li>
+ *          <li>ADMIN</li>
+ *      </ul>
+ *  </li>
+ *  <li><strong>passwd:</strong> It's the user's password, that it's going to be ciphered</li>
+ *  <li><strong>lastAccess:</strong> It's the user's lastAccess</li>
+ * </ul>
+ * 
  * @author saray
  */
 public class User implements Serializable {
