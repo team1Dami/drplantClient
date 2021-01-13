@@ -8,6 +8,7 @@ package drPlant.controller;
 import static DrPlant.enumerations.UserPrivilege.*;
 import drPlant.classes.Shop;
 import drPlant.classes.User;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -22,7 +23,7 @@ import javafx.stage.Stage;
  *
  * @author gonza
  */
-public class TiendaPopUpController  {
+public class InfoTiendaController  {
 
      @FXML
     private Stage StagePopUpTienda;
@@ -44,27 +45,37 @@ public class TiendaPopUpController  {
      
      @FXML
      private Button btnGuardar;
-        
-
+     
+     
+     
+     private Shop shop;  
+     
      /**
-      * 
+      * Initial stage of the view
       * @param root
       * @param user
       * @param shop 
       */
-    public void initStage(Parent root,User user,Shop shop) {
+    public void initStage(Parent root,User user,Shop shopp){
+        shop=shopp;
         Scene scene = new Scene(root);
         StagePopUpTienda.setScene(scene);
         StagePopUpTienda.setResizable(false);
         StagePopUpTienda.show();
         
+        //put the shop data inside the text fields and the name in the label
+        //the label can't be edited
         tfUrl.setText(shop.getUrl());
         tfEmail.setText(shop.getEmail());
         tfLocation.setText(shop.getLocation());
         tfNombre.disableProperty();
         tfNombre.setText(shop.getShop_name());
+          
+        //set the actions for the buttons
         btnAtras.setOnAction(this::handleButtonCancelarAction);
-        //btnGuardar.setOnAction(this::);
+        btnGuardar.setOnAction(this::handleButtonGuardarAction);
+        
+        //If the user is not Admin can't edit the text fields
         if(user.getPrivilege().equals(USER)){
             tfUrl.disableProperty();
             tfEmail.disableProperty();
@@ -72,16 +83,14 @@ public class TiendaPopUpController  {
             btnGuardar.setVisible(false);
         }
 
-       // tfEmail.textProperty().addListener(this::textChange);
-       // btnEnviar.setOnAction(this::handleButtonEnviar);
-
     }
     /**
      * 
      * @param event 
      */
     private void handleButtonGuardarAction(ActionEvent event) {
-                    
+           Shop newShop = shop; 
+           
     }
     /**
      * 
@@ -89,6 +98,25 @@ public class TiendaPopUpController  {
      */
     private void handleButtonCancelarAction(ActionEvent event) {
             StagePopUpTienda.close();         
+    }
+    
+      private void textChange(ObservableValue observable, String oldValue, String newValue) {
+        //disable the guardar button
+
+        //If password field is higher than 255
+        if (tfUrl.getText().length() > 255 || tfEmail.getText().length() > 255 
+                || tfLocation.getText().length() > 255) {
+            btnGuardar.setDisable(true);
+        } //If text fields are empty 
+        else if (tfEmail.getText().trim().isEmpty()
+                || tfUrl.getText().trim().isEmpty()
+                ||tfLocation.getText().trim().isEmpty()) {
+            btnGuardar.setDisable(true);
+        } //Else, enable accept button
+        else {
+            btnGuardar.setDisable(false);
+        }
+
     }
 
     

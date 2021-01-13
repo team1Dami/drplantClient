@@ -91,7 +91,7 @@ public class LoginController{
     private void textChange(ObservableValue observable, String oldValue, String newValue) {
         //disable the Login button
 
-        //If password field is higher than 12
+        //If password field is higher than 255
         if (tfPasswd.getText().length() > 255 || tfLogin.getText().length() > 255) {
             btnLogin.setDisable(true);
         } //If text fields are empty 
