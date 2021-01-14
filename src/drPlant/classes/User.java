@@ -1,11 +1,11 @@
 package drPlant.classes;
 
-import DrPlant.enumerations.UserPrivilege;
-import DrPlant.enumerations.Userstatus;
+import drPlant.enumerations.UserPrivilege;
+import drPlant.enumerations.UserStatus;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Set;
-import java.util.logging.Logger;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Date;
 
 /**
  * This class encapsultaes the data of each user:
@@ -32,22 +32,21 @@ import java.util.logging.Logger;
  * 
  * @author saray
  */
+@XmlRootElement
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
-    private static final Logger LOGGER =
-            Logger.getLogger("drPlant.classes.User");
+   
 
     private Integer id;
     private String login;
     private String email;
     private String fullname;
-    private Userstatus status;
+    private UserStatus status;
     private UserPrivilege privilege;
     private String passwd;
-    private java.sql.Date lastAccess;
-    private java.sql.Date lastPasswdChange;
+    private Date lastAccess;
+    private Date lastPasswdChange;
     private Set<UserPlant> plants;
     private Set<Equipment> equipments;
 
@@ -55,39 +54,35 @@ public class User implements Serializable {
      *
      * @return the privilege of the user
      */
-    public String getPrivilage() {
-        return privilege.name();
-    }
+    /*public UserPrivilege getPrivilege() {
+        return privilege;
+    }*/
 
     /**
      * This method set the privilege of the user
      *
      * @param privilage
      */
-    public void setPrivilage(UserPrivilege privilage) {
-        this.privilege = privilage;
-    }
+    /*public void setPrivilege(UserPrivilege privilege) {
+        this.privilege = privilege;
+    }*/
 
     /**
      *
      * @return the status of the user
      */
-    public String getStatus() {
-        return status.name();
-    }
+    /*public UserStatus getStatus() {
+        return status;
+    }*/
 
     /**
      * Set the status of the user
      *
      * @param status
      */
-    public void setStatus(int status) {
-        if (status == 1) {
-            this.status = Userstatus.ENABLE;
-        } else {
-            this.status = Userstatus.DISABLE;
-        }
-    }
+    /*public void setStatus(UserStatus status) {
+       this.status = status;
+    }*/
 
     /**
      *
@@ -188,7 +183,7 @@ public class User implements Serializable {
      * @param lastAccess
      */
     public void setLastAccess(Date lastAccess) {
-        this.lastAccess = (java.sql.Date) lastAccess;
+        this.lastAccess =  lastAccess;
     }
 
     /**
@@ -205,7 +200,7 @@ public class User implements Serializable {
      * @param lastPasswdChange
      */
     public void setLastPasswdChange(Date lastPasswdChange) {
-        this.lastPasswdChange = (java.sql.Date) lastPasswdChange;
+        this.lastPasswdChange = lastPasswdChange;
     }
 
     /**
@@ -237,22 +232,6 @@ public class User implements Serializable {
      */
     public void setEquipments(Set<Equipment> equipments) {
         this.equipments = equipments;
-    }
-
-    /**
-     * Get privilege
-     * @return privilege
-     */
-    public UserPrivilege getPrivilege() {
-        return privilege;
-    }
-
-    /**
-     * Set user´s privilege
-     * @param privilege 
-     */
-    public void setPrivilege(UserPrivilege privilege) {
-        this.privilege = privilege;
     }
 
 }

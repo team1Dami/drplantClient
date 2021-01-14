@@ -26,6 +26,7 @@ public class UserRESTClient implements UserManager{
 
     private WebTarget webTarget;
     private Client client;
+    
     private static final String BASE_URI = "http://localhost:8080/drplant/webresources"; // esta ruta se debe leer de un archivo de propiedades
 
     public UserRESTClient() {
@@ -36,7 +37,7 @@ public class UserRESTClient implements UserManager{
     public <T> T findUserByLoginAndPasswd(Class<T> responseType, String login, String passwd) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("login/{0}/{1}", new Object[]{login, passwd}));
-        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
+        return  resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
                 .get(responseType);
     }
     
@@ -52,9 +53,9 @@ public class UserRESTClient implements UserManager{
                 .put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
     }
 
-    public <T> T find(Class<T> responseType, String id) throws ClientErrorException {
+    public <T> T find(Class<T> responseType, Integer id) throws ClientErrorException {
         WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("{0}", new Object[]{id}));
+        resource = resource.path(java.text.MessageFormat.format("/{0}", new Object[]{id}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
                 .get(responseType);
     }
@@ -71,7 +72,7 @@ public class UserRESTClient implements UserManager{
     }
 
     public void remove(String id) throws ClientErrorException {
-        webTarget.path(java.text.MessageFormat.format("{0}", new Object[]{id}))
+        webTarget.path(java.text.MessageFormat.format("/{0}", new Object[]{id}))
                 .request()
                 .delete();
     }

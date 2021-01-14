@@ -2,6 +2,7 @@ package drPlant.classes;
 
 import java.io.Serializable;
 import java.util.logging.Logger;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -14,6 +15,7 @@ import java.util.logging.Logger;
  *
  * @author Ruben
  */
+@XmlRootElement
 public class UserPlantId implements Serializable {
 
     private static final Logger LOGGER

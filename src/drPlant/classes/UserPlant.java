@@ -3,6 +3,7 @@ package drPlant.classes;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.logging.Logger;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This entity class encapsulates the data of each Plague.
@@ -16,7 +17,7 @@ import java.util.logging.Logger;
  *
  * @author Ruben
  */
-
+@XmlRootElement
 public class UserPlant implements Serializable {
     
     private static final Logger LOGGER

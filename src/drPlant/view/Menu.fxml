@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.HBox?>
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.controller.MenuController">
+   <children>
+      <MenuBar prefHeight="25.0" prefWidth="1080.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="Plantas">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#handlePlantViewAction" text="Lista general" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleMyPlantsViewAction" text="Mis Plantas" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleAddPlantAction" text="Añadir" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Plagas">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#handlePlagueViewAction" text="Lista general" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleAddPlagueAction" text="Añadir" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Equipamiento">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Lista general" />
+                  <MenuItem mnemonicParsing="false" text="Añadir" />
+            </items>
+          </Menu>
+            <Menu mnemonicParsing="false" text="Tiendas">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#handleShopViewAction" text="Lista general" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleAddShopAction" text="Añadir" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Mi perfil">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#handleCloseSesionAction" text="Cerrar sesión" />
+               </items>
+            </Menu>
+        </menus>
+      </MenuBar>
+   </children>
+</HBox>

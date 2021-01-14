@@ -3,6 +3,7 @@ package drPlant.classes;
 import java.io.Serializable;
 import java.util.Set;
 import java.util.logging.Logger;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This class encapsultaes the data of each shop:
@@ -20,6 +21,7 @@ import java.util.logging.Logger;
  * 
  * @author saray
  */
+@XmlRootElement
 public class Shop implements Serializable {
 
     private static final long serialVersionUID = 1L;

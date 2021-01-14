@@ -7,6 +7,7 @@ import DrPlant.enumerations.PlantType;
 import java.io.Serializable;
 import java.util.Set;
 import java.util.logging.Logger;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This entity class encapsulates the data of each Plague.
@@ -40,7 +41,7 @@ import java.util.logging.Logger;
  *
  * @author Ruben
  */
-
+@XmlRootElement
 public class Plant implements Serializable {
 
     private static final long serialVersionUID = 1L;
