@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="662.0" prefWidth="943.0" stylesheets="@buscarDesktop.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="662.0" prefWidth="943.0" stylesheets="@../css/drPlantstyles.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.view.ShopViewController">
    <center>
-      <AnchorPane id="pane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: transparent;" stylesheets="@drPlantstyles.css" BorderPane.alignment="CENTER">
+      <AnchorPane id="pane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: transparent;" stylesheets="@../css/drPlantstyles.css" BorderPane.alignment="CENTER">
          <children>
+            <fx:include source="Menu.fxml" maxWidth="-Infinity" minWidth="0"/>
             <TextField layoutX="40.0" layoutY="109.0" prefHeight="31.0" prefWidth="596.0" promptText="Buscar de manera especifica" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="307.0" AnchorPane.topAnchor="109.0" />
             <TableView layoutX="40.0" layoutY="197.0" prefHeight="362.0" prefWidth="863.0" AnchorPane.bottomAnchor="78.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="197.0">
                <columns>
@@ -28,35 +26,4 @@
          </children>
       </AnchorPane>
    </center>
-   <top>
-      <MenuBar BorderPane.alignment="CENTER">
-        <menus>
-            <Menu mnemonicParsing="false" text="Plantas">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Action 1" />
-              </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Plagas">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Action 1" />
-              </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Herramientas">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Action 1" />
-              </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Tiendas">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Action 1" />
-              </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Perfil">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Action 1" />
-              </items>
-            </Menu>
-        </menus>
-      </MenuBar>
-   </top>
 </BorderPane>

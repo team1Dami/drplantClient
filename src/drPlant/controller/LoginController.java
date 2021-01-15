@@ -6,6 +6,7 @@
 package drPlant.controller;
 
 import drPlant.classes.User;
+//import drPlant.cypher.CifradoPublica;
 import drPlant.factory.UserManagerFactory;
 import drPlant.interfaces.UserManager;
 import java.io.IOException;
@@ -26,6 +27,7 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.apache.commons.codec.binary.Hex;
 
 /**
  * FXML Controller class
@@ -96,7 +98,7 @@ public class LoginController{
             btnLogin.setDisable(true);
         } //If text fields are empty 
         else if (tfLogin.getText().trim().isEmpty()
-                || tfPasswd.getText().trim().isEmpty()) {
+                || tfPasswd.getText().trim().isEmpty()){
             btnLogin.setDisable(true);
         } //Else, enable accept button
         else {
@@ -111,12 +113,25 @@ public class LoginController{
         } else {
             User myUser = new User();
             myUser.setLogin(tfLogin.getText().toString());
-            myUser.setPasswd(tfPasswd.getText().toString());
+
+            
+            //cipher of the password
+            //CifradoPublica cifrado = new CifradoPublica();
+            
+            //El string que se recoge del textfield se cifra y se convierte en una array de bytes
+            //Ese array de bytes hay que pasarlo a a hexadecimal
+            
+           // byte[] cifrada = cifrado.cifrarTexto(tfPasswd.getText().toString());//Change to array of bytes
+           // myUser.setPasswd(Hex.encodeHexString(cifrada));//change the array of bytes and introduce inside the password of the user
+
+            
+            //find the user by login and password 
             UserManager imp = UserManagerFactory.getUserManager();
             User serverUser = null;
             serverUser = imp.findUserByLoginAndPasswd(User.class, tfLogin.getText(), tfPasswd.getText());
 
-            if (serverUser != null) {
+            
+            if (serverUser != null) { //user exists
 
                // LogoutController controller = new LogoutController();
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("Logout.fxml"));//me falta la siguiente ventana
@@ -130,7 +145,7 @@ public class LoginController{
                 } catch (IOException ex) {
                     //Logger.getLogger(LogoutController.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } else {
+            } else { //user doesn't exist
                 logger.info("User null");
             }
         }
@@ -169,7 +184,7 @@ public class LoginController{
         Parent root;
         Stage newStage = new Stage();
         try {
-            //if in the view signup you press the x the aplication won't stop, it will go back to the login 
+            //if you press the x the aplication won't stop, it will go back to the login 
             PopUpEmailController controller = new PopUpEmailController();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("PopUpEmail.fxml"));
             root = (Parent) loader.load();

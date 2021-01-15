@@ -8,12 +8,18 @@ package drPlant.controller;
 import static DrPlant.enumerations.UserPrivilege.*;
 import drPlant.classes.Shop;
 import drPlant.classes.User;
+import drPlant.factory.ShopManagerFactory;
+import drPlant.interfaces.ShopManager;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -38,6 +44,9 @@ public class InfoTiendaController  {
      private TextField tfLocation;
      
      @FXML
+     private TextField tfComision;
+     
+     @FXML
      private Label tfNombre;
      
      @FXML
@@ -49,6 +58,8 @@ public class InfoTiendaController  {
      
      
      private Shop shop;  
+     private User user;
+      private  Alert alert;
      
      /**
       * Initial stage of the view
@@ -56,8 +67,9 @@ public class InfoTiendaController  {
       * @param user
       * @param shop 
       */
-    public void initStage(Parent root,User user,Shop shopp){
+    public void initStage(Parent root,User uuser,Shop shopp){
         shop=shopp;
+        user = uuser;
         Scene scene = new Scene(root);
         StagePopUpTienda.setScene(scene);
         StagePopUpTienda.setResizable(false);
@@ -68,8 +80,8 @@ public class InfoTiendaController  {
         tfUrl.setText(shop.getUrl());
         tfEmail.setText(shop.getEmail());
         tfLocation.setText(shop.getLocation());
-        tfNombre.disableProperty();
         tfNombre.setText(shop.getShop_name());
+        tfComision.setUserData(shop.getCommission());
           
         //set the actions for the buttons
         btnAtras.setOnAction(this::handleButtonCancelarAction);
@@ -80,8 +92,16 @@ public class InfoTiendaController  {
             tfUrl.disableProperty();
             tfEmail.disableProperty();
             tfLocation.disableProperty();
+            tfNombre.disableProperty();
+            tfComision.disableProperty();
             btnGuardar.setVisible(false);
         }
+        
+        //set the actions for the fields
+        tfUrl.textProperty().addListener(this::textChange);
+        tfEmail.textProperty().addListener(this::textChange);
+        tfLocation.textProperty().addListener(this::textChange);
+        tfComision.textProperty().addListener(this::textChange);
 
     }
     /**
@@ -89,7 +109,32 @@ public class InfoTiendaController  {
      * @param event 
      */
     private void handleButtonGuardarAction(ActionEvent event) {
-           Shop newShop = shop; 
+ 
+           try{
+                  shop.setShop_name(tfNombre.getText());
+                  shop.setEmail(tfEmail.getText());
+                  shop.setLocation(tfLocation.getText());
+                  shop.setCommission((float) tfComision.getUserData());
+                  shop.setUrl(tfUrl.getText());
+                  
+                  if(!validateEmail(shop.getEmail())){
+                      //the gmail is not correct
+                       alert = new Alert(Alert.AlertType.WARNING, "Error en el gmail", ButtonType.OK);
+                       alert.showAndWait();
+                  }
+                  Shop shopEsta;
+                  ShopManager manager = ShopManagerFactory.getShopManager();
+                  shopEsta= manager.getShopByName(Shop.class, shop.getShop_name());
+                  if(shopEsta != null){
+                      //the shop already exist
+                       alert = new Alert(Alert.AlertType.WARNING, "Error Este nombre de tienda ya existe", ButtonType.OK);
+                       alert.showAndWait();
+                  }else{
+                     manager.create(shop);
+                  }
+           }catch(Exception e){
+               
+           }
            
     }
     /**
@@ -110,13 +155,32 @@ public class InfoTiendaController  {
         } //If text fields are empty 
         else if (tfEmail.getText().trim().isEmpty()
                 || tfUrl.getText().trim().isEmpty()
-                ||tfLocation.getText().trim().isEmpty()) {
+                ||tfLocation.getText().trim().isEmpty()
+                ||tfComision.getText().trim().isEmpty()) {
             btnGuardar.setDisable(true);
         } //Else, enable accept button
         else {
             btnGuardar.setDisable(false);
         }
 
+    }
+      
+      /**
+     * Method to validate the email format
+     *
+     * @param email
+     * @return true or false
+     */
+    private boolean validateEmail(String email) {
+        // Patern to validate the email
+        Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+        // Compare and see if the email introduced respects the patern establiced
+        Matcher mather = pattern.matcher(email);
+        if (!mather.find()) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     

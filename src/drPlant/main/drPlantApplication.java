@@ -8,6 +8,7 @@ package drplant.main;
 
 import drPlant.controller.LoginController;
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -20,23 +21,24 @@ import javafx.stage.Stage;
  */
 public class drPlantApplication extends Application {
     
+    private Logger logger = Logger.getLogger("DrPlantClient.main");
+    
     @Override
     public void start(Stage stage) {
        Parent root;
         try {
             LoginController controller = new LoginController();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("Controller/Login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("view/InfoTienda.fxml"));
 
-            try {
                 root = (Parent) loader.load();
                 controller = (loader.getController());
                 controller.setStage(stage);
                 controller.initStage(root);
-            } catch (IOException ex) {
-                //Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            
+        } catch (IOException ex) {
+                Logger.getLogger(drPlantApplication.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception e) {
-            //Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, e);
+                Logger.getLogger(drPlantApplication.class.getName()).log(Level.SEVERE, null, e);
         }
     }
 
