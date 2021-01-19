@@ -9,6 +9,7 @@ import drPlant.interfaces.ShopManager;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
 
 /**
  * Jersey REST client generated for REST resource:ShopFacadeREST [shop]<br>
@@ -62,7 +63,7 @@ public class ShopRESTClient implements ShopManager{
                 .request().delete();
     }
 
-    public <T> T findAllShops(Class<T> responseType) throws ClientErrorException {
+    public <T> T findAllShops(GenericType<T> responseType) throws ClientErrorException {
         WebTarget resource = webTarget;
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
                 .get(responseType);

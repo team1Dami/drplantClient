@@ -8,6 +8,8 @@ package drPlant.controller;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -41,6 +43,8 @@ public class PopUpEmailController {
     @FXML
     private Label MensajeError;
     
+    private Alert alert;
+    
      public void initStage(Parent root) {
         Scene scene = new Scene(root);
         StagePopUp.setScene(scene);
@@ -49,11 +53,19 @@ public class PopUpEmailController {
 
         tfEmail.textProperty().addListener(this::textChange);
         btnEnviar.setOnAction(this::handleButtonEnviar);
+        btnEnviar.setDisable(true);
 
     }
      
       private void textChange(ObservableValue observable, String oldValue, String newValue) {
-       
+       boolean estaBien=false;
+       estaBien=validateEmail(newValue);
+       if(!estaBien){
+           MensajeError.setText("El dato introducido no es correcto, revisalo por favor");
+           btnEnviar.setDisable(true);
+       }else{
+           btnEnviar.setDisable(false);
+       }
 
     }
      /**
@@ -62,18 +74,23 @@ public class PopUpEmailController {
      */
     private void handleButtonEnviar(ActionEvent event) {
         
-        Parent root;
-        Stage newStage = new Stage();
-        //if in the view signup you press the x the aplication won't stop, it will go back to the login
-        //stage.hide();
-        // SignUpController controller = new SignUpController();
-        //controller = (loader.getController());
-        //controller.setStage(newStage);
-        //controller.initStage(root);
-        //stage.showAndWait();
+         Alert alert = new Alert(Alert.AlertType.WARNING,
+                    "Se ha enviado la nueva contraseña al correo", ButtonType.OK);
     }
      public void setStage(Stage stage){
         this.StagePopUp = stage;
+    }
+     
+      private boolean validateEmail(String email) {
+        // Patern to validate the email
+        Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+        // Compare and see if the email introduced respects the patern establiced
+        Matcher mather = pattern.matcher(email);
+        if (!mather.find()) {
+            return false;
+        } else {
+            return true;
+        }
     }
     
 }

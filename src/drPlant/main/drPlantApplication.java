@@ -7,6 +7,9 @@ package drplant.main;
  */
 
 import drPlant.controller.LoginController;
+import drPlant.controller.ShopViewController;
+import drPlant.factory.UserManagerFactory;
+import drPlant.interfaces.UserManager;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,13 +30,18 @@ public class drPlantApplication extends Application {
     public void start(Stage stage) {
        Parent root;
         try {
-            LoginController controller = new LoginController();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("view/InfoTienda.fxml"));
-
-                root = (Parent) loader.load();
-                controller = (loader.getController());
-                controller.setStage(stage);
-                controller.initStage(root);
+             LoginController controller = new LoginController();
+             //ShopViewController controller = new ShopViewController();
+            //Load node graph from fxml file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/Login.fxml"));
+           // FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/ShopView.fxml"));
+            
+            root = (Parent) loader.load();
+            controller = (loader.getController());
+            //Set a reference for Stage
+            controller.setStage(stage);
+            //Initializes primary stage
+            controller.initStage(root);
             
         } catch (IOException ex) {
                 Logger.getLogger(drPlantApplication.class.getName()).log(Level.SEVERE, null, ex);

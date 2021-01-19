@@ -5,7 +5,7 @@
  */
 package drPlant.controller;
 
-import static DrPlant.enumerations.UserPrivilege.*;
+import static DrPlant.enumerations.UserPrivilege.USER;
 import drPlant.classes.Shop;
 import drPlant.classes.User;
 import drPlant.factory.ShopManagerFactory;
@@ -59,7 +59,8 @@ public class InfoTiendaController  {
      
      private Shop shop;  
      private User user;
-      private  Alert alert;
+     private  Alert alert;
+     private boolean editar=false;
      
      /**
       * Initial stage of the view
@@ -70,6 +71,7 @@ public class InfoTiendaController  {
     public void initStage(Parent root,User uuser,Shop shopp){
         shop=shopp;
         user = uuser;
+        editar=true;
         Scene scene = new Scene(root);
         StagePopUpTienda.setScene(scene);
         StagePopUpTienda.setResizable(false);
@@ -82,6 +84,43 @@ public class InfoTiendaController  {
         tfLocation.setText(shop.getLocation());
         tfNombre.setText(shop.getShop_name());
         tfComision.setUserData(shop.getCommission());
+          
+        //set the actions for the buttons
+        btnAtras.setOnAction(this::handleButtonCancelarAction);
+        btnGuardar.setOnAction(this::handleButtonGuardarAction);
+        
+        //If the user is not Admin can't edit the text fields
+        if(user.getPrivilege().equals(USER)){
+            tfUrl.disableProperty();
+            tfEmail.disableProperty();
+            tfLocation.disableProperty();
+            tfNombre.disableProperty();
+            tfComision.disableProperty();
+            btnGuardar.setVisible(false);
+        }
+        
+        //set the actions for the fields
+        tfUrl.textProperty().addListener(this::textChange);
+        tfEmail.textProperty().addListener(this::textChange);
+        tfLocation.textProperty().addListener(this::textChange);
+        tfComision.textProperty().addListener(this::textChange);
+
+    }
+     public void initStage(Parent root,User uuser){
+        user = uuser;
+        Scene scene = new Scene(root);
+        StagePopUpTienda.setScene(scene);
+        StagePopUpTienda.setResizable(false);
+        StagePopUpTienda.show();
+        editar=false;
+        
+        //put the shop data inside the text fields and the name in the label
+        //the label can't be edited
+        tfUrl.setText("");
+        tfEmail.setText("");
+        tfLocation.setText("");
+        tfNombre.setText("");
+        tfComision.setUserData("");
           
         //set the actions for the buttons
         btnAtras.setOnAction(this::handleButtonCancelarAction);
@@ -130,7 +169,12 @@ public class InfoTiendaController  {
                        alert = new Alert(Alert.AlertType.WARNING, "Error Este nombre de tienda ya existe", ButtonType.OK);
                        alert.showAndWait();
                   }else{
-                     manager.create(shop);
+                      if(!editar){
+                            manager.create(shop);
+                      }else{
+                          manager.edit(shop);
+                      }
+                      
                   }
            }catch(Exception e){
                

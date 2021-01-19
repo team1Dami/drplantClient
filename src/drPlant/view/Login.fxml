@@ -10,9 +10,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="578.0" prefWidth="785.0" stylesheets="@drPlantstyles.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.controller.Login2Controller">
+<SplitPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="578.0" prefWidth="785.0" stylesheets="@drPlantstyles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.controller.LoginController">
   <items>
-    <AnchorPane id="StageLogin" minHeight="0.0" minWidth="0.0" prefHeight="546.0" prefWidth="783.0" stylesheets="@../../../../ventana/drPlantstyles.css">
+    <AnchorPane id="StageLogin" minHeight="0.0" minWidth="0.0" prefHeight="546.0" prefWidth="783.0" stylesheets="@../css/drPlantstyles.css">
          <children>
             <VBox id="VBox" layoutX="98.0" layoutY="199.0" prefHeight="221.0" prefWidth="578.0" stylesheets="@drPlantstyles.css" AnchorPane.bottomAnchor="156.0">
                <children>
@@ -60,7 +60,7 @@
                   <Font name="Bodoni MT" size="20.0" />
                </font>
             </Button>
-            <Hyperlink id="nuevaContraseña" layoutX="533.0" layoutY="495.0" prefHeight="23.0" prefWidth="191.0" text="He olvidado mi contraseña" underline="true" />
+            <Hyperlink id="nuevaContraseña" layoutX="521.0" layoutY="409.0" prefHeight="23.0" prefWidth="191.0" style="-fx-background-color: white;" text="He olvidado mi contraseña" underline="true" />
          </children></AnchorPane>
   </items>
 </SplitPane>

@@ -5,11 +5,23 @@
  */
 package drPlant.controller;
 
+import static DrPlant.enumerations.UserPrivilege.*;
+import drPlant.classes.Shop;
+import drPlant.classes.User;
+import drPlant.factory.ShopManagerFactory;
+import drPlant.interfaces.ShopManager;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,15 +31,19 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javax.ws.rs.core.GenericType;
 
 /**
  * FXML Controller class
  *
  * @author gonza
  */
-public class ShopViewController implements Initializable {
+public class ShopViewController  {
 
     private Alert alert;
     private static final Logger logger = Logger.getLogger("drplant.Controller.ShopViewController");
@@ -40,19 +56,16 @@ public class ShopViewController implements Initializable {
     private Button btnEliminar;
     @FXML
     private Button btnBuscar;
+    @FXML
+    private TableView tabla;
+    @FXML
+    private TableColumn nombre;
+    @FXML
+    private TableColumn localizacion;
+    @FXML
+    private TableColumn comision;
       
-      
-      
-      
-      
-    /**
-     * Initializes the controller class.
-     */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    } 
-    
+  
     /**
      * Set the stage of the view
      *
@@ -67,16 +80,23 @@ public class ShopViewController implements Initializable {
      *
      * @param root
      */
-    public void initStage(Parent root) {
+    public void initStage(Parent root,User user) {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setResizable(true);
         stage.setTitle("Lista Tiendas");
         stage.show();
+        if(user.getPrivilege().equals(USER)){
+            btnCrear.setVisible(false);
+            btnEliminar.setVisible(false);
+        }
+        btnEliminar.setDisable(true);
 
         //tfLogin.textProperty().addListener(this::textChange);
  
         btnCrear.setOnAction(this::handleButtonCrear);
+        btnEliminar.setOnAction(this::handleButtonEliminar);
+
 
         stage.setOnCloseRequest(this::setOncloseRequest);
     }
@@ -122,7 +142,56 @@ public class ShopViewController implements Initializable {
                 } catch (IOException ex) {
                     Logger.getLogger(ShopViewController.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } 
+    } 
+     
+    private void handleButtonEliminar(ActionEvent event) {
+         
+                try {
+                     alert = new Alert(Alert.AlertType.WARNING,
+                   "Desea Salir de esta ventana", ButtonType.OK,ButtonType.CANCEL);//alert to ask the user to confirm
+                    alert.showAndWait();
+                    if(alert.getResult().getButtonData().isCancelButton()){          
+                        alert = new Alert(Alert.AlertType.WARNING,
+                                "Se ha cancelado la accion",ButtonType.OK);//alert to advise that the action has being cancel
+                        alert.showAndWait();
+                        event.consume();//do as nothing has happen    
+                    }    
+                     
+                }catch (Exception ex) {
+                    logger.log(Level.SEVERE,
+                            "UI LoginController: Error opening users managing window: {0}",
+                            ex.getMessage());
+                   alert = new Alert(Alert.AlertType.WARNING,
+                           "No se ha podido cargar la ventana", ButtonType.OK);
+                   alert.showAndWait();
+                }
+    }
+    private void handleTablaSelectionChanged(ObservableValue observableValue,Object oldValue, Object newValue){
+        
+    }
+    
+    /**
+     * Metodo que controla el evento que se lanza mientras se muestra la ventana
+     * 
+     * @param e evento de ventana
+     */
+    public void handleWindowShowing(WindowEvent e){
+        logger.info("En el evento windows Showing");
+        
+        nombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        localizacion.setCellValueFactory(new PropertyValueFactory<>("direccion"));
+        comision.setCellValueFactory(new PropertyValueFactory<>("telefono"));
+
+         ObservableList<Shop>shops;
+         ShopManager manager = ShopManagerFactory.getShopManager();
+         shops = FXCollections.observableArrayList(manager.findAllShops(new GenericType <List<Shop>>(){}));
+        tabla.setItems((ObservableList) shops);
+        tabla.getSelectionModel().selectedItemProperty()
+                .addListener(this::handleTablaSelectionChanged);
+        logger.info("Se carga la tabla correctamente");
+
+    }
+     
         
 
     

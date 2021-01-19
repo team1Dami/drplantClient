@@ -5,8 +5,9 @@
  */
 package drPlant.controller;
 
+import DrPlant.enumerations.UserPrivilege;
+import drPlant.Encrypted.CifradoPublica;
 import drPlant.classes.User;
-//import drPlant.cypher.CifradoPublica;
 import drPlant.factory.UserManagerFactory;
 import drPlant.interfaces.UserManager;
 import java.io.IOException;
@@ -116,13 +117,13 @@ public class LoginController{
 
             
             //cipher of the password
-            //CifradoPublica cifrado = new CifradoPublica();
+            CifradoPublica cifrado = new CifradoPublica();
             
             //El string que se recoge del textfield se cifra y se convierte en una array de bytes
             //Ese array de bytes hay que pasarlo a a hexadecimal
             
-           // byte[] cifrada = cifrado.cifrarTexto(tfPasswd.getText().toString());//Change to array of bytes
-           // myUser.setPasswd(Hex.encodeHexString(cifrada));//change the array of bytes and introduce inside the password of the user
+            byte[] cifrada = cifrado.cifrarTexto(tfPasswd.getText().toString());//Change to array of bytes
+            myUser.setPasswd(Hex.encodeHexString(cifrada));//change the array of bytes and introduce inside the password of the user
 
             
             //find the user by login and password 
@@ -159,15 +160,16 @@ public class LoginController{
         
         Parent root;
         Stage newStage = new Stage();
+        User user=null;user.setPrivilege(UserPrivilege.USER);//solo para probar la ventana
         try {
             //if in the view signup you press the x the aplication won't stop, it will go back to the login 
             //stage.hide();
-            //PopUpEmailController controller = new PopUpEmailController();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(".fxml"));//necesito la pagina principal para colocar
+            ShopViewController controller = new ShopViewController();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/InfoTienda.fxml"));//necesito la pagina principal para colocar
             root = (Parent) loader.load();
-           // controller = (loader.getController());
-           // controller.setStage(newStage);
-           // controller.initStage(root);
+            controller = (loader.getController());
+            controller.setStage(newStage);
+            controller.initStage(root,user);
             newStage.showAndWait();
         } catch (IOException ex) {
            // Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, ex);
@@ -186,7 +188,7 @@ public class LoginController{
         try {
             //if you press the x the aplication won't stop, it will go back to the login 
             PopUpEmailController controller = new PopUpEmailController();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("PopUpEmail.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/NewEmail.fxml"));
             root = (Parent) loader.load();
             controller = (loader.getController());
             controller.setStage(newStage);
