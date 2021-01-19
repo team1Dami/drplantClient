@@ -33,11 +33,26 @@ public class PlagueRESTClient implements PlagueManager{
         webTarget = client.target(BASE_URI).path("plague");
     }
 
+    /**
+     *
+     * @param requestEntity
+     * @throws ClientErrorException
+     */
+    @Override
     public void edit(Object requestEntity) throws ClientErrorException {
         webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
                 .put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
     }
 
+    /**
+     *
+     * @param <T>
+     * @param responseType
+     * @param id
+     * @return
+     * @throws ClientErrorException
+     */
+    @Override
     public <T> T find(Class<T> responseType, String id) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("{0}", new Object[]{id}));
@@ -45,6 +60,15 @@ public class PlagueRESTClient implements PlagueManager{
                 .get(responseType);
     }
 
+    /**
+     *
+     * @param <T>
+     * @param responseType
+     * @param type
+     * @return
+     * @throws ClientErrorException
+     */
+    @Override
     public <T> T findPlaguesByType(Class<T> responseType, String type) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("findPlaguesByType/{0}", new Object[]{type}));
@@ -52,22 +76,51 @@ public class PlagueRESTClient implements PlagueManager{
                 .get(responseType);
     }
 
+    /**
+     *
+     * @param <T>
+     * @param responseType
+     * @return
+     * @throws ClientErrorException
+     */
+    @Override
     public <T> T findAllPlagues(Class<T> responseType) throws ClientErrorException {
         WebTarget resource = webTarget;
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
                 .get(responseType);
     }
 
+    /**
+     *
+     * @param requestEntity
+     * @throws ClientErrorException
+     */
+    @Override
     public void create(Object requestEntity) throws ClientErrorException {
         webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
                 .post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
     }
 
+    /**
+     *
+     * @param id
+     * @throws ClientErrorException
+     */
+    @Override
     public void remove(String id) throws ClientErrorException {
         webTarget.path(java.text.MessageFormat.format("{0}", new Object[]{id}))
                 .request().delete();
     }
 
+    /**
+     *
+     * @param <T>
+     * @param responseType
+     * @param commonName
+     * @return
+     * @throws ClientErrorException
+     */
+    @Override
     public <T> T findPlagueByCommonName(Class<T> responseType, String commonName) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("findPlagueByCommonName/{0}", new Object[]{commonName}));

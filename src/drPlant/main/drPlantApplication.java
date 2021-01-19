@@ -5,8 +5,13 @@ package drplant.main;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+import drPlant.controller.InfoPlagueController;
+import drPlant.controller.PlagueViewController;
+import drPlant.controller.SignUpController;
+import java.io.IOException;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.stage.Stage;
 
 /**
@@ -14,10 +19,27 @@ import javafx.stage.Stage;
  * @author 2dam
  */
 public class drPlantApplication extends Application {
-    
+
     @Override
-    public void start(Stage primaryStage) {
-       
+    public void start(Stage stage) {
+        Parent root;
+        try {
+            //SignUpController controller = new SignUpController();
+            PlagueViewController controller = new PlagueViewController();
+         //   InfoPlagueController controller = new InfoPlagueController();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/PlagueView.fxml"));
+            try {
+                root = (Parent) loader.load();
+                controller = (loader.getController());
+                controller.setStage(stage);
+                controller.initStage(root);
+            } catch (IOException ex) {
+                ex.getMessage();//Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (Exception e) {
+            e.getMessage();
+            // Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, e);
+        }
     }
 
     /**
@@ -26,5 +48,5 @@ public class drPlantApplication extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-    
+
 }

@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.SimpleStringProperty;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -35,15 +36,21 @@ public class Plague implements Serializable {
     private static final Logger LOGGER =
             Logger.getLogger("drPlant.classes.Plague");
 
-    private String scienceName;
-    private String commonName;
+    private SimpleStringProperty scienceName;
+    private SimpleStringProperty commonName;
     private String description;
     private String control;
     private String remedy;
     private PlagueType type;
     private byte[] photo;
     private Set<Plant> plants;
-
+    
+    /**
+     * 
+     */
+    public void Plague (){
+        
+    }
     /**
      * Method to get the enum PlagueType of the plague
      * @return type the PlagueType enum
@@ -102,7 +109,7 @@ public class Plague implements Serializable {
      * Method to get the common name of the plague if it has
      * @return commonName the common name of the plague (if it has)
      */
-    public String getCommonName() {
+    public SimpleStringProperty getCommonName() {
         LOGGER.log(Level.INFO, "Plague entity: get common name");
         return commonName;
     }
@@ -113,7 +120,7 @@ public class Plague implements Serializable {
      */
     public void setCommonName(String commonName) {
         LOGGER.log(Level.INFO, "Plague entity: set common name");
-        this.commonName = commonName;
+        this.commonName.get();
     }
 
     /**
@@ -174,7 +181,7 @@ public class Plague implements Serializable {
      * Method to get the science name of the plague
      * @return scient name the scient name of the plague
      */
-    public String getScienceName() {
+    public SimpleStringProperty getScienceName() {
          LOGGER.log(Level.INFO, "Plague entity: get science name");
         return scienceName;
     }
@@ -185,6 +192,6 @@ public class Plague implements Serializable {
      */
     public void setScienceName(String scienceName) {
          LOGGER.log(Level.INFO, "Plague entity: set science name");
-        this.scienceName = scienceName;
+        this.scienceName.get();
     }
 }

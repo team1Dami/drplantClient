@@ -1,7 +1,7 @@
 package drPlant.classes;
 
 import drPlant.enumerations.UserPrivilege;
-import drPlant.enumerations.UserStatus;
+import drPlant.enumerations.Userstatus;
 import java.io.Serializable;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -42,7 +42,7 @@ public class User implements Serializable {
     private String login;
     private String email;
     private String fullname;
-    private UserStatus status;
+    private Userstatus status;
     private UserPrivilege privilege;
     private String passwd;
     private Date lastAccess;
@@ -54,35 +54,35 @@ public class User implements Serializable {
      *
      * @return the privilege of the user
      */
-    /*public UserPrivilege getPrivilege() {
+    public UserPrivilege getPrivilege() {
         return privilege;
-    }*/
+    }
 
     /**
      * This method set the privilege of the user
      *
      * @param privilage
      */
-    /*public void setPrivilege(UserPrivilege privilege) {
+    public void setPrivilege(UserPrivilege privilege) {
         this.privilege = privilege;
-    }*/
+    }
 
     /**
      *
      * @return the status of the user
      */
-    /*public UserStatus getStatus() {
+    public Userstatus getStatus() {
         return status;
-    }*/
+    }
 
     /**
      * Set the status of the user
      *
      * @param status
      */
-    /*public void setStatus(UserStatus status) {
+    public void setStatus(Userstatus status) {
        this.status = status;
-    }*/
+    }
 
     /**
      *

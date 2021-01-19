@@ -44,7 +44,7 @@ public class UserRESTClient implements UserManager{
     /*
     Ejemplo de llamada:
     
-    List <User> u = UserManagerFactory.getCustomerManager()
+    User u = UserManagerFactory.getCustomerManager()
                     .findUserByLoginAndPasswd (User.class, login, password);
     */
    
@@ -60,9 +60,14 @@ public class UserRESTClient implements UserManager{
                 .get(responseType);
     }
     
-    public void create_XML(Object requestEntity) throws ClientErrorException {
+    public void create_XML(Object requestEntity)  {
+        try{
         webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
                 .post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
+        }
+        catch(ClientErrorException e){
+            
+        }
     }
 
     public <T> T findAll(Class<T> responseType) throws ClientErrorException {
