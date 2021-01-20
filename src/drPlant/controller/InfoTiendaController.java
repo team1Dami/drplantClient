@@ -227,5 +227,9 @@ public class InfoTiendaController  {
         }
     }
 
+       public void setStage(Stage stage){
+        this.StagePopUpTienda = stage;
+    }
+
     
 }

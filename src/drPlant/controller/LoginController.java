@@ -38,7 +38,8 @@ import org.apache.commons.codec.binary.Hex;
 public class LoginController{
     private Alert alert;
 
-    private static final Logger logger = Logger.getLogger("drplant.Controller.LoginController");
+    private static final Logger logger =
+            Logger.getLogger("drplant.Controller.LoginController");
     //Declaration of attributes
     @FXML
     private Stage StageLogin;
@@ -74,13 +75,16 @@ public class LoginController{
         StageLogin.setResizable(false);
         StageLogin.setTitle("Login");
         StageLogin.show();
-
+        
+        
         tfLogin.textProperty().addListener(this::textChange);
         tfPasswd.textProperty().addListener(this::textChange);
         btnLogin.setOnAction(this::handleButtonLogin);
         btnRegister.setOnAction(this::handleButtonRegister);
         nuevaContraseña.setOnAction(this::handleLinkNewPassword);
         StageLogin.setOnCloseRequest(this::setOncloseRequest);
+        
+        
     }
     
     /**
@@ -159,18 +163,16 @@ public class LoginController{
     private void handleButtonRegister(ActionEvent event) {
         
         Parent root;
-        Stage newStage = new Stage();
-        User user=null;user.setPrivilege(UserPrivilege.USER);//solo para probar la ventana
         try {
             //if in the view signup you press the x the aplication won't stop, it will go back to the login 
             //stage.hide();
             ShopViewController controller = new ShopViewController();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/InfoTienda.fxml"));//necesito la pagina principal para colocar
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/ShopView.fxml"));//necesito la pagina principal para colocar
             root = (Parent) loader.load();
             controller = (loader.getController());
-            controller.setStage(newStage);
-            controller.initStage(root,user);
-            newStage.showAndWait();
+            controller.setStage(StageLogin);
+            controller.initStage(root);
+            //newStage.showAndWait();
         } catch (IOException ex) {
            // Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, ex);
             Alert alert = new Alert(Alert.AlertType.WARNING,
@@ -188,20 +190,27 @@ public class LoginController{
         try {
             //if you press the x the aplication won't stop, it will go back to the login 
             PopUpEmailController controller = new PopUpEmailController();
+            //LoginController controller = new LoginController();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/NewEmail.fxml"));
             root = (Parent) loader.load();
             controller = (loader.getController());
             controller.setStage(newStage);
             controller.initStage(root);
-            newStage.showAndWait();
+            //newStage.showAndWait();
         } catch (IOException ex) {
            // Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, ex);
-            Alert alert = new Alert(Alert.AlertType.WARNING,
+            alert = new Alert(Alert.AlertType.WARNING,
                     "No se ha podido cargar la ventana", ButtonType.OK);
+            alert.showAndWait();
         }
     }
     
-       //method that asks when you press the x if you want to go back or not, if you press OK you go back to login otherwhise you stay in the signup
+
+    /**
+     * method that asks when you press the x if you want to go back or not,
+     * if you press OK you go back to login otherwhise you stay in the signup
+     * @param we 
+     */
      private void setOncloseRequest(WindowEvent we){
         
          try {

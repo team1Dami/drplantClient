@@ -7,22 +7,22 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="662.0" prefWidth="943.0" stylesheets="@../css/drPlantstyles.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.view.ShopViewController">
+<BorderPane id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="662.0" prefWidth="943.0" stylesheets="@../css/drPlantstyles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.controller.ShopViewController">
    <center>
       <AnchorPane id="pane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: transparent;" stylesheets="@../css/drPlantstyles.css" BorderPane.alignment="CENTER">
          <children>
-            <fx:include source="Menu.fxml" maxWidth="-Infinity" minWidth="0"/>
-            <TextField layoutX="40.0" layoutY="109.0" prefHeight="31.0" prefWidth="596.0" promptText="Buscar de manera especifica" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="307.0" AnchorPane.topAnchor="109.0" />
-            <TableView layoutX="40.0" layoutY="197.0" prefHeight="362.0" prefWidth="863.0" AnchorPane.bottomAnchor="78.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="197.0">
+            <fx:include maxWidth="-Infinity" minWidth="0" source="Menu.fxml" />
+            <TextField fx:id="tfBuscar" layoutX="40.0" layoutY="109.0" prefHeight="31.0" prefWidth="596.0" promptText="Buscar de manera especifica" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="307.0" AnchorPane.topAnchor="109.0" />
+            <TableView fx:id="tabla" layoutX="40.0" layoutY="197.0" prefHeight="362.0" prefWidth="863.0" AnchorPane.bottomAnchor="78.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="197.0">
                <columns>
-                  <TableColumn id="nombre" maxWidth="1.7976931348623157E308" prefWidth="300.0" resizable="false" text="Nombre" />
-                  <TableColumn id="localizacion" maxWidth="1.7976931348623157E308" prefWidth="379.0" resizable="false" text="Localización" />
-                  <TableColumn id="comision" maxWidth="1.7976931348623157E308" prefWidth="183.0" resizable="false" text="Comisión" />
+                  <TableColumn id="nombre" fx:id="nombre" maxWidth="1.7976931348623157E308" prefWidth="300.0" resizable="false" text="Nombre" />
+                  <TableColumn id="localizacion" fx:id="localizacion" maxWidth="1.7976931348623157E308" prefWidth="379.0" resizable="false" text="Localización" />
+                  <TableColumn id="comision" fx:id="comision" maxWidth="1.7976931348623157E308" prefWidth="183.0" resizable="false" text="Comisión" />
                </columns>
             </TableView>
-            <Button layoutX="660.0" layoutY="106.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="135.0" text="Buscar" AnchorPane.rightAnchor="148.0" />
-            <Button layoutX="256.0" layoutY="579.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="155.0" text="Crear" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="256.0" />
-            <Button layoutX="472.0" layoutY="578.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="155.0" text="Eliminar" AnchorPane.bottomAnchor="18.0" AnchorPane.rightAnchor="316.0" />
+            <Button fx:id="btnBuscar" layoutX="660.0" layoutY="106.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="135.0" text="Buscar" AnchorPane.rightAnchor="148.0" />
+            <Button fx:id="btnCrear" layoutX="256.0" layoutY="579.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="155.0" text="Crear" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="256.0" />
+            <Button fx:id="btnEliminar" layoutX="472.0" layoutY="578.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="155.0" text="Eliminar" AnchorPane.bottomAnchor="18.0" AnchorPane.rightAnchor="316.0" />
          </children>
       </AnchorPane>
    </center>

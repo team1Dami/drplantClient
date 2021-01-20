@@ -6,17 +6,25 @@ package drplant.main;
  * and open the template in the editor.
  */
 
+import drPlant.classes.Shop;
 import drPlant.controller.LoginController;
 import drPlant.controller.ShopViewController;
+import drPlant.factory.ShopManagerFactory;
 import drPlant.factory.UserManagerFactory;
+import drPlant.interfaces.ShopManager;
 import drPlant.interfaces.UserManager;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
+import javax.ws.rs.core.GenericType;
 
 /**
  *
@@ -55,6 +63,14 @@ public class drPlantApplication extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+        /*ObservableList<Shop>shops;
+        ShopManager manager = ShopManagerFactory.getShopManager();
+        shops = FXCollections.observableArrayList(manager.findAllShops(new GenericType <List<Shop>>(){}));
+        
+        Iterator<Shop> it=shops.iterator();
+        while(it.hasNext()){
+        System.out.println(it.next().getEmail());
+        }*/
     }
     
 }

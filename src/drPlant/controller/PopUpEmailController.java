@@ -5,16 +5,11 @@
  */
 package drPlant.controller;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -22,6 +17,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
@@ -32,7 +28,7 @@ import javafx.stage.Stage;
 public class PopUpEmailController {
 
     @FXML
-    private Stage StagePopUp;
+    private Stage StageLogin;
     
     @FXML
     private TextField tfEmail;
@@ -47,9 +43,10 @@ public class PopUpEmailController {
     
      public void initStage(Parent root) {
         Scene scene = new Scene(root);
-        StagePopUp.setScene(scene);
-        StagePopUp.setResizable(false);
-        StagePopUp.show();
+        StageLogin.setScene(scene);
+        StageLogin.setResizable(false);
+        StageLogin.initModality(Modality.APPLICATION_MODAL);
+        StageLogin.show();
 
         tfEmail.textProperty().addListener(this::textChange);
         btnEnviar.setOnAction(this::handleButtonEnviar);
@@ -64,6 +61,7 @@ public class PopUpEmailController {
            MensajeError.setText("El dato introducido no es correcto, revisalo por favor");
            btnEnviar.setDisable(true);
        }else{
+           MensajeError.setText("");
            btnEnviar.setDisable(false);
        }
 
@@ -74,11 +72,11 @@ public class PopUpEmailController {
      */
     private void handleButtonEnviar(ActionEvent event) {
         
-         Alert alert = new Alert(Alert.AlertType.WARNING,
-                    "Se ha enviado la nueva contraseña al correo", ButtonType.OK);
+        alert = new Alert(Alert.AlertType.WARNING,
+                "Se ha enviado la nueva contraseña al correo", ButtonType.OK);
     }
      public void setStage(Stage stage){
-        this.StagePopUp = stage;
+        this.StageLogin = stage;
     }
      
       private boolean validateEmail(String email) {
