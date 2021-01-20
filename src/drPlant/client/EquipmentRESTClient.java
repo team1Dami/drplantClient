@@ -35,12 +35,18 @@ public class EquipmentRESTClient implements EquipmentManager{
         webTarget = client.target(BASE_URI).path("equipment");
     }
 
+    public <T> T findEquipmentByNameAndUse(GenericType<T> responseType, String use, String name) throws ClientErrorException {
+            WebTarget resource = webTarget;
+            resource = resource.path(java.text.MessageFormat.format("equipment_name/{0}/{1}", new Object[]{use, name}));
+            return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+        }
+    
     public <T> T findAllEquipment(GenericType<T> responseType) throws ClientErrorException {
         WebTarget resource = webTarget;
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
-    public <T> T findEquipmentByUse(Class<T> responseType, String uses) throws ClientErrorException {
+    public <T> T findEquipmentByUse(GenericType<T> responseType, String uses) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("uses/{0}", new Object[]{uses}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
@@ -50,7 +56,7 @@ public class EquipmentRESTClient implements EquipmentManager{
         webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
     }
 
-    public <T> T find(Class<T> responseType, String id) throws ClientErrorException {
+    public <T> T find(GenericType<T> responseType, String id) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("{0}", new Object[]{id}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
@@ -60,17 +66,17 @@ public class EquipmentRESTClient implements EquipmentManager{
         webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
     }
 
-    public <T> T findEquipmentByName(Class<T> responseType, String equipment_name) throws ClientErrorException {
+    public <T> T findEquipmentByName(GenericType<T> responseType, String equipment_name) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("equipment_name/{0}", new Object[]{equipment_name}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
-    public <T> T findEquipmentByPrice(Class<T> responseType, String minPrice, String maxPrice) throws ClientErrorException {
+    /*public <T> T findEquipmentByPrice(Class<T> responseType, String minPrice, String maxPrice) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("price/{0}/{1}", new Object[]{minPrice, maxPrice}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
-    }
+    }*/
 
     public void remove(String id) throws ClientErrorException {
         webTarget.path(java.text.MessageFormat.format("{0}", new Object[]{id})).request().delete();
@@ -79,5 +85,6 @@ public class EquipmentRESTClient implements EquipmentManager{
     public void close() {
         client.close();
     }
+    
     
 }

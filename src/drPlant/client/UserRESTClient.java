@@ -79,5 +79,6 @@ public class UserRESTClient implements UserManager{
     public void close() {
         client.close();
     }
+
     
 }

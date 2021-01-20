@@ -5,10 +5,13 @@
  */
 package drPlant.controller;
 
+import DrPlant.enumerations.Use;
 import com.sun.java.accessibility.util.AWTEventMonitor;
 import drPlant.classes.Equipment;
 import drPlant.classes.User;
 import drPlant.factory.EquipmentManagerFactory;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -125,17 +128,7 @@ public class EquipmentViewController {
         descriptionCol = new TableColumn("Descripcion");
         useCol = new TableColumn("Uso");
         priceCol = new TableColumn("Precio");*/
-        ObservableList<Equipment> equipmentss = FXCollections.observableArrayList(EquipmentManagerFactory.getEquipmentManager()
-                .findAllEquipment(new GenericType<Set<Equipment>>() {
-                }));
-
-        imageCol.setCellValueFactory(new PropertyValueFactory<>("image"));
-        nameCol.setCellValueFactory(new PropertyValueFactory<>("equipment_name"));
-        descriptionCol.setCellValueFactory(new PropertyValueFactory<>("equipment_description"));
-        useCol.setCellValueFactory(new PropertyValueFactory<>("use"));
-        priceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
-
-        equipmentTable.setItems(equipmentss);
+        setTableValues();
         /*  tbPlague.getColumns().addAll(imageCol, scientNameCol, commonNameCol, typeCol);
                 
         
@@ -144,11 +137,18 @@ public class EquipmentViewController {
         plagueManager = PlagueManagerFactory.getPlagueManager();
         plagues = FXCollections.observableArrayList(plagueManager.findAllPlagues(Plague.class)); */
 //        equipmentTable.setItems(equipments);
-        txtSearch.setPromptText("Introduce la plaga que buscas");
+        txtSearch.setPromptText("Introduce el equipamiento que quieres buscar");
         txtSearch.focusedProperty().addListener(this::focusChanged);
+        
+        
+        imageCol.setCellValueFactory(new PropertyValueFactory<>("image"));
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("equipment_name"));
+        descriptionCol.setCellValueFactory(new PropertyValueFactory<>("equipment_description"));
+        useCol.setCellValueFactory(new PropertyValueFactory<>("use"));
+        priceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
 
-        choiceBoxFiltros.setItems(FXCollections.observableArrayList("General", "Sustrato", "Riego"));
-        //choiceBoxFiltros.setValue(" ");
+        choiceBoxFiltros.setItems(FXCollections.observableArrayList("", "General", "Sustrato", "Riego"));
+        choiceBoxFiltros.setValue("");
 
         // idea: en función de la selección del choice box se mostrará un promp text u otro
         if (!isAdmin) {
@@ -169,9 +169,8 @@ public class EquipmentViewController {
             }
         });
 
-        /*
         btnSearch.setOnAction(this::handleSearchAction);
-        btnAdd.setOnAction(this::handleAddAction);*/
+        /*btnAdd.setOnAction(this::handleAddAction);*/
         btnEdit.setOnAction(this::handleEditAction);
         btnDelete.setOnAction(this::handleDeleteAction);
     }
@@ -185,7 +184,17 @@ public class EquipmentViewController {
      */
     @FXML
     private void handleSearchAction(ActionEvent event) {
-
+        String filtroUso = (String) choiceBoxFiltros.getValue();
+        String buscador = txtSearch.getText();
+        if (!filtroUso.isEmpty() && buscador.isEmpty()) {
+            setTableValuesWithFilters(filtroUso);
+        } else if (!filtroUso.isEmpty() && !buscador.isEmpty()) {
+            setTableValuesWithFilters(filtroUso, buscador);
+        } else if (filtroUso.isEmpty() && !buscador.isEmpty()) {
+            setTableValuesWithText(buscador);
+        }else{
+            setTableValues();
+        }
     }
 
     /**
@@ -207,7 +216,7 @@ public class EquipmentViewController {
      */
     @FXML
     private void handleEditAction(ActionEvent event) {
-        //System.out.println(equipmentTable.getSelectionModel().get));
+        Equipment equip = (Equipment) equipmentTable.getSelectionModel().getSelectedItem();
     }
 
     /**
@@ -220,6 +229,22 @@ public class EquipmentViewController {
      */
     @FXML
     private void handleDeleteAction(ActionEvent event) {
+        Equipment equip = (Equipment) equipmentTable.getSelectionModel().getSelectedItem();
+
+        Alert alert = new Alert(Alert.AlertType.WARNING,
+                "¿Desea borrar el equipamiento " + equip.getEquipment_name() + "?", ButtonType.OK, ButtonType.CANCEL); //alert to ask the user to confirm
+        alert.showAndWait();
+        if (alert.getResult().getButtonData().isCancelButton()) {
+            alert = new Alert(Alert.AlertType.WARNING,
+                    "Se ha cancelado el borrado", ButtonType.OK);//alert to advise that the action has being cancel
+            alert.showAndWait();
+        } else {
+            EquipmentManagerFactory.getEquipmentManager().remove(equip.getId_equipment().toString());
+            alert = new Alert(Alert.AlertType.WARNING,
+                    "Se ha borrado correctamente", ButtonType.OK);
+            alert.showAndWait();
+            setTableValues();
+        }
 
     }
 
@@ -263,6 +288,38 @@ public class EquipmentViewController {
     public void focusChanged(ObservableValue observable, Boolean oldValue,
             Boolean newValue) {
 
+    }
+
+    private void setTableValues() {
+        ObservableList<Equipment> equipmentss = FXCollections.observableArrayList(EquipmentManagerFactory.getEquipmentManager()
+                .findAllEquipment(new GenericType<Set<Equipment>>() {
+                }));
+        equipmentTable.setItems(equipmentss);
+    }
+
+    private void setTableValuesWithFilters(String filtroUso) {
+        filtroUso = filtroUso.toLowerCase();
+        ObservableList<Equipment> equipmentss = FXCollections.observableArrayList(EquipmentManagerFactory.getEquipmentManager()
+                .findEquipmentByUse(new GenericType<Set<Equipment>>() {
+                }, filtroUso));
+
+
+        equipmentTable.setItems(equipmentss);
+    }
+
+    private void setTableValuesWithFilters(String filtroUso, String buscador) {
+        filtroUso = filtroUso.toLowerCase();
+        ObservableList<Equipment> equipmentsWithFilter = FXCollections.observableArrayList(EquipmentManagerFactory.getEquipmentManager()
+                .findEquipmentByNameAndUse(new GenericType<Set<Equipment>>() {
+                }, filtroUso, buscador));
+        equipmentTable.setItems(equipmentsWithFilter);
+    }
+
+    private void setTableValuesWithText(String buscador) {
+        ObservableList<Equipment> equipmentsWithFilter = FXCollections.observableArrayList(EquipmentManagerFactory.getEquipmentManager()
+                .findEquipmentByName(new GenericType<Set<Equipment>>() {
+                }, buscador));
+        equipmentTable.setItems(equipmentsWithFilter);
     }
 
 }
