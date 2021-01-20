@@ -9,6 +9,7 @@ import drPlant.interfaces.EquipmentManager;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
 
 /**
  * Jersey REST client generated for REST resource:EquipmentFacadeREST
@@ -27,14 +28,14 @@ public class EquipmentRESTClient implements EquipmentManager{
 
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:8080/drplant/webresources";
+    private static final String BASE_URI = "http://localhost:8080/drPlantServer/webresources";
 
     public EquipmentRESTClient() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
         webTarget = client.target(BASE_URI).path("equipment");
     }
 
-    public <T> T findAllEquipment(Class<T> responseType) throws ClientErrorException {
+    public <T> T findAllEquipment(GenericType<T> responseType) throws ClientErrorException {
         WebTarget resource = webTarget;
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }

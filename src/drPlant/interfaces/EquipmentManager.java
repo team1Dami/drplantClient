@@ -6,14 +6,15 @@
 package drPlant.interfaces;
 
 import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.core.GenericType;
 
 /**
  *
- * @author saray
+ * @author Eneko
  */
 public interface EquipmentManager {
     
-     public <T> T findAllEquipment(Class<T> responseType) throws ClientErrorException ;
+     public <T> T findAllEquipment(GenericType<T> responseType) throws ClientErrorException ;
 
     public <T> T findEquipmentByUse(Class<T> responseType, String uses) throws ClientErrorException ;
 
