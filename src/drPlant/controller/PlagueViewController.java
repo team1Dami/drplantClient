@@ -6,10 +6,15 @@
 package drPlant.controller;
 
 import drPlant.classes.Plague;
+import drPlant.classes.Plant;
 import drPlant.classes.User;
 import drPlant.factory.PlagueManagerFactory;
+import drPlant.factory.PlantManagerFactory;
 import drPlant.interfaces.PlagueManager;
+import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
@@ -17,6 +22,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -27,6 +33,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javax.ws.rs.core.GenericType;
@@ -48,13 +55,13 @@ public class PlagueViewController {
     @FXML
     private TableView tbPlague;
     @FXML
-    private TableColumn imageCol;
+    private TableColumn colImage;
     @FXML
-    private TableColumn scientNameCol;
+    private TableColumn colScientName;
     @FXML
-    private TableColumn commonNameCol;
+    private TableColumn colCommonName;
     @FXML
-    private TableColumn typeCol;
+    private TableColumn colType;
     @FXML
     private Button btnSearch;
     @FXML
@@ -67,8 +74,8 @@ public class PlagueViewController {
     private boolean isAdmin;
     private Alert alert;
 
-    private PlagueManager plagueManager;
-    private ObservableList<Plague> plagues;
+    //   private PlagueManager plagueManager;
+    //   private ObservableList<Plague> plagues;
     private User user;
 
     /**
@@ -121,12 +128,13 @@ public class PlagueViewController {
 
         Scene scene = new Scene(root);
 
+      //  stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
         stage.setTitle("Lista de Plagas");
 
         stage.setOnShowing(this::handleWindowShowing);
+        stage.setOnCloseRequest(this::setOncloseRequest);
         stage.show();
-
     }
 
     /**
@@ -136,27 +144,31 @@ public class PlagueViewController {
     private void handleWindowShowing(WindowEvent event) {
 
         // table
-        
-        imageCol = new TableColumn("Imagen");
-        scientNameCol = new TableColumn("Nombre científico");
-        commonNameCol = new TableColumn("Nombre común");
-        typeCol = new TableColumn("Tipo");
-        
-      /*  tbPlague.getColumns().addAll(imageCol, scientNameCol, commonNameCol, typeCol);
-                
-          imageCol.setCellValueFactory(new PropertyValueFactory<Plague>("photo"));
-        scientNameCol.setCellValueFactory(new PropertyValueFactory<>("scienceName"));
-        commonNameCol.setCellValueFactory(new PropertyValueFactory<>("commonName"));
-        typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
-        
-   //     GenericType<List <Plague>> plagueList = plagueManager.findAllPlagues((Class<T>) Plague.class);
-        plagueManager = PlagueManagerFactory.getPlagueManager();
-        plagues = FXCollections.observableArrayList(plagueManager.findAllPlagues(Plague.class)); */   
-        
-        tbPlague.setItems(plagues);
+        //colImage.setCellValueFactory(new PropertyValueFactory<>("photo"));
+        colScientName.setCellValueFactory(new PropertyValueFactory<>("scienceName"));
+        colCommonName.setCellValueFactory(new PropertyValueFactory<>("commonName"));
+        colType.setCellValueFactory(new PropertyValueFactory<>("type"));
+
+        /*   plagueManager = PlagueManagerFactory.getPlagueManager();
+        plagues = FXCollections.observableArrayList(plagueManager.findAllPlagues(new GenericType<Set<Plague>>() {
+        }));
+
+        //    
+        tbPlague.setItems(plagues);*/
+        ObservableList<Plague> plagues = FXCollections.observableArrayList(PlagueManagerFactory.getPlagueManager().findAllPlagues(new GenericType<List<Plague>>() {
+        }));
+        tbPlague.setItems((ObservableList) plagues);
+
+        /* ObservableList<Plant> plants = FXCollections.observableArrayList(PlantManagerFactory.getPlantManager().getAllPlants(new GenericType<Set<Plant>>() {
+        }));
+       tbPlague.setItems((ObservableList) plants);*/
         tfSearch.setPromptText("Introduce la plaga que buscas");
-        tfSearch.focusedProperty().addListener(this::focusChanged);
-        chBox = new ChoiceBox();
+        tfSearch.textProperty().addListener(this::handleTextChanged);
+        chBox.setItems(FXCollections.observableArrayList (
+                        "Nombre científico", "Nombre común", "Selecciona un tipo de gravedad:",
+                        "Leve", "Medio", "Grave"));
+        chBox.setValue("Nombre científico");
+        
 
         /*  chBox.getItems().add("Nombre científico");
         chBox.getItems().add("Nombre común");
@@ -171,7 +183,6 @@ public class PlagueViewController {
         btnAdd.setOnAction(this::handleAddAction);
         btnEdit.setOnAction(this::handleEditAction);
         btnDelete.setOnAction(this::handleDeleteAction);
-
     }
 
     /**
@@ -183,7 +194,8 @@ public class PlagueViewController {
      */
     @FXML
     private void handleSearchAction(ActionEvent event) {
-
+        
+        
     }
 
     /**
@@ -194,7 +206,24 @@ public class PlagueViewController {
      */
     @FXML
     private void handleAddAction(ActionEvent event) {
+        Parent root;
+        Stage stage2 = new Stage();
+        try {
+            InfoPlagueController controller = new InfoPlagueController();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/infoPlague.fxml"));
 
+            try {
+                root = (Parent) loader.load();
+                controller = (loader.getController());
+                controller.setStage(stage2);
+                controller.initStage(root, isAdmin);
+            } catch (IOException ex) {
+                ex.getMessage();//Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (Exception e) {
+            e.getMessage();
+            // Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, e);
+        }
     }
 
     /**
@@ -218,6 +247,18 @@ public class PlagueViewController {
      */
     @FXML
     private void handleDeleteAction(ActionEvent event) {
+        Plague plague = (Plague) tbPlague.getSelectionModel().getSelectedItem();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                "¿Borrar la fila seleccionada?\n"
+                + "Esta operación no se puede deshacer.",
+                ButtonType.OK, ButtonType.CANCEL);
+        alert.getDialogPane();
+        Optional<ButtonType> result = alert.showAndWait();
+        //If OK to deletion
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+
+            PlagueManagerFactory.getPlagueManager().remove(plague.getScienceName());
+        }
 
     }
 
@@ -233,7 +274,7 @@ public class PlagueViewController {
         Alert alert;
         try {
             alert = new Alert(Alert.AlertType.WARNING,
-                    "Desea Salir de esta ventana", ButtonType.OK, ButtonType.CANCEL);//alert to ask the user to confirm
+                    "¿Desea Salir de la aplicación?", ButtonType.OK, ButtonType.CANCEL);//alert to ask the user to confirm
             alert.showAndWait();
             if (alert.getResult().getButtonData().isCancelButton()) {
                 alert = new Alert(Alert.AlertType.WARNING,
@@ -251,15 +292,10 @@ public class PlagueViewController {
             alert.showAndWait();
         }
     }
-
-    /**
-     *
-     * @param observable
-     * @param oldValue
-     * @param newValue
-     */
-    public void focusChanged(ObservableValue observable, Boolean oldValue,
-            Boolean newValue) {
-
+    
+    public void handleTextChanged(ObservableValue observableValue, 
+            String oldValue, String newValue) {
+        
     }
+
 }

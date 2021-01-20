@@ -8,25 +8,25 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="875.0" prefWidth="1235.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.controller.PlagueViewController">   
+<BorderPane id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="875.0" prefWidth="1235.0" stylesheets="@css/drPlantstyles.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.controller.PlagueViewController">   
     <center>
-      <AnchorPane fx:id="PlagueView" prefHeight="875.0" prefWidth="1235.0" stylesheets="@css/drPlantstyles.css" BorderPane.alignment="CENTER">         
+      <AnchorPane fx:id="PlagueView" prefHeight="875.0" prefWidth="1235.0" BorderPane.alignment="CENTER">         
          <children>
             <fx:include prefWidth="1235.0" source="Menu.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
             <ChoiceBox fx:id="chBox" layoutX="669.0" layoutY="103.0" prefHeight="37.0" prefWidth="225.0" AnchorPane.rightAnchor="341.0" AnchorPane.topAnchor="103.0" />
             <TextField fx:id="tfSearch" layoutX="76.0" layoutY="106.0" prefHeight="31.0" prefWidth="524.0" promptText="Introduce la plaga que buscas" AnchorPane.leftAnchor="76.0" AnchorPane.rightAnchor="635.0" />
             <TableView fx:id="tbPlague" layoutX="76.0" layoutY="196.0" prefHeight="586.0" prefWidth="1062.0" AnchorPane.bottomAnchor="93.0" AnchorPane.leftAnchor="76.0" AnchorPane.rightAnchor="97.0" AnchorPane.topAnchor="196.0">
                <columns>
-                  <TableColumn id="imageCol" fx:id="colImage" prefWidth="227.0" text="Imagen" />
-                  <TableColumn id="scientNameCol" fx:id="colScientName" prefWidth="308.0" text="Nombre Científico" />
-                  <TableColumn id="commonNameCol" fx:id="colCommonName" prefWidth="286.0" text="Nombre Común" />
-                  <TableColumn id="typeCol" fx:id="colType" minWidth="0.0" prefWidth="240.0" text="Tipo" />
+                  <TableColumn fx:id="colImage" prefWidth="227.0" text="Imagen" />
+                  <TableColumn fx:id="colScientName" prefWidth="308.0" text="Nombre Científico" />
+                  <TableColumn fx:id="colCommonName" prefWidth="286.0" text="Nombre Común" />
+                  <TableColumn fx:id="colType" minWidth="0.0" prefWidth="240.0" text="Tipo" />
                </columns>
             </TableView>
-            <Button id="btnSearch" fx:id="btnSearch" layoutX="982.0" layoutY="103.0" mnemonicParsing="false" onAction="#handleSearchAction" prefHeight="37.0" prefWidth="156.0" text="Buscar" AnchorPane.rightAnchor="97.0" />
-            <Button id="btnAdd" fx:id="btnAdd" layoutX="268.0" layoutY="810.0" mnemonicParsing="false" onAction="#handleAddAction" prefHeight="31.0" prefWidth="140.0" text="Añadir" AnchorPane.bottomAnchor="34.0" AnchorPane.rightAnchor="827.0" />
-            <Button id="btnEdit" fx:id="btnEdit" layoutX="548.0" layoutY="810.0" mnemonicParsing="false" onAction="#handleEditAction" prefHeight="31.0" prefWidth="140.0" text="Editar" AnchorPane.bottomAnchor="34.0" AnchorPane.rightAnchor="547.0" />
-            <Button id="btnDelete" fx:id="btnDelete" layoutX="852.0" layoutY="810.0" mnemonicParsing="false" onAction="#handleDeleteAction" prefHeight="31.0" prefWidth="140.0" text="Eliminar" AnchorPane.bottomAnchor="34.0" AnchorPane.rightAnchor="243.0" />
+            <Button fx:id="btnSearch" layoutX="982.0" layoutY="103.0" mnemonicParsing="false" onAction="#handleSearchAction" prefHeight="37.0" prefWidth="156.0" text="Buscar" AnchorPane.rightAnchor="97.0" />
+            <Button fx:id="btnAdd" layoutX="268.0" layoutY="810.0" mnemonicParsing="false" onAction="#handleAddAction" prefHeight="31.0" prefWidth="140.0" text="Añadir" AnchorPane.bottomAnchor="34.0" AnchorPane.rightAnchor="827.0" />
+            <Button fx:id="btnEdit" layoutX="548.0" layoutY="810.0" mnemonicParsing="false" onAction="#handleEditAction" prefHeight="31.0" prefWidth="140.0" text="Editar" AnchorPane.bottomAnchor="34.0" AnchorPane.rightAnchor="547.0" />
+            <Button fx:id="btnDelete" layoutX="852.0" layoutY="810.0" mnemonicParsing="false" onAction="#handleDeleteAction" prefHeight="31.0" prefWidth="140.0" text="Eliminar" AnchorPane.bottomAnchor="34.0" AnchorPane.rightAnchor="243.0" />
          </children>
       </AnchorPane>
    </center>

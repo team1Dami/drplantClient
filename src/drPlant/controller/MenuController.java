@@ -103,24 +103,23 @@ public class MenuController {
      */
     @FXML
     private void handlePlagueViewAction(ActionEvent event) {
-        if (!stage.getTitle().equals("Lista de Plagas")) {
+      //  if (!stage.getTitle().equals("Lista de Plagas")) {
             try {
-                Stage stage2 = new Stage();
                 FXMLLoader loader
                         = new FXMLLoader(getClass().getResource("PlagueView.fxml"));
                 Parent root = (Parent) loader.load();
                 PlagueViewController controller = ((PlagueViewController) loader.getController());
                 controller = (loader.getController());
-                controller.setStage(stage2);
+                controller.setStage(stage);
                 controller.initStage(root);
                 
-                stage.close();
+               // stage.close();
             } catch (IOException e) {
                 logger.log(Level.SEVERE, "Can't opne PlagueView");
                 Alert alert = new Alert(Alert.AlertType.WARNING, "Ops! Ha ocurrido un error inesperado!", ButtonType.OK);
                 alert.showAndWait();
             }
-        }
+     //   }
     }
 
     /**
