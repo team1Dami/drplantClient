@@ -9,6 +9,7 @@ import drPlant.interfaces.PlantManager;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
 
 /**
  * Jersey REST client generated for REST resource:PlantFacadeREST [plant]<br>
@@ -33,14 +34,14 @@ public class PlantRESTClient implements PlantManager{  // hacer que implemente l
         webTarget = client.target(BASE_URI).path("plant");
     }
 
-    public <T> T getPlantByPetFriendly(Class<T> responseType, String petFriendly) throws ClientErrorException {
+    public <T> T getPlantByPetFriendly(GenericType<T> responseType, String petFriendly) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("petFriendly/{0}", new Object[]{petFriendly}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
                 .get(responseType);
     }
 
-    public <T> T getPlantByTypeAndClimate(Class<T> responseType, String plantType, String climate) throws ClientErrorException {
+    public <T> T getPlantByTypeAndClimate(GenericType<T> responseType, String plantType, String climate) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("TypeAndClimate/{0}/{1}", new Object[]{plantType, climate}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
@@ -52,14 +53,14 @@ public class PlantRESTClient implements PlantManager{  // hacer que implemente l
                 .put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
     }
 
-    public <T> T getPlantByClimate(Class<T> responseType, String climate) throws ClientErrorException {
+    public <T> T getPlantByClimate(GenericType<T> responseType, String climate) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("climate/{0}", new Object[]{climate}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
                 .get(responseType);
     }
 
-    public <T> T getPlantByPetFriendlyAndClimate(Class<T> responseType, String petFriendly, String climate) throws ClientErrorException {
+    public <T> T getPlantByPetFriendlyAndClimate(GenericType<T> responseType, String petFriendly, String climate) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("getPlantByPetFriendlyAndClimate/{0}/{1}", new Object[]{petFriendly, climate}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
@@ -77,28 +78,28 @@ public class PlantRESTClient implements PlantManager{  // hacer que implemente l
                 .request().delete();
     }
 
-    public <T> T getPlantWithAll(Class<T> responseType, String plantType, String petFriendly, String climate) throws ClientErrorException {
+    public <T> T getPlantWithAll(GenericType<T> responseType, String plantType, String petFriendly, String climate) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("getPlantWithAll/{0}/{1}/{2}", new Object[]{plantType, petFriendly, climate}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
                 .get(responseType);
     }
 
-    public <T> T getPlantByCommonName(Class<T> responseType, String commonName) throws ClientErrorException {
+    public <T> T getPlantByCommonName(GenericType<T> responseType, String commonName) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("getPlantByCommonName/{0}", new Object[]{commonName}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
                 .get(responseType);
     }
 
-    public <T> T getPlantByTypeAndPetFriendly(Class<T> responseType, String plantType, String petFriendly) throws ClientErrorException {
+    public <T> T getPlantByTypeAndPetFriendly(GenericType<T> responseType, String plantType, String petFriendly) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("TypeAndPetFriendly/{0}/{1}", new Object[]{plantType, petFriendly}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
                 .get(responseType);
     }
 
-    public <T> T getPlantByType(Class<T> responseType, String plantType) throws ClientErrorException {
+    public <T> T getPlantByType(GenericType<T> responseType, String plantType) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("plantType/{0}", new Object[]{plantType}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
@@ -119,6 +120,13 @@ public class PlantRESTClient implements PlantManager{  // hacer que implemente l
 
     public void close() {
         client.close();
+    }
+
+    @Override
+    public <T> T getAllPlants(GenericType<T> responseType) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
+                .get(responseType);
     }
     
 }

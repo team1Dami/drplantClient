@@ -6,6 +6,7 @@
 package drPlant.interfaces;
 
 import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.core.GenericType;
 
 /**
  *
@@ -15,8 +16,9 @@ public interface UserManager {
     
     public <T> T findUserByLoginAndPasswd(Class<T> responseType, String login, String passwd) throws ClientErrorException;
     public void edit(Object requestEntity) throws ClientErrorException;
-    public <T> T find(Class<T> responseType, String id) throws ClientErrorException;
+    public <T> T find(Class<T> responseType, Integer id) throws ClientErrorException;
     public void create_XML(Object requestEntity) throws ClientErrorException;
-    public <T> T findAll(Class<T> responseType) throws ClientErrorException;
+    public <T> T findAll(GenericType<T> responseType) throws ClientErrorException;
     public void remove(String id) throws ClientErrorException;  
 }
+
