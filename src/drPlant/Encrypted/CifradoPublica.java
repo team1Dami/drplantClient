@@ -32,7 +32,7 @@ public class CifradoPublica {
         byte[] encodedMessage = null;
         try {
             // Cargamos la clave pública
-            byte fileKey[] = fileReader("\\Nueva Carpeta\\Publica.txt");
+            byte fileKey[] = fileReader(".\\src\\drPlant\\Encrypted\\Publica.txt");
             System.out.println("Tamaño -> " + fileKey.length + " bytes");
 
             // Obtenemos una instancia de KeyFactory, algoritmo RSA
@@ -66,7 +66,7 @@ public class CifradoPublica {
         byte[] decodedMessage = null;
         try {
             // Cargamos la clave privada
-           byte fileKey[] = fileReader("C:\\Users\\rubir\\Desktop\\Nueva Carpeta\\Privada.txt");
+           byte fileKey[] = fileReader("\\drPlant.Encrypted\\Privada.txt");
            System.out.println("Tamaño -> " + fileKey.length + " bytes");
 
             // Obtenemos una instancia de KeyFactory, algoritmo RSA

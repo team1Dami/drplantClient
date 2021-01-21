@@ -10,8 +10,10 @@ import drPlant.classes.Shop;
 import drPlant.classes.User;
 import drPlant.factory.ShopManagerFactory;
 import drPlant.interfaces.ShopManager;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,6 +24,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
@@ -58,9 +61,9 @@ public class InfoTiendaController  {
      
      
      private Shop shop;  
-     private User user;
      private  Alert alert;
-     private boolean editar=false;
+     private static final Logger logger = Logger.getLogger("drplant.Controller.InfoTiendaController");
+
      
      /**
       * Initial stage of the view
@@ -68,13 +71,12 @@ public class InfoTiendaController  {
       * @param user
       * @param shop 
       */
-    public void initStage(Parent root,User uuser,Shop shopp){
+    public void initStage(Parent root,boolean  admin,Shop shopp){
         shop=shopp;
-        user = uuser;
-        editar=true;
         Scene scene = new Scene(root);
         StagePopUpTienda.setScene(scene);
         StagePopUpTienda.setResizable(false);
+        StagePopUpTienda.initModality(Modality.APPLICATION_MODAL);
         StagePopUpTienda.show();
         
         //put the shop data inside the text fields and the name in the label
@@ -83,19 +85,19 @@ public class InfoTiendaController  {
         tfEmail.setText(shop.getEmail());
         tfLocation.setText(shop.getLocation());
         tfNombre.setText(shop.getShop_name());
-        tfComision.setUserData(shop.getCommission());
+        tfComision.setText(Float.toString(shop.getCommission()));
           
         //set the actions for the buttons
         btnAtras.setOnAction(this::handleButtonCancelarAction);
-        btnGuardar.setOnAction(this::handleButtonGuardarAction);
+        btnGuardar.setOnAction(this::handleButtonEditarAction);
         
         //If the user is not Admin can't edit the text fields
-        if(user.getPrivilege().equals(USER)){
-            tfUrl.disableProperty();
-            tfEmail.disableProperty();
-            tfLocation.disableProperty();
-            tfNombre.disableProperty();
-            tfComision.disableProperty();
+        if(!admin){
+             tfUrl.setEditable(false);
+            tfEmail.setEditable(false);
+            tfLocation.setEditable(false);
+            tfNombre.setDisable(false);
+            tfComision.setEditable(false);
             btnGuardar.setVisible(false);
         }
         
@@ -104,38 +106,32 @@ public class InfoTiendaController  {
         tfEmail.textProperty().addListener(this::textChange);
         tfLocation.textProperty().addListener(this::textChange);
         tfComision.textProperty().addListener(this::textChange);
+        
+       
 
-    }
-     public void initStage(Parent root,User uuser){
-        user = uuser;
+    }  
+    
+    public void initStage(Parent root,boolean admin){
         Scene scene = new Scene(root);
         StagePopUpTienda.setScene(scene);
         StagePopUpTienda.setResizable(false);
+        StagePopUpTienda.initModality(Modality.APPLICATION_MODAL);
+        btnGuardar.setDisable(true);
         StagePopUpTienda.show();
-        editar=false;
         
         //put the shop data inside the text fields and the name in the label
         //the label can't be edited
-        tfUrl.setText("");
+        
+         tfUrl.setText("");
         tfEmail.setText("");
         tfLocation.setText("");
         tfNombre.setText("");
-        tfComision.setUserData("");
+        tfComision.setText("");
           
         //set the actions for the buttons
         btnAtras.setOnAction(this::handleButtonCancelarAction);
         btnGuardar.setOnAction(this::handleButtonGuardarAction);
-        
-        //If the user is not Admin can't edit the text fields
-        if(user.getPrivilege().equals(USER)){
-            tfUrl.disableProperty();
-            tfEmail.disableProperty();
-            tfLocation.disableProperty();
-            tfNombre.disableProperty();
-            tfComision.disableProperty();
-            btnGuardar.setVisible(false);
-        }
-        
+     
         //set the actions for the fields
         tfUrl.textProperty().addListener(this::textChange);
         tfEmail.textProperty().addListener(this::textChange);
@@ -150,6 +146,41 @@ public class InfoTiendaController  {
     private void handleButtonGuardarAction(ActionEvent event) {
  
            try{
+                  shop = new Shop();
+                  shop.setShop_name(tfNombre.getText());
+                  shop.setEmail(tfEmail.getText());
+                  shop.setLocation(tfLocation.getText());
+                 
+                  shop.setCommission(Float.parseFloat(tfComision.getText()));
+                  shop.setUrl(tfUrl.getText());
+                  
+                  if(!validateEmail(shop.getEmail())){
+                      //the gmail is not correct
+                       alert = new Alert(Alert.AlertType.WARNING, "Error en el gmail", ButtonType.OK);
+                       alert.showAndWait();
+                  }else{
+                    Shop shopEsta;
+                    ShopManager manager = ShopManagerFactory.getShopManager();
+                    shopEsta= manager.getShopByName(Shop.class, shop.getShop_name());
+                    System.out.println(shopEsta.getEmail());
+                    if(shopEsta != null){
+                        //the shop already exist
+                         alert = new Alert(Alert.AlertType.WARNING, "Error Este nombre de tienda ya existe", ButtonType.OK);
+                         alert.showAndWait();
+                    }else{
+                         manager.create(shop);
+                         
+                    }
+                  }  
+           }catch(Exception e){
+               logger.info("no hace bien la creacion de una tienda :(");
+           }
+           
+    }
+    
+    private void handleButtonEditarAction(ActionEvent event) {
+ 
+           try{
                   shop.setShop_name(tfNombre.getText());
                   shop.setEmail(tfEmail.getText());
                   shop.setLocation(tfLocation.getText());
@@ -161,21 +192,17 @@ public class InfoTiendaController  {
                        alert = new Alert(Alert.AlertType.WARNING, "Error en el gmail", ButtonType.OK);
                        alert.showAndWait();
                   }
-                  Shop shopEsta;
                   ShopManager manager = ShopManagerFactory.getShopManager();
-                  shopEsta= manager.getShopByName(Shop.class, shop.getShop_name());
-                  if(shopEsta != null){
-                      //the shop already exist
-                       alert = new Alert(Alert.AlertType.WARNING, "Error Este nombre de tienda ya existe", ButtonType.OK);
-                       alert.showAndWait();
-                  }else{
-                      if(!editar){
-                            manager.create(shop);
-                      }else{
-                          manager.edit(shop);
-                      }
-                      
+
+                  alert = new Alert(Alert.AlertType.WARNING, "Error Este nombre de tienda ya existe", ButtonType.OK,ButtonType.CANCEL);
+                  alert.showAndWait();
+                  if(alert.getResult().getButtonData().isDefaultButton()){
+                       manager.edit(shop);
                   }
+
+                      
+                     
+                  
            }catch(Exception e){
                
            }
@@ -191,6 +218,19 @@ public class InfoTiendaController  {
     
       private void textChange(ObservableValue observable, String oldValue, String newValue) {
         //disable the guardar button
+        
+        /*// force the field to be numeric only
+        tfComision.textProperty().addListener(new ChangeListener<String>() {
+        public void changed(ObservableValue<? extends String> observable, String oldValue,
+        String newValue) {
+        if (!newValue.matches("\\d*")) {
+        tfComision.setText(newValue.replaceAll("[^\\d]", ""));
+        btnGuardar.setDisable(false);
+        }else{
+        btnGuardar.setDisable(true);
+        }
+        }
+        });*/
 
         //If password field is higher than 255
         if (tfUrl.getText().length() > 255 || tfEmail.getText().length() > 255 
@@ -227,7 +267,9 @@ public class InfoTiendaController  {
         }
     }
 
-       public void setStage(Stage stage){
+    
+    
+    public void setStage(Stage stage){
         this.StagePopUpTienda = stage;
     }
 

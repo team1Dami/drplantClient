@@ -5,7 +5,6 @@
  */
 package drPlant.controller;
 
-import static DrPlant.enumerations.UserPrivilege.*;
 import drPlant.classes.Shop;
 import drPlant.classes.User;
 import drPlant.factory.ShopManagerFactory;
@@ -31,6 +30,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javax.ws.rs.core.GenericType;
@@ -67,6 +67,8 @@ public class ShopViewController  {
     private TextField tfBuscar;
     
     private User user=null;
+    private boolean admin=false;
+    
     
       
   
@@ -85,26 +87,36 @@ public class ShopViewController  {
      * @param root
      */
     public void initStage(Parent root/*,User user*/) {
-       // user.setPrivilege(USER);
+        //hacer un user peta la ventana
+        /*user.setEmail("aa");
+        user.setId(Integer.SIZE);
+        user.setLogin("aaa");
+        user.setPasswd("aa");
+        user.setPrivilege(USER);
+        user.setStatus(0);*/
+       
+       
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setResizable(true);
         stage.setTitle("Lista Tiendas");
         
+        admin=true;
+        if(!admin){
+            btnCrear.setVisible(false);
+            btnEliminar.setVisible(false);
+        }
+        stage.show();
+        
         stage.setOnShowing(this::handleWindowShowing);
         
-        stage.show();
-       // if(user.getPrivilege().equals(USER)){
-            btnCrear.setVisible(true);
-            btnEliminar.setVisible(true);
-       // }
         btnEliminar.setDisable(true);
 
         //tfLogin.textProperty().addListener(this::textChange);
  
         btnCrear.setOnAction(this::handleButtonCrear);
         btnEliminar.setOnAction(this::handleButtonEliminar);
-       // btnBuscar.setOnAction(value);
+       // btnBuscar.setOnAction(this::handleButtonSearch);
 
 
         stage.setOnCloseRequest(this::setOncloseRequest);
@@ -114,21 +126,22 @@ public class ShopViewController  {
         localizacion.setCellValueFactory(new PropertyValueFactory<>("location"));
         comision.setCellValueFactory(new PropertyValueFactory<>("commission"));
         try{
-            
+        
             ObservableList<Shop>shops;
             ShopManager manager = ShopManagerFactory.getShopManager();
             shops = FXCollections.observableArrayList(manager.findAllShops(new GenericType <List<Shop>>(){}));
             tabla.setItems(shops);
             tabla.getSelectionModel().selectedItemProperty()
-                 .addListener(this::handleTableSelectionChanged);  
-            logger.info("Se carga la tabla correctamente");
+            .addListener(this::handleTableSelectionChanged);
 
-            Iterator<Shop> it=shops.iterator();
-            while(it.hasNext()){
-            System.out.println(it.next().getEmail());}
+            tabla.setOnMouseClicked(this::handleTableClickBouble);
+            tabla.refresh();
+
+            logger.info("Se carga la tabla correctamente");
         }catch(Exception w){
-            
+            logger.info("Se carga la tabla a fallado");
         }
+        
     }
     
     //method that asks when you press the x if you want to go back or not, if you press OK you go back to login otherwhise you stay in the signup
@@ -157,47 +170,28 @@ public class ShopViewController  {
      
      private void handleButtonCrear(ActionEvent event) {
          
-          FXMLLoader loader;
+         FXMLLoader loader;
          Parent root;
          Stage newStage = new Stage();
          
          try {
-         InfoTiendaController controller = new InfoTiendaController();
-         loader = new FXMLLoader(getClass().getResource("InfoTienda.fxml"));
-         root = (Parent) loader.load();
-         controller = (loader.getController());
-         controller.setStage(newStage);
-         controller.initStage(root,user);
-         newStage.showAndWait();
+            loader = new FXMLLoader(getClass().getResource("/drPlant/view/InfoTienda.fxml"));
+            root = (Parent) loader.load();
+            InfoTiendaController controller = (loader.getController());
+            controller.setStage(newStage);
+            //controller.setStage(stage);
+            controller.initStage(root,admin);
+           // newStage.showAndWait();
+           if(event.isConsumed()){
+               refreshTable(tabla);
+           }
          } catch (IOException ex) {
-         Logger.getLogger(ShopViewController.class.getName()).log(Level.SEVERE, null, ex);
+             Logger.getLogger(ShopViewController.class.getName()).log(Level.SEVERE, null, ex);
          }
     } 
      
     private void handleButtonEliminar(ActionEvent event) {
          
-        /* try {
-        alert = new Alert(Alert.AlertType.WARNING,
-        "¿Borrar la fila seleccionada?", ButtonType.OK,ButtonType.CANCEL);//alert to ask the user to confirm
-        alert.showAndWait();
-        if(alert.getResult().getButtonData().isCancelButton()){
-        alert = new Alert(Alert.AlertType.WARNING,
-        "Se ha cancelado la accion",ButtonType.OK);//alert to advise that the action has being cancel
-        alert.showAndWait();
-        event.consume();//do as nothing has happen
-        }else if(alert.getResult().getButtonData().isDefaultButton()){
-        ShopManager manager=ShopManagerFactory.getShopManager();
-        //manager.remove(shop.getId());
-        }
-        
-        }catch (Exception ex) {
-        logger.log(Level.SEVERE,
-        "UI LoginController: Error opening users managing window: {0}",
-        ex.getMessage());
-        alert = new Alert(Alert.AlertType.WARNING,
-        "No se ha podido cargar la ventana", ButtonType.OK);
-        alert.showAndWait();
-        }*/
         Shop shop = (Shop) tabla.getSelectionModel().getSelectedItem();
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
                 "¿Borrar la fila seleccionada?\n"
@@ -209,7 +203,13 @@ public class ShopViewController  {
         if (result.isPresent() && result.get() == ButtonType.OK) {
 
             ShopManagerFactory.getShopManager().remove(shop.getId());
+            //refreshTable(tabla);
+            
         }
+        if(event.isConsumed()){
+               refreshTable(tabla);
+           }
+        
     }
     
     private void handleTableSelectionChanged(ObservableValue observableValue,Object oldValue, Object newValue){//como cojer una fila seleccionada
@@ -245,11 +245,6 @@ public class ShopViewController  {
         }catch(Exception w){
             
         }
-
-        
-        
-        
-
     }
     
     /**
@@ -258,10 +253,14 @@ public class ShopViewController  {
      */
     public void handleButtonSearch(WindowEvent e){
         try{   
+            ObservableList<Shop>shops;
             if(tfBuscar.getText().isEmpty()){
-                 alert = new Alert(Alert.AlertType.WARNING, "Escribe algo primero,JETA", ButtonType.OK);
+                  alert = new Alert(Alert.AlertType.WARNING, "Escribe algo primero,JETA", ButtonType.OK);
+                  ShopManager manager = ShopManagerFactory.getShopManager();
+                  shops = FXCollections.observableArrayList(manager.findAllShops(new GenericType <List<Shop>>(){}));
+                  tabla.setItems(shops);
             }else{
-                ObservableList<Shop>shops;
+                
                 ShopManager manager= ShopManagerFactory.getShopManager();
                 shops = FXCollections.observableArrayList(manager.findAllShops(new GenericType <List<Shop>>(){}));
                 //tabla.setItems(manager.getShopByName(Shop.class, tfBuscar.getText()));
@@ -271,21 +270,54 @@ public class ShopViewController  {
         }
     }
     
-    /*private void handleRemoveButton(ActionEvent e) {
-    Shop shop = (Shop) tabla.getSelectionModel().getSelectedItem();
-    Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-    "¿Borrar la fila seleccionada?\n"
-    + "Esta operación no se puede deshacer.",
-    ButtonType.OK, ButtonType.CANCEL);
-    alert.getDialogPane();
-    Optional<ButtonType> result = alert.showAndWait();
-    //If OK to deletion
-    if (result.isPresent() && result.get() == ButtonType.OK) {
-    
-    ShopManagerFactory.getShopManager().remove(shop.getId());
+    public void handleTableClickBouble(MouseEvent e){
+        
+        if(e.getClickCount()==2){ 
+             FXMLLoader loader;
+             Parent root;
+             Stage newStage = new Stage();
+             Shop shopp=(Shop) tabla.getSelectionModel().getSelectedItem();
+         
+            try {
+                InfoTiendaController controller = new InfoTiendaController();
+                loader = new FXMLLoader(getClass().getResource("/drPlant/view/InfoTienda.fxml"));
+                root = (Parent) loader.load();
+                controller = (loader.getController());
+                controller.setStage(newStage);
+                controller.initStage(root,admin,shopp);
+                //newStage.showAndWait();
+           } catch (IOException ex) {
+                 Logger.getLogger(ShopViewController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }    
     }
-    }*/
     
+    public void refreshTable(TableView tabla ){
+        tabla.refresh();
+    }
     
-    
+    public void InsertDataIntoTable(TableView tabla){
+        
+         //prueba de la tabla
+        nombre.setCellValueFactory(new PropertyValueFactory<>("shop_name"));
+        localizacion.setCellValueFactory(new PropertyValueFactory<>("location"));
+        comision.setCellValueFactory(new PropertyValueFactory<>("commission"));
+        try{
+        
+            ObservableList<Shop>shops;
+            ShopManager manager = ShopManagerFactory.getShopManager();
+            shops = FXCollections.observableArrayList(manager.findAllShops(new GenericType <List<Shop>>(){}));
+            tabla.setItems(shops);
+            tabla.getSelectionModel().selectedItemProperty()
+            .addListener(this::handleTableSelectionChanged);
+
+            tabla.setOnMouseClicked(this::handleTableClickBouble);
+            tabla.refresh();
+
+            logger.info("Se carga la tabla correctamente");
+        }catch(Exception w){
+            logger.info("Se carga la tabla a fallado");
+        }
+    }
+  
 }

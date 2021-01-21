@@ -112,6 +112,10 @@ public class LoginController{
 
     }
     
+    /**
+     * 
+     * @param event 
+     */
     private void handleButtonLogin(ActionEvent event) {
         if (tfLogin.getText().isEmpty() || tfPasswd.getText().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Error", ButtonType.APPLY);
@@ -134,6 +138,11 @@ public class LoginController{
             UserManager imp = UserManagerFactory.getUserManager();
             User serverUser = null;
             serverUser = imp.findUserByLoginAndPasswd(User.class, tfLogin.getText(), tfPasswd.getText());
+            
+            //prueba para ver que user se recoje
+            System.out.println(serverUser.getEmail());
+            System.out.println(serverUser.getFullname());
+            System.out.println(serverUser.getPasswd());
 
             
             if (serverUser != null) { //user exists
@@ -156,6 +165,7 @@ public class LoginController{
         }
 
     }
+    
     /**
      * Method that control the button register
      * @param event 
@@ -179,6 +189,7 @@ public class LoginController{
                     "No se ha podido cargar la ventana", ButtonType.OK);
         }
     }
+    
     /**
      * Method that controls if the hiperlink it's clicked
      * @param event 
