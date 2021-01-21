@@ -9,6 +9,7 @@ import DrPlant.enumerations.PlagueType;
 import drPlant.classes.Plague;
 import drPlant.factory.PlagueManagerFactory;
 import drPlant.interfaces.PlagueManager;
+import java.util.logging.Level;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -62,6 +63,40 @@ public class InfoPlagueController {
 
     private PlagueManager plagueManager;
 
+    private Plague plague;
+
+    /**
+     *
+     * @return
+     */
+    public Plague getPlague() {
+        return plague;
+    }
+
+    /**
+     *
+     * @param plague
+     */
+    public void setPlague(Plague plague) {
+        this.plague = plague;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public PlagueManager getPlagueManager() {
+        return plagueManager;
+    }
+
+    /**
+     *
+     * @param plagueManager
+     */
+    public void setPlagueManager(PlagueManager plagueManager) {
+        this.plagueManager = PlagueManagerFactory.getPlagueManager();
+    }
+
     /**
      *
      * @return
@@ -91,8 +126,8 @@ public class InfoPlagueController {
      *
      * @param root
      */
-    public void initStage(Parent root, boolean isAdmin ) {
-        setIsAdmin(isAdmin);
+ /*   public void initStage(Parent root, boolean isAdmin) {
+        setIsAdmin(false);
 
         Scene scene = new Scene(root);
 
@@ -103,14 +138,15 @@ public class InfoPlagueController {
 
         stage.setOnShowing(this::handleWindowShowing);
         stage.show();
-    }
+    }*/
+
     /**
      *
      * @param root
      */
     public void initStage(Parent root, boolean isAdmin, Plague plague) {
-        setIsAdmin(isAdmin);
-
+        setIsAdmin(false);
+        this.plague = plague;
         Scene scene = new Scene(root);
 
         stage.setScene(scene);
@@ -127,7 +163,37 @@ public class InfoPlagueController {
      * @param event onClick in button Accept and onClick in button Cancel
      */
     private void handleWindowShowing(WindowEvent event) {
+        if (plague != null && isAdmin) {
+            tfScientName.setText(plague.getScienceName());
+            tfScientName.setEditable(isAdmin);
+            
+            tfCommonName.setText(plague.getCommonName());
+            tfCommonName.setEditable(isAdmin);
+            
+            txAreaDescription.setText(plague.getDescription());
+            txAreaDescription.setEditable(isAdmin);
+            
+            txAreaControl.setText(plague.getControl());
+            txAreaControl.setEditable(isAdmin);
+            
+            txAreaRemedy.setText(plague.getRemedy());
+            txAreaRemedy.setEditable(isAdmin);
+            
+            if (plague.getType().equals(PlagueType.light)) {
+                rbLight.setSelected(true);
+            }
+            if (plague.getType().equals(PlagueType.middle)) {
+                rbMedium.setSelected(true);
+            }
+            if (plague.getType().equals(PlagueType.severe)) {
+                rbSevere.setSelected(true);
+            }
 
+            btnSaveChanges.setOnAction(this::handleSaveChangesAction);
+            btnDelete.setOnAction(this::handleDeleteAction);
+        }
+        if(plague == null){
+        // codificar cuando recibe una plaga
         //   imgPlague.setVisible(false);
         tfScientName.setEditable(isAdmin);
         tfScientName.textProperty().addListener(this::handleTextChanged);
@@ -147,6 +213,7 @@ public class InfoPlagueController {
 
         btnSaveChanges.setOnAction(this::handleSaveChangesAction);
         btnDelete.setOnAction(this::handleDeleteAction);
+        }
     }
 
     private void handleTextChanged(ObservableValue observable, String oldValue,
@@ -160,29 +227,29 @@ public class InfoPlagueController {
                         "Debes rellenar todos los campos!",
                         ButtonType.OK);
             }
-            if (!tfScientName.getText().isEmpty() && !tfScientName.getText().matches("[a-zA-Z]")) {
+            if (!tfScientName.getText().isEmpty()) {
                 alert = new Alert(Alert.AlertType.INFORMATION,
-                        "El nombre científico sólo puede contener letras",
+                        "Debes introducir un nombre de búsqueda",
                         ButtonType.OK);
             }
-            if (!tfCommonName.getText().isEmpty() && !tfCommonName.getText().matches("[a-zA-Z]+")) {
+            if (!tfCommonName.getText().isEmpty()) {
                 alert = new Alert(Alert.AlertType.INFORMATION,
-                        "El nombre común sólo puede contener letras",
+                        "Debes introducir un nombre de búsqueda",
                         ButtonType.OK);
             }
-            if (!txAreaDescription.getText().matches("[a-zA-Z]+\\.)")) {
+            if (txAreaDescription.getText().isEmpty()) {
                 alert = new Alert(Alert.AlertType.INFORMATION,
-                        "La descripción sólo puede contener letras",
+                        "Debes rellenar la descripción",
                         ButtonType.OK);
             }
-            if (!txAreaControl.getText().matches("[a-zA-Z]+\\.)")) {
+            if (txAreaControl.getText().isEmpty()) {
                 alert = new Alert(Alert.AlertType.INFORMATION,
-                        "La descripción sólo puede contener letras",
+                        "Debes rellenar la descripción del control",
                         ButtonType.OK);
             }
-            if (!txAreaRemedy.getText().matches("[a-zA-Z]+\\.)")) {
+            if (txAreaRemedy.getText().isEmpty()) {
                 alert = new Alert(Alert.AlertType.INFORMATION,
-                        "La descripción sólo puede contener letras",
+                        "Debes rellenar la descripción del remedio",
                         ButtonType.OK);
             }
         }
@@ -215,13 +282,20 @@ public class InfoPlagueController {
             }
             if (!rbLight.isSelected() || !rbMedium.isSelected() || !rbSevere.isSelected()) {
                 alert = new Alert(Alert.AlertType.WARNING, "Debes seleccionar un tipo de gravedad!", ButtonType.OK);
+                alert.showAndWait();
             }
 
-            plagueManager = PlagueManagerFactory.getPlagueManager();
-            plagueManager.create(plague);
+            alert = new Alert(Alert.AlertType.WARNING, "¿Enviar cambios?", ButtonType.YES, ButtonType.NO);
+            if (!alert.getResult().getButtonData().isCancelButton()) {
+                plagueManager = PlagueManagerFactory.getPlagueManager();
+                plagueManager.create(plague);
+                alert = new Alert(Alert.AlertType.INFORMATION, "Se ha registrado correctamente", ButtonType.OK);
+                alert.showAndWait();
+            }
 
         } catch (ClientErrorException e) {
             alert = new Alert(Alert.AlertType.WARNING, "Ops! Se ha producido un error inesperado.\nInténtelo de nuevo en unos minutos", ButtonType.OK);
+            alert.showAndWait();
         }
     }
 
@@ -232,20 +306,37 @@ public class InfoPlagueController {
     @FXML
     private void handleDeleteAction(ActionEvent event) {
         Alert alert;
-        if(tfScientName.getText().isEmpty() || tfCommonName.getText().isEmpty()
-                    || txAreaDescription.getText().isEmpty() || txAreaControl.getText().isEmpty()
-                    || txAreaRemedy.getText().isEmpty()){
+
+        if (tfScientName.getText().isEmpty() || tfCommonName.getText().isEmpty()
+                || txAreaDescription.getText().isEmpty() || txAreaControl.getText().isEmpty()
+                || txAreaRemedy.getText().isEmpty()) {
             btnDelete.setDisable(true);
+
+        } else {
+
+            try {
+
+                String id = tfScientName.getText();
+                alert = new Alert(Alert.AlertType.WARNING, "¿Eliminar plaga?\nEsta acción no se puede revertir", ButtonType.YES, ButtonType.NO);
+                alert.showAndWait();
+
+                if (!alert.getResult().getButtonData().isCancelButton()) {
+                    plagueManager = PlagueManagerFactory.getPlagueManager();
+                    plagueManager.remove(id);
+                    alert = new Alert(Alert.AlertType.INFORMATION, "Se ha eliminado correctamente", ButtonType.OK);
+                    alert.showAndWait();
+                }
+
+            } catch (ClientErrorException e) {
+                alert = new Alert(Alert.AlertType.WARNING, "Ops! Se ha producido un error inesperado.\nInténtelo de nuevo en unos minutos", ButtonType.OK);
+                alert.showAndWait();
+            }
         }
-        try {
-            
-            String id = tfScientName.getText();
-            
-            plagueManager = PlagueManagerFactory.getPlagueManager();
-            plagueManager.remove(id);
-            
-        }catch (ClientErrorException e){
-            alert = new Alert(Alert.AlertType.WARNING, "Ops! Se ha producido un error inesperado.\nInténtelo de nuevo en unos minutos", ButtonType.OK);
-        }
+    }
+
+    private void setOncloseRequest(WindowEvent we) {
+
+        stage.close();
+
     }
 }

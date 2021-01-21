@@ -70,14 +70,22 @@ public class MenuController {
      */
     @FXML
     private void handlePlantViewAction(ActionEvent event) {
-
-        /*    FXMLLoader loader
-                    = new FXMLLoader(getClass().getResource("PlantView.fxml"));
-            Parent root = (Parent) loader.load();
+        Parent root;
+        Stage stage = new Stage();
+        
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("PlantView.fxml"));
+        try {
+            root = (Parent) loader.load();
             PlantViewController controller = ((PlantViewController) loader.getController());
             controller = (loader.getController());
             controller.setStage(stage);
-            controller.initStage(root);*/
+            controller.initStage(root);
+            
+        } catch (IOException ex) {
+            logger.log(Level.SEVERE, "Can't opne PlantView");
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Ops! Ha ocurrido un error inesperado!", ButtonType.OK);
+            alert.showAndWait();
+        }
     }
 
     /**
@@ -103,23 +111,24 @@ public class MenuController {
      */
     @FXML
     private void handlePlagueViewAction(ActionEvent event) {
-      //  if (!stage.getTitle().equals("Lista de Plagas")) {
-            try {
-                FXMLLoader loader
-                        = new FXMLLoader(getClass().getResource("PlagueView.fxml"));
-                Parent root = (Parent) loader.load();
-                PlagueViewController controller = ((PlagueViewController) loader.getController());
-                controller = (loader.getController());
-                controller.setStage(stage);
-                controller.initStage(root);
-                
-               // stage.close();
-            } catch (IOException e) {
-                logger.log(Level.SEVERE, "Can't opne PlagueView");
-                Alert alert = new Alert(Alert.AlertType.WARNING, "Ops! Ha ocurrido un error inesperado!", ButtonType.OK);
-                alert.showAndWait();
-            }
-     //   }
+        Parent root;
+        Stage stage = new Stage();
+        
+        try {
+            FXMLLoader loader
+                    = new FXMLLoader(getClass().getResource("PlagueView.fxml"));
+            root = (Parent) loader.load();
+            PlagueViewController controller = ((PlagueViewController) loader.getController());
+            controller = (loader.getController());
+            controller.setStage(stage);
+            controller.initStage(root);
+          
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Can't opne PlagueView");
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Ops! Ha ocurrido un error inesperado!", ButtonType.OK);
+            alert.showAndWait();
+        }
+        //   }
     }
 
     /**
@@ -177,13 +186,19 @@ public class MenuController {
      * @param event
      */
     @FXML
-    private void handleCloseSessionAction(ActionEvent event) {
-        /*    FXMLLoader loader
+    private void handleCloseSessionAction(ActionEvent event) {          
+            Parent root;
+      /*  try {
+            FXMLLoader loader
                     = new FXMLLoader(getClass().getResource("LoginView.fxml"));
-            Parent root = (Parent) loader.load();
+            root = (Parent) loader.load();
             LoginController controller = ((LoginViewController) loader.getController());
             controller = (loader.getController());
             controller.setStage(stage);
-            controller.initStage(root);*/
+            controller.initStage(root);
+            
+        } catch (IOException ex) {
+            Logger.getLogger(MenuController.class.getName()).log(Level.SEVERE, null, ex);
+        }*/          
     }
 }

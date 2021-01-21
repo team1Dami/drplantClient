@@ -22,6 +22,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.WindowEvent;
@@ -45,13 +46,23 @@ public class SignUpController {
     @FXML
     private TextField tfFullName;
     @FXML
+    private Label errorFullName;
+    @FXML
     private TextField tfUser;
+    @FXML
+    private Label errorFormatUser;
     @FXML
     private TextField tfEmail;
     @FXML
+    private Label errorFormatEmail;
+    @FXML
     private PasswordField tfPasswd;  //min 6 max 12
     @FXML
+    private Label errorFormatPassword;
+    @FXML
     private PasswordField tfPasswd2;
+    @FXML
+    private Label errorFormatPassword2;
     @FXML
     private Button btnCancel;
     @FXML
@@ -93,6 +104,12 @@ public class SignUpController {
      */
     private void handleWindowShowing(WindowEvent event) {
 
+        errorFullName.setVisible(false);
+        errorFormatUser.setVisible(false);
+        errorFormatEmail.setVisible(false);
+        errorFormatPassword.setVisible(false);
+        errorFormatPassword2.setVisible(false);
+
         tfFullName.setPromptText("Introduzca su nombre completo");
         tfUser.setPromptText("Introduzca un nombre de usuario");
         tfEmail.setPromptText("Introduzca un email: example@example.com");
@@ -125,50 +142,43 @@ public class SignUpController {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION,
                         "Debes rellenar todos los campos",
                         ButtonType.OK);
+                alert.showAndWait();
             }
+
             if (!tfEmail.getText().isEmpty() && !validateEmail(tfEmail.getText().trim())) {
-                // hacer que se muestre label con texto rojo
-                Alert alert = new Alert(Alert.AlertType.INFORMATION,
-                        "El email tiene formato incorrecto",
-                        ButtonType.OK);
-                
+                errorFormatEmail.setVisible(false);
+
                 //  IMPORTANTE  ------> IMPLEMENTAR MÉTODO findUserByEmail() DEL SERVER!!!
             }
-            if (!tfFullName.getText().isEmpty() && !tfFullName.getText().matches("[a-zA-Z]+")) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION,
-                        "El nombre no puede contener números",
-                        ButtonType.OK);
+            if (!tfFullName.getText().isEmpty() && !tfFullName.getText().matches("[a-zA-Z]")) {
+                errorFullName.setVisible(true);
             }
             if (!tfUser.getText().isEmpty() && tfUser.getText().contains(" ")) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION,
-                        "El usuario no puede contener espacios en blanco",
-                        ButtonType.OK);
+                errorFormatUser.setVisible(true);
             }
-            if(!tfUser.getText().isEmpty() && !tfUser.getText().contains(" ")){
-                try{
+            if (!tfUser.getText().isEmpty() && !tfUser.getText().contains(" ")) {
+                try {
                     UserManager um = UserManagerFactory.getUserManager();
                     // IMPORTANTE -----> IMPLEMENTAR MÉTODO findUserByLogin DEL SERVER!!!!!!
                     // User u = um.findUserByLogin(tfUser.getText().trim());
-                } catch(Exception e){
-                     Alert alert = new Alert(Alert.AlertType.INFORMATION,
-                        "Este usuario ya está registrado!",
-                        ButtonType.OK);
+                } catch (Exception e) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION,
+                            "Este usuario ya está registrado!",
+                            ButtonType.OK);
+                    alert.showAndWait();
                 }
             }
             if (!tfPasswd.getText().isEmpty() && tfPasswd.getText().contains(" ")) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION,
-                        "La contraseña no puede contener espacios en blanco",
-                        ButtonType.OK);
+                errorFormatPassword.setVisible(true);
             }
             if (!tfPasswd2.getText().isEmpty() && tfPasswd2.getText().contains(" ")) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION,
-                        "La contraseña no puede contener espacios en blanco",
-                        ButtonType.OK);
+                errorFormatPassword2.setVisible(true);
             }
             if (!tfPasswd.getText().trim().equals(tfPasswd2.getText().trim())) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION,
                         "Las contraseñas no coinciden",
                         ButtonType.OK);
+                alert.showAndWait();
             }
         }
     }
@@ -200,6 +210,8 @@ public class SignUpController {
 
             UserManager um = UserManagerFactory.getUserManager();
             um.create_XML(newUser);
+
+            alert = new Alert(Alert.AlertType.CONFIRMATION, "Se ha registrado correctamente\nLe enviaremos a la ventana de login", ButtonType.OK);
             /*   FXMLLoader loader
                     = new FXMLLoader(getClass().getResource("Login.fxml"));
             Parent root = (Parent) loader.load();
@@ -207,14 +219,10 @@ public class SignUpController {
             controller = (loader.getController());
             controller.setStage(stage);
             controller.initStage(root);*/
-
- /*alert = new Alert(Alert.AlertType.ERROR, "No se ha podido conectar con el servidor."
-                            + "Inténtelo más tarde.", ButtonType.OK);
-                    alert.showAndWait();*/
         } catch (ClientErrorException e) {
             logger.log(Level.SEVERE, "User can not be set", e.getMessage());
             alert = new Alert(Alert.AlertType.ERROR, "No se ha podido conectar con el servidor."
-                    + "Inténtelo más tarde.", ButtonType.OK);
+                    + "Inténtelo de nuevo más tarde.", ButtonType.OK);
             alert.showAndWait();
         }
     }

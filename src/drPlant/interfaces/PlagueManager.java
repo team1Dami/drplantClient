@@ -19,6 +19,8 @@ public interface PlagueManager {
     public <T> T find(Class<T> responseType, String id) throws ClientErrorException ;
 
     public <T> T findPlaguesByType(Class<T> responseType, String type) throws ClientErrorException ;
+    
+    public <T> T findPlaguesByType(GenericType<T> responseType, String type) throws ClientErrorException ;
 
     public <T> T findAllPlagues(Class<T> responseType) throws ClientErrorException ;
     
@@ -29,5 +31,6 @@ public interface PlagueManager {
     public void remove(String id) throws ClientErrorException ;
 
     public <T> T findPlagueByCommonName(Class<T> responseType, String commonName) throws ClientErrorException ;
-
+    
+    
 }

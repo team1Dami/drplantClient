@@ -76,6 +76,20 @@ public class PlagueRESTClient implements PlagueManager{
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
                 .get(responseType);
     }
+    /**
+     *
+     * @param <T>
+     * @param responseType
+     * @param type
+     * @return
+     * @throws ClientErrorException
+     */
+    public <T> T findPlaguesByType(GenericType<T> responseType, String type) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("findPlaguesByType/{0}", new Object[]{type}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
+                .get(responseType);
+    }
 
     /**
      *
@@ -140,5 +154,4 @@ public class PlagueRESTClient implements PlagueManager{
     public void close() {
         client.close();
     }
-    
 }

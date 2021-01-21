@@ -36,6 +36,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.GenericType;
 
 /**
@@ -72,11 +73,28 @@ public class PlagueViewController {
     private Button btnDelete;
 
     private boolean isAdmin;
-    private Alert alert;
 
-    //   private PlagueManager plagueManager;
+    private PlagueManager plagueManager;
     //   private ObservableList<Plague> plagues;
     private User user;
+
+    private Plague plague;
+
+    /**
+     *
+     * @return
+     */
+    public PlagueManager getPlagueManager() {
+        return plagueManager;
+    }
+
+    /**
+     *
+     * @param plagueManager
+     */
+    public void setPlagueManager(PlagueManager plagueManager) {
+        this.plagueManager = PlagueManagerFactory.getPlagueManager();
+    }
 
     /**
      *
@@ -92,6 +110,22 @@ public class PlagueViewController {
      */
     public void setUser(User user) {
         this.user = user;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Plague getPlague() {
+        return plague;
+    }
+
+    /**
+     *
+     * @param user
+     */
+    public void setPlague(Plague plague) {
+        this.plague = plague;
     }
 
     /**
@@ -124,11 +158,10 @@ public class PlagueViewController {
      * @param user
      */
     public void initStage(Parent root) {
-        setIsAdmin(true);
-
+        setIsAdmin(false);
+        plagueManager = PlagueManagerFactory.getPlagueManager();
         Scene scene = new Scene(root);
 
-      //  stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
         stage.setTitle("Lista de Plagas");
 
@@ -149,35 +182,36 @@ public class PlagueViewController {
         colCommonName.setCellValueFactory(new PropertyValueFactory<>("commonName"));
         colType.setCellValueFactory(new PropertyValueFactory<>("type"));
 
-        /*   plagueManager = PlagueManagerFactory.getPlagueManager();
-        plagues = FXCollections.observableArrayList(plagueManager.findAllPlagues(new GenericType<Set<Plague>>() {
-        }));
-
-        //    
-        tbPlague.setItems(plagues);*/
-        ObservableList<Plague> plagues = FXCollections.observableArrayList(PlagueManagerFactory.getPlagueManager().findAllPlagues(new GenericType<List<Plague>>() {
+        ObservableList<Plague> plagues = FXCollections.observableArrayList(plagueManager.findAllPlagues(new GenericType<List<Plague>>() {
         }));
         tbPlague.setItems((ObservableList) plagues);
+        tbPlague.getSelectionModel().selectedItemProperty().addListener(this::handlePlagueTableSelectionChanged);
 
-        /* ObservableList<Plant> plants = FXCollections.observableArrayList(PlantManagerFactory.getPlantManager().getAllPlants(new GenericType<Set<Plant>>() {
-        }));
-       tbPlague.setItems((ObservableList) plants);*/
+        tfSearch.requestFocus();
         tfSearch.setPromptText("Introduce la plaga que buscas");
-        tfSearch.textProperty().addListener(this::handleTextChanged);
-        chBox.setItems(FXCollections.observableArrayList (
-                        "Nombre científico", "Nombre común", "Selecciona un tipo de gravedad:",
-                        "Leve", "Medio", "Grave"));
-        chBox.setValue("Nombre científico");
-        
+        //   tfSearch.focusedProperty().addListener(this::handleFocusChanged);
 
-        /*  chBox.getItems().add("Nombre científico");
+        chBox.setItems(FXCollections.observableArrayList(
+                "Nombre científico", "Nombre común", "Selecciona un tipo de gravedad:",
+                "Leve", "Medio", "Grave"));
+        chBox.setValue("Nombre científico");
+
+        /* chBox.getItems().add("Nombre científico");
         chBox.getItems().add("Nombre común");
         chBox.getItems().add("Tipo");*/
         // idea: en función de la selección del choice box se mostrará un promp text u otro
-        if (!isAdmin) {
-            btnAdd.setVisible(isAdmin);
-            btnEdit.setVisible(isAdmin);
-            btnDelete.setVisible(isAdmin);
+        if (isAdmin == true) {
+            btnAdd.setVisible(true);
+            btnEdit.setVisible(true);
+            btnDelete.setVisible(true);
+            btnEdit.setDisable(true);
+            btnDelete.setDisable(true);
+        } else {
+            btnAdd.setVisible(false);
+            btnEdit.setVisible(false);
+            btnDelete.setVisible(false);
+            btnEdit.setDisable(false);
+            btnDelete.setDisable(false);
         }
         btnSearch.setOnAction(this::handleSearchAction);
         btnAdd.setOnAction(this::handleAddAction);
@@ -194,8 +228,112 @@ public class PlagueViewController {
      */
     @FXML
     private void handleSearchAction(ActionEvent event) {
+        Alert alert;
         
+        if (tfSearch.getText().isEmpty()) {
+            ObservableList<Plague> plagues = FXCollections.observableArrayList(plagueManager.findAllPlagues(new GenericType<List<Plague>>() {
+            }));
+            tbPlague.setItems((ObservableList) plagues);
+        }
         
+        if (chBox.getSelectionModel().getSelectedItem().equals("Nombre científico")) {
+
+            Plague plague = plagueManager.find(Plague.class, tfSearch.getText().trim());
+
+            if (plague != null) {
+                Parent root;
+                Stage stage2 = new Stage();
+                try {
+                    InfoPlagueController controller = new InfoPlagueController();
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/infoPlague.fxml"));
+
+                    try {
+                        root = (Parent) loader.load();
+                        controller = (loader.getController());
+                        controller.setStage(stage2);
+                        controller.initStage(root, isAdmin, plague);
+                    } catch (IOException ex) {
+                        ex.getMessage();//Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } catch (ClientErrorException e) {
+                    alert = new Alert(Alert.AlertType.INFORMATION, "No se ha encontrado la plaga que buscas", ButtonType.OK);
+                    alert.showAndWait();
+                    // Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, e);
+                }
+            }
+        }
+        if (chBox.getSelectionModel().getSelectedItem().equals("Nombre común")) {
+
+            Plague plague = plagueManager.findPlagueByCommonName(Plague.class, tfSearch.getText().trim());
+            
+            if (plague != null) {
+                Parent root;
+                Stage stage2 = new Stage();
+                try {
+                    InfoPlagueController controller = new InfoPlagueController();
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/infoPlague.fxml"));
+
+                    try {
+                        root = (Parent) loader.load();
+                        controller = (loader.getController());
+                        controller.setStage(stage2);
+                        controller.initStage(root, isAdmin, plague);
+                    } catch (IOException ex) {
+                        ex.getMessage();//Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } catch (ClientErrorException e) {
+                    alert = new Alert(Alert.AlertType.INFORMATION, "No se ha encontrado la plaga que buscas", ButtonType.OK);
+                    alert.showAndWait();
+                    // Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, e);
+                }
+            }
+        }
+        
+        if (chBox.getSelectionModel().getSelectedItem().equals("Leve")) {
+            try {
+                String searchedType = "light";
+                ObservableList<Plague> plagues = FXCollections.observableArrayList(plagueManager.findPlaguesByType(new GenericType<List<Plague>>() {
+                }, searchedType));
+                tbPlague.setItems(plagues);
+            } catch (ClientErrorException e) {
+                alert = new Alert(Alert.AlertType.INFORMATION, "Ops! se ha producido un error inesperado", ButtonType.OK);
+                alert.showAndWait();
+            }
+        }
+       
+        if (chBox.getSelectionModel().getSelectedItem().equals("Medio")) {
+            try {
+                String searchedType = "middle";
+                ObservableList<Plague> plagues = FXCollections.observableArrayList(plagueManager.findPlaguesByType(new GenericType<List<Plague>>() {
+                }, searchedType));
+                if (plagues.size() == 0) {
+                    alert = new Alert(Alert.AlertType.INFORMATION, "No se han encontrado plagas de tipo medio", ButtonType.OK);
+                    alert.showAndWait();
+                } else {
+                    tbPlague.setItems(plagues);
+                }
+            } catch (ClientErrorException e) {
+                alert = new Alert(Alert.AlertType.INFORMATION, "Ops! se ha producido un error inesperado", ButtonType.OK);
+                alert.showAndWait();
+            }
+        }
+        
+        if (chBox.getSelectionModel().getSelectedItem().equals("Grave")) {
+            try {
+                String searchedType = "severe";
+                ObservableList<Plague> plagues = FXCollections.observableArrayList(plagueManager.findPlaguesByType(new GenericType<List<Plague>>() {
+                }, searchedType));
+                if (plagues.size() == 0) {
+                    alert = new Alert(Alert.AlertType.INFORMATION, "No se han encontrado plagas de tipo medio", ButtonType.OK);
+                    alert.showAndWait();
+                } else {
+                    tbPlague.setItems(plagues);
+                }
+            } catch (ClientErrorException e) {
+                alert = new Alert(Alert.AlertType.INFORMATION, "No se han encontrado plagas de tipo grave", ButtonType.OK);
+                alert.showAndWait();
+            }
+        }
     }
 
     /**
@@ -205,7 +343,8 @@ public class PlagueViewController {
      * @param event
      */
     @FXML
-    private void handleAddAction(ActionEvent event) {
+    private void handleAddAction(ActionEvent event
+    ) {
         Parent root;
         Stage stage2 = new Stage();
         try {
@@ -216,7 +355,7 @@ public class PlagueViewController {
                 root = (Parent) loader.load();
                 controller = (loader.getController());
                 controller.setStage(stage2);
-                controller.initStage(root, isAdmin);
+                controller.initStage(root, isAdmin, plague);
             } catch (IOException ex) {
                 ex.getMessage();//Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -227,14 +366,53 @@ public class PlagueViewController {
     }
 
     /**
+     *
+     * @param event
+     */
+    @FXML
+    private void handlePlagueTableSelectionChanged(ObservableValue observable,
+            Object oldValue,
+            Object newValue
+    ) {
+        if (newValue != null) {
+            plague = plagueManager.find(Plague.class, colScientName.getText());
+            if (isAdmin) {
+                btnEdit.setDisable(false);
+                btnDelete.setDisable(false);
+            }
+        }
+    }
+
+    /**
      * Se abrirá la ventana modal de infoPlague.fxml campos (nombre común,
      * descripción, control, remedio y tipo) editables.
      *
      * @param event
      */
     @FXML
-    private void handleEditAction(ActionEvent event) {
+    private void handleEditAction(ActionEvent event
+    ) {
 
+        Parent root;
+        Stage stage2 = new Stage();
+        plague = plagueManager.find(Plague.class, colScientName.getText());
+
+        try {
+            InfoPlagueController controller = new InfoPlagueController();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/infoPlague.fxml"));
+
+            try {
+                root = (Parent) loader.load();
+                controller = (loader.getController());
+                controller.setStage(stage2);
+                controller.initStage(root, isAdmin, plague);
+            } catch (IOException ex) {
+                ex.getMessage();//Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (Exception e) {
+            e.getMessage();
+            // Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, e);
+        }
     }
 
     /**
@@ -246,7 +424,8 @@ public class PlagueViewController {
      * @param event
      */
     @FXML
-    private void handleDeleteAction(ActionEvent event) {
+    private void handleDeleteAction(ActionEvent event
+    ) {
         Plague plague = (Plague) tbPlague.getSelectionModel().getSelectedItem();
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
                 "¿Borrar la fila seleccionada?\n"
@@ -261,8 +440,8 @@ public class PlagueViewController {
         }
 
     }
-
     //
+
     /**
      * Method that asks when you press the x if you want to exit of the
      * application if you press OK the application will be closed otherwhise you
@@ -272,6 +451,7 @@ public class PlagueViewController {
      */
     private void setOncloseRequest(WindowEvent we) {
         Alert alert;
+        tfSearch.clear();
         try {
             alert = new Alert(Alert.AlertType.WARNING,
                     "¿Desea Salir de la aplicación?", ButtonType.OK, ButtonType.CANCEL);//alert to ask the user to confirm
@@ -280,7 +460,7 @@ public class PlagueViewController {
                 alert = new Alert(Alert.AlertType.WARNING,
                         "Se ha cancelado la accion", ButtonType.OK);//alert to advise that the action has being cancel
                 alert.showAndWait();
-                we.consume();//do as nothing has happen
+                we.consume();// do as nothing has happen
 
             }
         } catch (Exception ex) {
@@ -292,10 +472,18 @@ public class PlagueViewController {
             alert.showAndWait();
         }
     }
-    
-    public void handleTextChanged(ObservableValue observableValue, 
-            String oldValue, String newValue) {
-        
-    }
 
+    /*  public void handleFocusChanged(ObservableValue observable, Boolean oldValue,
+            Boolean newValue) {
+        Alert alert;
+        if (newValue) {
+            if (!tfSearch.getText().trim().matches("[a-zA-Z]")) {
+                alert = new Alert(Alert.AlertType.INFORMATION, "Debes rellenar el campo correctamente!", ButtonType.OK);
+                alert.showAndWait();
+            }
+        }
+        else{
+            
+        }
+    }*/
 }
