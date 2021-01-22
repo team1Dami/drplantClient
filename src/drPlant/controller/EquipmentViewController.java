@@ -106,7 +106,7 @@ public class EquipmentViewController {
      * @param root
      */
     public void initStage(Parent root) {
-        setIsAdmin(false);
+        setIsAdmin(true);
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setResizable(false);
@@ -194,19 +194,17 @@ public class EquipmentViewController {
             EquipmentDetailsController controller = new EquipmentDetailsController();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/EquipmentDetails.fxml"));
 
-            try {
-                Equipment equip = new Equipment();
-                controller.setEquip(equip);
-                root = (Parent) loader.load();
-                controller = (loader.getController());
-                controller.setStage(newstage);
-                controller.initStage(root);
+            Equipment equip = new Equipment();
+            controller.setEquip(equip);
+            root = (Parent) loader.load();
+            controller = (loader.getController());
+            controller.setStage(newstage);
+            controller.initStage(root);
 
-            } catch (IOException ex) {
-                //Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        } catch (IOException ex) {
+            Logger.getLogger(EquipmentViewController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception e) {
-            //Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(EquipmentViewController.class.getName()).log(Level.SEVERE, null, e);
         }
         setTableValues();
     }

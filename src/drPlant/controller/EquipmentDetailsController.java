@@ -35,7 +35,7 @@ import javafx.stage.WindowEvent;
 public class EquipmentDetailsController {
 
     private static final Logger LOOGER = Logger.getLogger("drPlant.controller.EquipmentDetailsController");
-    
+
     boolean editar = true;
 
     private static User user;
@@ -72,8 +72,6 @@ public class EquipmentDetailsController {
     @FXML
     private ImageView imageView;
 
-    private boolean isAdmin;
-
     private static Equipment equip;
 
     public static Equipment getEquip() {
@@ -82,14 +80,6 @@ public class EquipmentDetailsController {
 
     public static void setEquip(Equipment equip) {
         EquipmentDetailsController.equip = equip;
-    }
-
-    public boolean isIsAdmin() {
-        return isAdmin;
-    }
-
-    public void setIsAdmin(boolean isAdmin) {
-        this.isAdmin = isAdmin;
     }
 
     /**
@@ -107,7 +97,6 @@ public class EquipmentDetailsController {
      * @param root
      */
     public void initStage(Parent root) {
-        setIsAdmin(true);
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setResizable(false);
@@ -120,7 +109,6 @@ public class EquipmentDetailsController {
     }
 
     private void handleWindowShowing(WindowEvent event) {
-        
         //btnGuardar.setDisable(true);
         try {
             choiceBoxUso.setItems(FXCollections.observableArrayList("General", "Sustrato", "Riego"));
@@ -138,8 +126,6 @@ public class EquipmentDetailsController {
         } catch (NullPointerException ex) {
             editar = false;
         }
-
-        
 
         btnGuardar.setOnAction(this::handleSaveAction);
     }
@@ -169,10 +155,35 @@ public class EquipmentDetailsController {
 
     @FXML
     private void handleSaveAction(ActionEvent event) {
-
+        boolean correcto = true;
+        try {
+            if (inputDescription.getText().isEmpty()) {
+                correcto = false;
+                Alert alert = new Alert(Alert.AlertType.WARNING,
+                        "Por favor, introduce una descripcion", ButtonType.OK);
+                alert.showAndWait();
+            }
+        } catch (NullPointerException ex) {
+            correcto = false;
+            Alert alert = new Alert(Alert.AlertType.WARNING,
+                    "Por favor, introduce una descripcion", ButtonType.OK);
+            alert.showAndWait();
+        }
+        if (inputNombre.getText().isEmpty()) {
+            correcto = false;
+            Alert alert = new Alert(Alert.AlertType.WARNING,
+                    "Por favor, introduce un nombre", ButtonType.OK);
+            alert.showAndWait();
+        }
+        if (inputPrecio.getText().isEmpty()) {
+            correcto = false;
+            Alert alert = new Alert(Alert.AlertType.WARNING,
+                    "Por favor, introduce un precio", ButtonType.OK);
+            alert.showAndWait();
+        }
+        if (correcto) {
             equip.setEquipment_description(inputDescription.getText());
             equip.setEquipment_name(inputNombre.getText());
-
             String precio;
             float precioFinal;
             precio = inputPrecio.getText();
@@ -187,25 +198,29 @@ public class EquipmentDetailsController {
 
             try {
                 precioFinal = Float.parseFloat(precio);
-                equip.setPrice(precioFinal);
-                Alert alert = new Alert(Alert.AlertType.WARNING,
-                        "¿Seguro que quieres guardar los datos?", ButtonType.OK, ButtonType.CANCEL);//alert to ask the user to confirm
-                alert.showAndWait();
-                if (alert.getResult().getButtonData().isCancelButton()) {
-                    alert = new Alert(Alert.AlertType.WARNING,
-                            "Se ha cancelado la accion", ButtonType.OK);//alert to advise that the action has being cancel
+                if (precioFinal < 0) {
+                    Alert alert = new Alert(Alert.AlertType.WARNING,
+                            "Por favor, introduce un precio valido (valor positivo)", ButtonType.OK);
                     alert.showAndWait();
-
                 } else {
-                    if (editar) {
-                        
-                        EquipmentManagerFactory.getEquipmentManager().edit(equip);
-                    } else{
-                        
-                        EquipmentManagerFactory.getEquipmentManager().create(equip);
-                    }
+                    equip.setPrice(precioFinal);
+                    Alert alert = new Alert(Alert.AlertType.WARNING,
+                            "¿Seguro que quieres guardar los datos?", ButtonType.OK, ButtonType.CANCEL);//alert to ask the user to confirm
+                    alert.showAndWait();
+                    if (alert.getResult().getButtonData().isCancelButton()) {
+                        alert = new Alert(Alert.AlertType.WARNING,
+                                "Se ha cancelado la accion", ButtonType.OK);//alert to advise that the action has being cancel
+                        alert.showAndWait();
 
-                    stage.close();
+                    } else {
+                        if (editar) {
+                            EquipmentManagerFactory.getEquipmentManager().edit(equip);
+                        } else {
+                            EquipmentManagerFactory.getEquipmentManager().create(equip);
+                        }
+
+                        stage.close();
+                    }
                 }
 
             } catch (NumberFormatException ex) {
@@ -213,8 +228,8 @@ public class EquipmentDetailsController {
                         "El precio introducido no es valido, mete un numero por favor", ButtonType.OK);//alert to ask the user to confirm
                 alert.showAndWait();
             }
-        
-            
+
         }
     }
 
+}
