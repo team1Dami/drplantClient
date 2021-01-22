@@ -5,9 +5,11 @@ package drplant.main;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 import drPlant.controller.EquipmentViewController;
+import drPlant.factory.UserManagerFactory;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,10 +20,10 @@ import javafx.stage.Stage;
  * @author 2dam
  */
 public class drPlantApplication extends Application {
-    
+
     @Override
     public void start(Stage primaryStage) {
-       Parent root;
+        Parent root;
         try {
             EquipmentViewController controller = new EquipmentViewController();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/EquipmentView.fxml"));
@@ -44,6 +46,17 @@ public class drPlantApplication extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+        /*System.out.println("Mete el email");
+        String cadena = "";
+        InputStreamReader entrada = new InputStreamReader(System.in);
+        BufferedReader teclado = new BufferedReader(entrada);
+        try {
+        cadena = teclado.readLine();
+        } catch (IOException e) {
+        System.out.println("Error en la entrada de datos");
+        }
+        System.out.println("El email es "+cadena);
+        UserManagerFactory.getUserManager().resetPassword(cadena);*/
     }
-    
+
 }

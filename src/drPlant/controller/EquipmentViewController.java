@@ -106,7 +106,7 @@ public class EquipmentViewController {
      * @param root
      */
     public void initStage(Parent root) {
-        setIsAdmin(true);
+        setIsAdmin(false);
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setResizable(false);
@@ -221,6 +221,13 @@ public class EquipmentViewController {
     private void handleEditAction(ActionEvent event) {
         try {
             Equipment equip = (Equipment) equipmentTable.getSelectionModel().getSelectedItem();
+            if (equip.getEquipment_name().isEmpty() && equip.getEquipment_description().isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.WARNING,
+                        "Primero seleccione una fila de la tabla", ButtonType.OK); //alert to ask the user to confirm
+                alert.showAndWait();
+                btnDelete.setDisable(true);
+                btnEdit.setDisable(true);
+            }
             Parent root;
             try {
                 Stage newstage = new Stage();
