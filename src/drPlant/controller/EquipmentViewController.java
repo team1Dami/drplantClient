@@ -5,13 +5,10 @@
  */
 package drPlant.controller;
 
-import DrPlant.enumerations.Use;
-import com.sun.java.accessibility.util.AWTEventMonitor;
 import drPlant.classes.Equipment;
 import drPlant.classes.User;
 import drPlant.factory.EquipmentManagerFactory;
-import java.util.List;
-import java.util.Objects;
+import java.io.IOException;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,8 +16,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -39,7 +36,7 @@ import javax.ws.rs.core.GenericType;
 
 /**
  *
- * @author eneko
+ * @author Eneko
  */
 public class EquipmentViewController {
 
@@ -122,25 +119,11 @@ public class EquipmentViewController {
 
     private void handleWindowShowing(WindowEvent event) {
 
-        //table        
-        /*imageCol = new TableColumn("Imagen");
-        nameCol = new TableColumn("Nombre");
-        descriptionCol = new TableColumn("Descripcion");
-        useCol = new TableColumn("Uso");
-        priceCol = new TableColumn("Precio");*/
         setTableValues();
-        /*  tbPlague.getColumns().addAll(imageCol, scientNameCol, commonNameCol, typeCol);
-                
-        
-        
-   //   GenericType<List <Plague>> plagueList = plagueManager.findAllPlagues((Class<T>) Plague.class);
-        plagueManager = PlagueManagerFactory.getPlagueManager();
-        plagues = FXCollections.observableArrayList(plagueManager.findAllPlagues(Plague.class)); */
-//        equipmentTable.setItems(equipments);
+
         txtSearch.setPromptText("Introduce el equipamiento que quieres buscar");
         txtSearch.focusedProperty().addListener(this::focusChanged);
-        
-        
+
         imageCol.setCellValueFactory(new PropertyValueFactory<>("image"));
         nameCol.setCellValueFactory(new PropertyValueFactory<>("equipment_name"));
         descriptionCol.setCellValueFactory(new PropertyValueFactory<>("equipment_description"));
@@ -170,7 +153,7 @@ public class EquipmentViewController {
         });
 
         btnSearch.setOnAction(this::handleSearchAction);
-        /*btnAdd.setOnAction(this::handleAddAction);*/
+        btnAdd.setOnAction(this::handleAddAction);
         btnEdit.setOnAction(this::handleEditAction);
         btnDelete.setOnAction(this::handleDeleteAction);
     }
@@ -192,7 +175,7 @@ public class EquipmentViewController {
             setTableValuesWithFilters(filtroUso, buscador);
         } else if (filtroUso.isEmpty() && !buscador.isEmpty()) {
             setTableValuesWithText(buscador);
-        }else{
+        } else {
             setTableValues();
         }
     }
@@ -205,7 +188,27 @@ public class EquipmentViewController {
      */
     @FXML
     private void handleAddAction(ActionEvent event) {
+        Parent root;
+        try {
+            Stage newstage = new Stage();
+            EquipmentDetailsController controller = new EquipmentDetailsController();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/EquipmentDetails.fxml"));
 
+            try {
+                Equipment equip = new Equipment();
+                controller.setEquip(equip);
+                root = (Parent) loader.load();
+                controller = (loader.getController());
+                controller.setStage(newstage);
+                controller.initStage(root);
+
+            } catch (IOException ex) {
+                //Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (Exception e) {
+            //Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, e);
+        }
+        setTableValues();
     }
 
     /**
@@ -216,7 +219,36 @@ public class EquipmentViewController {
      */
     @FXML
     private void handleEditAction(ActionEvent event) {
-        Equipment equip = (Equipment) equipmentTable.getSelectionModel().getSelectedItem();
+        try {
+            Equipment equip = (Equipment) equipmentTable.getSelectionModel().getSelectedItem();
+            Parent root;
+            try {
+                Stage newstage = new Stage();
+                EquipmentDetailsController controller = new EquipmentDetailsController();
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/EquipmentDetails.fxml"));
+
+                try {
+                    controller.setEquip(equip);
+                    root = (Parent) loader.load();
+                    controller = (loader.getController());
+                    controller.setStage(newstage);
+                    controller.initStage(root);
+
+                } catch (IOException ex) {
+                    //Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } catch (Exception e) {
+                //Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, e);
+            }
+            setTableValues();
+        } catch (NullPointerException ex) {
+            Alert alert = new Alert(Alert.AlertType.WARNING,
+                    "Primero seleccione una fila de la tabla", ButtonType.OK); //alert to ask the user to confirm
+            alert.showAndWait();
+            btnDelete.setDisable(true);
+            btnEdit.setDisable(true);
+        }
+
     }
 
     /**
@@ -229,26 +261,32 @@ public class EquipmentViewController {
      */
     @FXML
     private void handleDeleteAction(ActionEvent event) {
-        Equipment equip = (Equipment) equipmentTable.getSelectionModel().getSelectedItem();
+        try {
+            Equipment equip = (Equipment) equipmentTable.getSelectionModel().getSelectedItem();
 
-        Alert alert = new Alert(Alert.AlertType.WARNING,
-                "¿Desea borrar el equipamiento " + equip.getEquipment_name() + "?", ButtonType.OK, ButtonType.CANCEL); //alert to ask the user to confirm
-        alert.showAndWait();
-        if (alert.getResult().getButtonData().isCancelButton()) {
-            alert = new Alert(Alert.AlertType.WARNING,
-                    "Se ha cancelado el borrado", ButtonType.OK);//alert to advise that the action has being cancel
+            Alert alert = new Alert(Alert.AlertType.WARNING,
+                    "¿Desea borrar el equipamiento " + equip.getEquipment_name() + "?", ButtonType.OK, ButtonType.CANCEL); //alert to ask the user to confirm
             alert.showAndWait();
-        } else {
-            EquipmentManagerFactory.getEquipmentManager().remove(equip.getId_equipment().toString());
-            alert = new Alert(Alert.AlertType.WARNING,
-                    "Se ha borrado correctamente", ButtonType.OK);
+            if (alert.getResult().getButtonData().isCancelButton()) {
+                alert = new Alert(Alert.AlertType.WARNING,
+                        "Se ha cancelado el borrado", ButtonType.OK);//alert to advise that the action has being cancel
+                alert.showAndWait();
+            } else {
+                EquipmentManagerFactory.getEquipmentManager().remove(equip.getId_equipment().toString());
+                alert = new Alert(Alert.AlertType.WARNING,
+                        "Se ha borrado correctamente", ButtonType.OK);
+                alert.showAndWait();
+                setTableValues();
+            }
+        } catch (NullPointerException ex) {
+            Alert alert = new Alert(Alert.AlertType.WARNING,
+                    "Primero seleccione una fila de la tabla", ButtonType.OK); //alert to ask the user to confirm
             alert.showAndWait();
-            setTableValues();
+            btnDelete.setDisable(true);
+            btnEdit.setDisable(true);
         }
-
     }
 
-    //
     /**
      * Method that asks when you press the x if you want to exit of the
      * application if you press OK the application will be closed otherwhise you
@@ -302,7 +340,6 @@ public class EquipmentViewController {
         ObservableList<Equipment> equipmentss = FXCollections.observableArrayList(EquipmentManagerFactory.getEquipmentManager()
                 .findEquipmentByUse(new GenericType<Set<Equipment>>() {
                 }, filtroUso));
-
 
         equipmentTable.setItems(equipmentss);
     }

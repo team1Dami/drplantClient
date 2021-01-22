@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="659.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.controller.EquipmentDetailsController">
+  <children>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="685.0" prefWidth="640.0" style="-fx-background-color: white;" VBox.vgrow="ALWAYS">
+         <children>
+            <ImageView id="imgPlague" fx:id="imageView" fitHeight="201.0" fitWidth="193.0" layoutX="41.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true" />
+            <Label id="lbScientName" fx:id="lblNombre" layoutX="39.0" layoutY="233.0" prefHeight="21.0" prefWidth="350.0" text="Nombre:">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Label>
+            <Label id="lbDescription" fx:id="lblDescripcion" layoutX="38.0" layoutY="324.0" prefHeight="21.0" prefWidth="350.0" text="Descripción">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Label>
+            <Label id="lbControl" fx:id="lblUso" layoutX="38.0" layoutY="500.0" prefHeight="21.0" prefWidth="350.0" text="Uso:">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Label>
+            <Label id="lbRemedy" fx:id="lblPrecio" layoutX="38.0" layoutY="560.0" prefHeight="21.0" prefWidth="350.0" text="Precio:">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Label>
+            <TextField fx:id="inputNombre" layoutX="37.0" layoutY="267.0" prefHeight="31.0" prefWidth="567.0" />
+            <ChoiceBox fx:id="choiceBoxUso" layoutX="38.0" layoutY="522.0" prefHeight="26.0" prefWidth="193.0" />
+            <TextField fx:id="inputPrecio" layoutX="38.0" layoutY="582.0" />
+            <Button fx:id="btnGuardar" layoutX="518.0" layoutY="609.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="84.0" text="Guardar" />
+            <TextArea fx:id="inputDescription" layoutX="37.0" layoutY="348.0" prefHeight="147.0" prefWidth="567.0" />
+         </children>
+    </AnchorPane>
+  </children>
+</VBox>
