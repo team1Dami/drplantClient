@@ -1,9 +1,9 @@
 
 package drPlant.classes;
 
-import DrPlant.enumerations.Climate;
-import DrPlant.enumerations.PetFriendly;
-import DrPlant.enumerations.PlantType;
+import drPlant.enumerations.Climate;
+import drPlant.enumerations.PetFriendly;
+import drPlant.enumerations.PlantType;
 import java.io.Serializable;
 import java.util.Set;
 import java.util.logging.Logger;

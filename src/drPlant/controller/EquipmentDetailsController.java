@@ -5,7 +5,7 @@
  */
 package drPlant.controller;
 
-import DrPlant.enumerations.Use;
+import drPlant.enumerations.Use;
 import drPlant.classes.Equipment;
 import drPlant.classes.User;
 import drPlant.factory.EquipmentManagerFactory;
