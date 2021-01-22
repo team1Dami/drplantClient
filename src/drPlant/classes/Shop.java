@@ -3,11 +3,14 @@ package drPlant.classes;
 import java.io.Serializable;
 import java.util.Set;
 import java.util.logging.Logger;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author saray
  */
+@XmlRootElement
 public class Shop implements Serializable {
 
     private static final long serialVersionUID = 1L;

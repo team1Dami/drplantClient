@@ -6,11 +6,14 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 import java.util.logging.Logger;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author saray
  */
+@XmlRootElement
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -27,9 +30,25 @@ public class User implements Serializable {
     private String passwd;
     private java.sql.Date lastAccess;
     private java.sql.Date lastPasswdChange;
-    private Set<UserPlant> plants;
+   //private Set<UserPlant> plants;
+    private Set<Plant> plants;
     private Set<Equipment> equipments;
 
+    public Set<Plant> getPlants() {
+        return plants;
+    }
+
+    public void setPlants(Set<Plant> plants) {
+        this.plants = plants;
+    }
+
+    
+    
+    
+    
+    
+    
+    
     /**
      *
      * @return the privilege of the user
@@ -60,12 +79,8 @@ public class User implements Serializable {
      *
      * @param status
      */
-    public void setStatus(int status) {
-        if (status == 1) {
-            this.status = Userstatus.ENABLE;
-        } else {
-            this.status = Userstatus.DISABLE;
-        }
+    public void setStatus(Userstatus status) {
+       this.status=status;
     }
 
     /**
@@ -191,17 +206,17 @@ public class User implements Serializable {
      * Get list of plants asociated with the user
      * @return list of plants
      */
-    public Set<UserPlant> getPlants() {
+    /*public Set<UserPlant> getPlants() {
         return plants;
-    }
+    }*/
 
     /**
      * Set all user´s plants 
      * @param plants 
      */
-    public void setPlants(Set<UserPlant> plants) {
+  /*  public void setPlants(Set<UserPlant> plants) {
         this.plants = plants;
-    }
+    }*/
     /**
     * Get list of equipments
     * @return list of user´s equipment

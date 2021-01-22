@@ -3,6 +3,8 @@ package drPlant.classes;
 import DrPlant.enumerations.Use;
 import java.util.Set;
 import java.util.logging.Logger;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * * This entity class encapsulates the data of each equipment.
@@ -18,6 +20,8 @@ import java.util.logging.Logger;
  *
  * @author Eneko
  */
+
+@XmlRootElement
 public class Equipment {
     
     private static final long serialVersionUID = 1L;

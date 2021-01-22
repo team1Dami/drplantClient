@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * This entity class encapsulates the data of each Plague.
@@ -28,6 +29,7 @@ import java.util.logging.Logger;
  * @author Saray
  */
 
+@XmlTransient
 public class Plague implements Serializable {
 
     private static final long serialVersionUID = 1L;
