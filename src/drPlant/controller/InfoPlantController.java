@@ -32,9 +32,11 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.InternalServerErrorException;
 
 /**
@@ -75,31 +77,27 @@ public class InfoPlantController {
     private CheckBox chbCat;
 
     @FXML
-    private CheckBox chbSave;
-
-    @FXML
     private ChoiceBox cbClimate;
 
     @FXML
     private ChoiceBox cbType;
 
     @FXML
-    private DatePicker date;
-    
-    @FXML
     private Label lblType;
-    
+
     @FXML
     private Label lblClimate;
-    
+
     @FXML
     private Label lblDescription;
-    
+
     @FXML
     private Label lblCares;
+    
+    
 
     private User user;
-    private boolean isAdmin = true;
+    private boolean isAdmin;
     private Plant plant;
 
     public User getUser() {
@@ -196,7 +194,6 @@ public class InfoPlantController {
             btnCancel.setDisable(false);
             btnSave.setVisible(false);
             btnSave.setDisable(false);
-            //chbSave
 
         } else {
             txtCommon.setEditable(true);
@@ -208,7 +205,6 @@ public class InfoPlantController {
             chbDog.setDisable(false);
 
             btnEdit.setVisible(false);
-            //btnEdit.setDisable(false);
             btnCancel.setVisible(true);
             btnCancel.setDisable(false);
             btnSave.setVisible(true);
@@ -222,10 +218,12 @@ public class InfoPlantController {
                 "Calido", "Frio", "Humedo", "Seco")
         );
 
-        plant = PlantManagerFactory.getPlantManager().find(Plant.class, plant.getScienceName());
-        setValues();
+        if (plant != null) {
+            plant = PlantManagerFactory.getPlantManager().find(Plant.class, plant.getScienceName());
+            setValues();
+        }
 
-        txtScience.focusedProperty().addListener(this::handleNameChange);
+        txtCommon.focusedProperty().addListener(this::handleNameChange);
 
         btnSave.setOnAction(this::handleButtonSave);
         btnCancel.setOnAction(this::handleButtonCancel);
@@ -278,54 +276,87 @@ public class InfoPlantController {
         btnCancel.setDisable(false);
         btnSave.setDisable(false);
 
+        btnEdit.setVisible(false);
     }
 
     private void handleButtonSave(ActionEvent e) {
 
-        if (!ValidateText(txtDescription.getText())) {
+        /* if (!ValidateText(txtDescription.getText())) {
             System.out.println("Solo letras");
-        }
-
-        plant.setCommonName(txtCommon.getText());
-        plant.setCares(txtCares.getText());
-        /*if(cbClimate.getValue().toString().equals("Calido")){
-            plant.setClimate(Climate.hot);
         }*/
-        if (cbClimate.getValue().equals("Calido")) {
-            plant.setClimate(Climate.hot);
-        } else if (cbClimate.getValue().equals("Frio")) {
-            plant.setClimate(Climate.cold);
-        } else if (cbClimate.getValue().equals("Humedo")) {
-            plant.setClimate(Climate.wet);
-        } else if (cbClimate.getValue().equals("Seco")) {
-            plant.setClimate(Climate.dry);
+        boolean correct = true;
+        if (!ValidateText(txtDescription.getText())) {
+            correct = false;
         }
-        if (cbType.getValue().equals("Interior")) {
-            plant.setPlantType(PlantType.indoor);
-        } else if (cbType.getValue().equals("Exterior")) {
-            plant.setPlantType(PlantType.outdoor);
-        } else if (cbType.getValue().equals("Suculenta")) {
-            plant.setPlantType(PlantType.succulent);
+        if (!ValidateText(txtCares.getText())) {
+            correct = false;
         }
-        if (chbCat.isSelected() & chbDog.isSelected()) {
-            plant.setPetfriendly(PetFriendly.both);
-        } else if (chbCat.isSelected() & !chbDog.isSelected()) {
-            plant.setPetfriendly(PetFriendly.cat);
-        } else if (!chbCat.isSelected() & chbDog.isSelected()) {
-            plant.setPetfriendly(PetFriendly.dog);
-        } else if (!chbCat.isSelected() & !chbDog.isSelected()) {
-            plant.setPetfriendly(PetFriendly.no);
-        }
-        try {
-            Plant planta = PlantManagerFactory.getPlantManager().find(Plant.class, plant.getScienceName());
-            if (planta == null) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.show();
-            } else {
-                PlantManagerFactory.getPlantManager().edit(plant);
+        if (correct) {
+            Plant newPlant = new Plant();
+            newPlant.setScienceName(txtScience.getText());
+            newPlant.setCommonName(txtCommon.getText());
+            newPlant.setCares(txtCares.getText());
+            if (cbClimate.getValue().equals("Calido")) {
+                newPlant.setClimate(Climate.hot);
+            } else if (cbClimate.getValue().equals("Frio")) {
+                newPlant.setClimate(Climate.cold);
+            } else if (cbClimate.getValue().equals("Humedo")) {
+                newPlant.setClimate(Climate.wet);
+            } else if (cbClimate.getValue().equals("Seco")) {
+                newPlant.setClimate(Climate.dry);
             }
-        } catch (InternalServerErrorException server) {
-            
+            if (cbType.getValue().equals("Interior")) {
+                newPlant.setPlantType(PlantType.indoor);
+            } else if (cbType.getValue().equals("Exterior")) {
+                newPlant.setPlantType(PlantType.outdoor);
+            } else if (cbType.getValue().equals("Suculenta")) {
+                newPlant.setPlantType(PlantType.succulent);
+            }
+            if (chbCat.isSelected() & chbDog.isSelected()) {
+                newPlant.setPetfriendly(PetFriendly.both);
+            } else if (chbCat.isSelected() & !chbDog.isSelected()) {
+                newPlant.setPetfriendly(PetFriendly.cat);
+            } else if (!chbCat.isSelected() & chbDog.isSelected()) {
+                newPlant.setPetfriendly(PetFriendly.dog);
+            } else if (!chbCat.isSelected() & !chbDog.isSelected()) {
+                newPlant.setPetfriendly(PetFriendly.no);
+            }
+            if (plant != null) {
+                try {
+                    Plant plantSearch = PlantManagerFactory.getPlantManager().find(Plant.class, newPlant.getScienceName());
+
+                    PlantManagerFactory.getPlantManager().edit(newPlant);
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Se ha editado correctamente");
+                    alert.show();
+
+                } catch (InternalServerErrorException server) {
+
+                }
+            } else {
+                try {
+                    plant = PlantManagerFactory.getPlantManager().find(Plant.class, txtScience.getText());
+                } catch (ClientErrorException client) {
+                    plant = null;
+                }
+                if (plant == null) {
+                    try {
+                        PlantManagerFactory.getPlantManager().create(newPlant);
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Se ha añadido correctamente");
+                        alert.show();
+
+                    } catch (ClientErrorException ex) {
+                        Alert alert = new Alert(Alert.AlertType.ERROR, "Error al crear");
+                        alert.show();
+                    }
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Planta ya existe");
+                    alert.show();
+                }
+            }
+        }
+        else{
+            Alert alert=new Alert(Alert.AlertType.ERROR,"Introduce correct values");
+            alert.show();
         }
 
     }
@@ -333,6 +364,8 @@ public class InfoPlantController {
     private void handleButtonCancel(ActionEvent e) {
         btnCancel.setDisable(true);
         btnSave.setDisable(true);
+        btnEdit.setVisible(true);
+        btnEdit.setDisable(false);
         txtCares.setEditable(false);
         txtCommon.setEditable(false);
         txtScience.setEditable(false);
@@ -341,7 +374,7 @@ public class InfoPlantController {
         chbDog.setDisable(true);
         cbClimate.setDisable(true);
         cbType.setDisable(true);
-        //this.stage.close();
+        setValues();
     }
 
     private void handleNameChange(ObservableValue observable,
@@ -356,34 +389,8 @@ public class InfoPlantController {
             }
         }
     }
-
-    /*private void handleCommonNameChange(ObservableValue observable,
-            Boolean oldValue,
-            Boolean newValue) {
-        if (newValue) {
-            LOGGER.info("onFocus");
-        } else if (oldValue) {
-            LOGGER.info("onBlur");
-            if (!ValidateText(txtCommon.getText())) {
-                System.out.println("mal");
-            }
-        }
-    }
-
-    private void handleDescriptionChange(ObservableValue observable,
-            Boolean oldValue,
-            Boolean newValue) {
-        if (newValue) {
-            LOGGER.info("onFocus");
-        } else if (oldValue) {
-            LOGGER.info("onBlur");
-            if (!ValidateText(txtDescription.getText())) {
-                System.out.println("mal");
-            }
-        }
-    }*/
-
-    private boolean ValidateText(String text) {
+    
+    private boolean ValidateName(String text) {
         // Patron para validar el email
         Pattern pattern = Pattern.compile("[a-zA-Z]*");
 
@@ -394,4 +401,14 @@ public class InfoPlantController {
             return true;
         }
     }
+
+    private boolean ValidateText(String text) {
+        // Patron para validar el email
+        if (text.length() > 500) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 }

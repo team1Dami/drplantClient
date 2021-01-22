@@ -6,6 +6,7 @@
  */
 package drPlant.controller;
 
+import DrPlant.enumerations.Climate;
 import DrPlant.enumerations.UserPrivilege;
 import drPlant.classes.Plant;
 import drPlant.classes.User;
@@ -18,6 +19,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -35,8 +37,10 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.ChoiceBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseEvent;
@@ -45,6 +49,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Callback;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.GenericType;
 
@@ -104,6 +109,9 @@ public class ListPlantController {
 
     @FXML
     private ChoiceBox cbPet;
+    
+    @FXML
+    private Button btnRefresh;
 
     private User user;
 
@@ -175,7 +183,8 @@ public class ListPlantController {
             }));
             tblPlants.setItems(plants);
         } catch (ClientErrorException e2) {
-            
+            Alert alert=new Alert(Alert.AlertType.ERROR);
+            alert.show();
         }
 
         cbType.setItems(FXCollections.observableArrayList(
@@ -208,6 +217,8 @@ public class ListPlantController {
         btnAdd.setOnAction(this::handleAddButton);
         btnEdit.setOnAction(this::handleEditButton);
         btnRemove.setOnAction(this::handleRemoveButton);
+        
+        btnRefresh.setOnAction(this::refreshTable);
 
         tblPlants.setOnMouseClicked(this::handleClickTable);
 
@@ -218,16 +229,27 @@ public class ListPlantController {
  */
     private void handleClickTable(MouseEvent ev) {
         if (ev.getClickCount() == 2 & isAdmin) {
-             //tblPlants.getSelectionModel().selectedItemProperty().addListener(this::handleUsersTableSelectionChanged);
-
-        /*plantEdit=(Plant) tblPlants.getSelectionModel().getSelectedItem();
-        clCommonName.setEditable(true);
-        clClimate.setEditable(true);
-        clType.setEditable(true);
-        clAnimal.setEditable(true);
+        
+        tblPlants.setEditable(true);
         
         clCommonName.setCellFactory(TextFieldTableCell.forTableColumn());
-        clCommonName.setOnEditCommit(data -> updateCommonName(clCommonName.getText()));*/
+        clCommonName.setOnEditCommit(t -> {updateCommonName((CellEditEvent<Plant, String>) t);
+        });
+        ChoiceBox box=new ChoiceBox();
+        box.getItems().addAll("Calido" , "Frio", "Humedo", "Seco");
+        
+        
+        
+        /*clClimate.setCellValueFactory( cellData -> new ReadOnlyBooleanWrapper(cellData.getValue().getIsXyz()));
+        clClimate.setCellFactory(CheckBoxTableCell.<Plant>forTableColumn(clClimate));*/
+       
+        
+        
+        //clClimate.setCellValueFactory((Callback) box);
+        clClimate.setCellFactory(ChoiceBoxTableCell.forTableColumn());
+        clClimate.setOnEditCommit(t -> {
+            updateClimate((CellEditEvent<Plant, String>) t);
+        });
         /*clClimate.setCellFactory(TextFieldTableCell.forTableColumn());
         clAnimal.setCellFactory(TextFieldTableCell.forTableColumn());
         clType.setCellFactory(TextFieldTableCell.forTableColumn());*/
@@ -272,7 +294,7 @@ public class ListPlantController {
             btnRemove.setDisable(true);
         }
 
-        //Focus login field
+        //Focus Search field
         txtSearch.requestFocus();
     }
 
@@ -308,19 +330,7 @@ public class ListPlantController {
         
     }
 
-    /*private void handleUsersTableSelectionChanged(ObservableValue observable,
-            Object oldValue,
-            Object newValue) {
-
-        if (newValue != null) {
-            Plant plant = (Plant) newValue;
-            tblPlants.getSelectionModel().select(plant.getCommonName());
-            System.out.println(plant.getCommonName());
-        } else {
-
-        }
-    }*/
-/**
+/*
  * Method that handle button remove
  * @param e 
  */
@@ -334,8 +344,8 @@ public class ListPlantController {
         Optional<ButtonType> result = alert.showAndWait();
         //If OK to deletion
         if (result.isPresent() && result.get() == ButtonType.OK) {
-
             PlantManagerFactory.getPlantManager().remove(plant.getScienceName());
+            refreshTable();
         }
     }
 /**
@@ -423,6 +433,12 @@ public class ListPlantController {
                 plants = FXCollections.observableArrayList(PlantManagerFactory.getPlantManager().getAllPlants(new GenericType<Set<Plant>>() {
                 }));
             }
+            else if(pet==null & clima!=null & tipo==null){
+                LOGGER.log(Level.INFO, "pet, clima y tipo distintos de null");
+                plants = FXCollections.observableArrayList(PlantManagerFactory.getPlantManager().getPlantByClimate(new GenericType<Set<Plant>>() {
+                },clima));
+            }
+        
         } else {
             if (pet != null | clima != null | tipo != null) {
                 LOGGER.log(Level.INFO, "Hay texto. nombre, clima o tipo distintos de null");
@@ -431,7 +447,7 @@ public class ListPlantController {
             } else {
 
                 LOGGER.log(Level.INFO, "Hay texto. nombre, clima y tipo distintos de null");
-                plants = FXCollections.observableArrayList(PlantManagerFactory.getPlantManager().getPlantByCommonName(new GenericType<Set<Plant>>() {
+                plants =FXCollections.observableArrayList(PlantManagerFactory.getPlantManager().getPlantByCommonName(new GenericType<Set<Plant>>() {
                 }, nombre));
                 if (plants.isEmpty()) {
                     plants = FXCollections.observableArrayList(PlantManagerFactory.getPlantManager().getPlantByCommonName(new GenericType<Set<Plant>>() {
@@ -466,12 +482,41 @@ public class ListPlantController {
         }
     }
 
-    private void updateCommonName(String newName) {
-        plantEdit.setCommonName(newName);
+    private void updateCommonName(CellEditEvent<Plant,String> t) {
+        Plant p=t.getRowValue();
+        p.setCommonName(t.getNewValue());
+        PlantManagerFactory.getPlantManager().edit(p);
+        tblPlants.refresh();
     }
 
-    private void commonNameChange() {
-        
+    private void updateClimate(CellEditEvent<Plant,String> t) {
+        Plant p=t.getRowValue();
+        if(t.getNewValue().equals("Calido"))
+            p.setClimate(Climate.hot);
+        PlantManagerFactory.getPlantManager().edit(p);
+        tblPlants.refresh();
     }
 
+   
+    
+    private void refreshTable(ActionEvent e){
+        try {
+            ObservableList<Plant> plants = FXCollections.observableArrayList(PlantManagerFactory.getPlantManager().getAllPlants(new GenericType<Set<Plant>>() {
+            }));
+            tblPlants.setItems(plants);
+        } catch (ClientErrorException e2) {
+            Alert alert=new Alert(Alert.AlertType.ERROR);
+            alert.show();
+        }
+    }
+    private void refreshTable(){
+        try {
+            ObservableList<Plant> plants = FXCollections.observableArrayList(PlantManagerFactory.getPlantManager().getAllPlants(new GenericType<Set<Plant>>() {
+            }));
+            tblPlants.setItems(plants);
+        } catch (ClientErrorException e2) {
+            Alert alert=new Alert(Alert.AlertType.ERROR);
+            alert.show();
+        }
+    }
 }
