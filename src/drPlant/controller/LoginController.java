@@ -5,14 +5,11 @@
  */
 package drPlant.controller;
 
-import DrPlant.enumerations.UserPrivilege;
 import drPlant.Encrypted.CifradoPublica;
 import drPlant.classes.User;
 import drPlant.factory.UserManagerFactory;
 import drPlant.interfaces.UserManager;
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
@@ -25,9 +22,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javax.ws.rs.InternalServerErrorException;
 import org.apache.commons.codec.binary.Hex;
 
 /**
@@ -50,7 +49,7 @@ public class LoginController{
     @FXML
     private TextField tfLogin;
     @FXML
-    private TextField tfPasswd;
+    private PasswordField tfPasswd;
     
     @FXML
     private Hyperlink nuevaContraseña;
@@ -137,7 +136,11 @@ public class LoginController{
             //find the user by login and password 
             UserManager imp = UserManagerFactory.getUserManager();
             User serverUser = null;
-            serverUser = imp.findUserByLoginAndPasswd(User.class, tfLogin.getText(), tfPasswd.getText());
+            try{
+                serverUser = imp.findUserByLoginAndPasswd(User.class, tfLogin.getText(), myUser.getPasswd());
+            }catch(InternalServerErrorException exx){
+                exx.getCause().getMessage();
+            }
             
             //prueba para ver que user se recoje
             System.out.println(serverUser.getEmail());

@@ -6,9 +6,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane id="StagePopUpTienda" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="536.0" prefWidth="354.0" stylesheets="@../css/drPlantstyles.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.controller.InfoTiendaController">
+<Pane id="StagePopUpTienda" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="536.0" prefWidth="354.0" stylesheets="@../css/drPlantstyles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.controller.InfoTiendaController">
    <children>
-      <Label fx:id="tfNombre" layoutX="26.0" layoutY="74.0" prefHeight="30.0" prefWidth="302.0" text="&quot;Nombre de la tienda&quot;" textAlignment="CENTER">
+      <Label fx:id="tfNombre" layoutX="26.0" layoutY="33.0" prefHeight="30.0" prefWidth="302.0" text="Nombre:" textAlignment="CENTER">
          <font>
             <Font size="24.0" />
          </font>
@@ -43,5 +43,6 @@
             <Font size="24.0" />
          </font>
       </Label>
+      <TextField fx:id="tfnombre" layoutX="26.0" layoutY="75.0" prefHeight="35.0" prefWidth="311.0" />
    </children>
 </Pane>

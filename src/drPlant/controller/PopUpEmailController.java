@@ -5,6 +5,8 @@
  */
 package drPlant.controller;
 
+import drPlant.factory.UserManagerFactory;
+import drPlant.interfaces.UserManager;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.beans.value.ObservableValue;
@@ -41,7 +43,11 @@ public class PopUpEmailController {
     
     private Alert alert;
     
-     public void initStage(Parent root) {
+    /**
+     * Method that initialize the view
+     * @param root 
+     */
+    public void initStage(Parent root) {
         Scene scene = new Scene(root);
         StageLogin.setScene(scene);
         StageLogin.setResizable(false);
@@ -54,7 +60,13 @@ public class PopUpEmailController {
 
     }
      
-      private void textChange(ObservableValue observable, String oldValue, String newValue) {
+    /**
+     * Method to control if the text inside the textfield is correct
+     * @param observable
+     * @param oldValue
+     * @param newValue 
+     */
+    private void textChange(ObservableValue observable, String oldValue, String newValue) {
        boolean estaBien=false;
        estaBien=validateEmail(newValue);
        if(!estaBien){
@@ -67,19 +79,32 @@ public class PopUpEmailController {
 
     }
      /**
-     * 
+     * Method to send the new password to the user
      * @param event 
      */
     private void handleButtonEnviar(ActionEvent event) {
         
+        UserManager manager = UserManagerFactory.getUserManager();
+        manager.changePassword(tfEmail.getText());
         alert = new Alert(Alert.AlertType.WARNING,
                 "Se ha enviado la nueva contraseña al correo", ButtonType.OK);
+        alert.showAndWait();
+       StageLogin.close();
     }
-     public void setStage(Stage stage){
+    /**
+     * Method to set the view a stage
+     * @param stage 
+     */
+    public void setStage(Stage stage){
         this.StageLogin = stage;
     }
      
-      private boolean validateEmail(String email) {
+    /**
+     * Method to control if the email is valid 
+     * @param email
+     * @return a boolean if the email is valid or not
+     */
+    private boolean validateEmail(String email) {
         // Patern to validate the email
         Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
         // Compare and see if the email introduced respects the patern establiced

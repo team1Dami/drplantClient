@@ -5,7 +5,7 @@
  */
 package drPlant.controller;
 
-import static DrPlant.enumerations.UserPrivilege.USER;
+import static drPlant.enumerations.UserPrivilege.USER;
 import drPlant.classes.Shop;
 import drPlant.classes.User;
 import drPlant.factory.ShopManagerFactory;
@@ -50,6 +50,9 @@ public class InfoTiendaController  {
      private TextField tfComision;
      
      @FXML
+     private TextField tfnombre;
+     
+     @FXML
      private Label tfNombre;
      
      @FXML
@@ -66,7 +69,7 @@ public class InfoTiendaController  {
 
      
      /**
-      * Initial stage of the view
+      * Initial stage of the view when has double click a shop in the view ShopView
       * @param root
       * @param user
       * @param shop 
@@ -77,14 +80,14 @@ public class InfoTiendaController  {
         StagePopUpTienda.setScene(scene);
         StagePopUpTienda.setResizable(false);
         StagePopUpTienda.initModality(Modality.APPLICATION_MODAL);
-        StagePopUpTienda.show();
+        //StagePopUpTienda.show();
         
         //put the shop data inside the text fields and the name in the label
         //the label can't be edited
         tfUrl.setText(shop.getUrl());
         tfEmail.setText(shop.getEmail());
         tfLocation.setText(shop.getLocation());
-        tfNombre.setText(shop.getShop_name());
+        tfnombre.setText(shop.getShop_name());
         tfComision.setText(Float.toString(shop.getCommission()));
           
         //set the actions for the buttons
@@ -96,7 +99,7 @@ public class InfoTiendaController  {
              tfUrl.setEditable(false);
             tfEmail.setEditable(false);
             tfLocation.setEditable(false);
-            tfNombre.setDisable(false);
+            tfnombre.setDisable(false);
             tfComision.setEditable(false);
             btnGuardar.setVisible(false);
         }
@@ -106,27 +109,32 @@ public class InfoTiendaController  {
         tfEmail.textProperty().addListener(this::textChange);
         tfLocation.textProperty().addListener(this::textChange);
         tfComision.textProperty().addListener(this::textChange);
-        
-       
+        tfComision.textProperty().addListener(this::isNumber);
+        tfnombre.textProperty().addListener(this::textChange);
 
     }  
     
+    /**
+     * Initial stage of the view when has  click the button create in the view ShopView
+     * @param root
+     * @param admin 
+     */
     public void initStage(Parent root,boolean admin){
         Scene scene = new Scene(root);
         StagePopUpTienda.setScene(scene);
         StagePopUpTienda.setResizable(false);
         StagePopUpTienda.initModality(Modality.APPLICATION_MODAL);
         btnGuardar.setDisable(true);
-        StagePopUpTienda.show();
+        //StagePopUpTienda.show();
         
         //put the shop data inside the text fields and the name in the label
         //the label can't be edited
         
-         tfUrl.setText("");
+        tfUrl.setText("");
         tfEmail.setText("");
         tfLocation.setText("");
-        tfNombre.setText("");
         tfComision.setText("");
+        tfnombre.setText("");
           
         //set the actions for the buttons
         btnAtras.setOnAction(this::handleButtonCancelarAction);
@@ -137,20 +145,75 @@ public class InfoTiendaController  {
         tfEmail.textProperty().addListener(this::textChange);
         tfLocation.textProperty().addListener(this::textChange);
         tfComision.textProperty().addListener(this::textChange);
+        tfnombre.textProperty().addListener(this::textChange);
 
     }
     /**
-     * 
+     * Method to create a new shop
      * @param event 
      */
     private void handleButtonGuardarAction(ActionEvent event) {
  
            try{
                   shop = new Shop();
-                  shop.setShop_name(tfNombre.getText());
+                  shop.setShop_name(tfnombre.getText());
                   shop.setEmail(tfEmail.getText());
                   shop.setLocation(tfLocation.getText());
+                  
                  
+                  shop.setCommission(Float.parseFloat(tfComision.getText()));
+                  shop.setUrl(tfUrl.getText());
+            }catch(Exception e){
+                  logger.info("no hace bien la creacion de una tienda :(");
+            }
+                  
+                  if(!validateEmail(shop.getEmail())){
+                      //the gmail is not correct
+                       alert = new Alert(Alert.AlertType.WARNING, "Error en el gmail", ButtonType.OK);
+                       alert.showAndWait();
+                  }else{
+                      
+                    Shop shopEsta=null;
+                    ShopManager manager = ShopManagerFactory.getShopManager();
+                    
+                    try{
+                        
+                        shopEsta= manager.getShopByName(Shop.class, shop.getShop_name());
+                        if(shopEsta != null){ //the shop already exist
+
+                             alert = new Alert(Alert.AlertType.WARNING, "Error Este nombre de tienda ya existe", ButtonType.OK);
+                             alert.showAndWait();
+                        }
+                     }catch(Exception e){
+                        logger.info("no hace bien la busqueda de tienda :(");             
+                    }
+                    
+                    if(shopEsta == null){ //the shop doesn't exist
+                        try{
+                             manager.create(shop);
+                             StagePopUpTienda.close();
+                        }catch(Exception e){
+                            manager.create(shop);
+                            StagePopUpTienda.close();
+                        }
+                    }
+                   
+                  }  
+
+           
+    }
+    
+    /**
+     * Method to modify a shop
+     * @param event 
+     */
+    private void handleButtonEditarAction(ActionEvent event) {
+ 
+           try{
+                  shop.setShop_name(tfnombre.getText());
+                  shop.setEmail(tfEmail.getText());
+                  shop.setLocation(tfLocation.getText());
+                  // shop.setCommission((float) tfComision.getUserData());
                   shop.setCommission(Float.parseFloat(tfComision.getText()));
                   shop.setUrl(tfUrl.getText());
                   
@@ -159,79 +222,56 @@ public class InfoTiendaController  {
                        alert = new Alert(Alert.AlertType.WARNING, "Error en el gmail", ButtonType.OK);
                        alert.showAndWait();
                   }else{
-                    Shop shopEsta;
-                    ShopManager manager = ShopManagerFactory.getShopManager();
-                    shopEsta= manager.getShopByName(Shop.class, shop.getShop_name());
-                    System.out.println(shopEsta.getEmail());
-                    if(shopEsta != null){
-                        //the shop already exist
-                         alert = new Alert(Alert.AlertType.WARNING, "Error Este nombre de tienda ya existe", ButtonType.OK);
-                         alert.showAndWait();
-                    }else{
-                         manager.create(shop);
-                         
-                    }
-                  }  
+                      
+                       ShopManager manager = ShopManagerFactory.getShopManager();
+
+                       alert = new Alert(Alert.AlertType.WARNING, "Seguro que deseas modificar?", ButtonType.OK,ButtonType.CANCEL);
+                       alert.showAndWait();
+                       if(alert.getResult().getButtonData().isDefaultButton()){
+                             manager.edit(shop);
+                             StagePopUpTienda.close();
+                       }
+                  }       
            }catch(Exception e){
-               logger.info("no hace bien la creacion de una tienda :(");
+               logger.info("no hace bien la modificacion de una tienda :(");
            }
            
     }
     
-    private void handleButtonEditarAction(ActionEvent event) {
- 
-           try{
-                  shop.setShop_name(tfNombre.getText());
-                  shop.setEmail(tfEmail.getText());
-                  shop.setLocation(tfLocation.getText());
-                  shop.setCommission((float) tfComision.getUserData());
-                  shop.setUrl(tfUrl.getText());
-                  
-                  if(!validateEmail(shop.getEmail())){
-                      //the gmail is not correct
-                       alert = new Alert(Alert.AlertType.WARNING, "Error en el gmail", ButtonType.OK);
-                       alert.showAndWait();
-                  }
-                  ShopManager manager = ShopManagerFactory.getShopManager();
-
-                  alert = new Alert(Alert.AlertType.WARNING, "Error Este nombre de tienda ya existe", ButtonType.OK,ButtonType.CANCEL);
-                  alert.showAndWait();
-                  if(alert.getResult().getButtonData().isDefaultButton()){
-                       manager.edit(shop);
-                  }
-
-                      
-                     
-                  
-           }catch(Exception e){
-               
-           }
-           
-    }
     /**
-     * 
+     * Method to go close the view 
      * @param event 
      */
     private void handleButtonCancelarAction(ActionEvent event) {
             StagePopUpTienda.close();         
     }
     
-      private void textChange(ObservableValue observable, String oldValue, String newValue) {
-        //disable the guardar button
-        
-        /*// force the field to be numeric only
-        tfComision.textProperty().addListener(new ChangeListener<String>() {
-        public void changed(ObservableValue<? extends String> observable, String oldValue,
-        String newValue) {
+   
+    /**
+     * force the field to be numeric only
+     * @param observable
+     * @param oldValue
+     * @param newValue
+     * 
+     */
+    private void isNumber(ObservableValue<? extends String> observable, String oldValue, String newValue){
+         
         if (!newValue.matches("\\d*")) {
         tfComision.setText(newValue.replaceAll("[^\\d]", ""));
-        btnGuardar.setDisable(false);
+             btnGuardar.setDisable(true);
         }else{
-        btnGuardar.setDisable(true);
-        }
-        }
-        });*/
-
+            btnGuardar.setDisable(false);
+        }  
+    }
+            
+    /**
+     * Method to control the value of the textfields
+     * @param observable
+     * @param oldValue
+     * @param newValue 
+     */
+    private void textChange(ObservableValue observable, String oldValue, String newValue) {
+        
         //If password field is higher than 255
         if (tfUrl.getText().length() > 255 || tfEmail.getText().length() > 255 
                 || tfLocation.getText().length() > 255) {
@@ -266,12 +306,13 @@ public class InfoTiendaController  {
             return true;
         }
     }
-
-    
-    
+ 
+    /**
+     * Method to set the stage of the view
+     * @param stage 
+     */
     public void setStage(Stage stage){
         this.StagePopUpTienda = stage;
     }
-
     
 }

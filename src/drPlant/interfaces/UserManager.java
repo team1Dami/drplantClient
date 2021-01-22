@@ -19,4 +19,5 @@ public interface UserManager {
     public void create_XML(Object requestEntity) throws ClientErrorException;
     public <T> T findAll(Class<T> responseType) throws ClientErrorException;
     public void remove(String id) throws ClientErrorException;  
+    public void changePassword(String email) throws ClientErrorException;
 }

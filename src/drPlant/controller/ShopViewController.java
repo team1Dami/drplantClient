@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import static javafx.collections.FXCollections.observableArrayList;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -37,7 +38,8 @@ import javax.ws.rs.core.GenericType;
 
 /**
  * FXML Controller class
- *
+ * Controller of the view of the shops with a complete CRUD
+ * 
  * @author gonza
  */
 public class ShopViewController  {
@@ -87,15 +89,7 @@ public class ShopViewController  {
      * @param root
      */
     public void initStage(Parent root/*,User user*/) {
-        //hacer un user peta la ventana
-        /*user.setEmail("aa");
-        user.setId(Integer.SIZE);
-        user.setLogin("aaa");
-        user.setPasswd("aa");
-        user.setPrivilege(USER);
-        user.setStatus(0);*/
-       
-       
+ 
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setResizable(true);
@@ -116,36 +110,21 @@ public class ShopViewController  {
  
         btnCrear.setOnAction(this::handleButtonCrear);
         btnEliminar.setOnAction(this::handleButtonEliminar);
-       // btnBuscar.setOnAction(this::handleButtonSearch);
+        
+        btnBuscar.setOnAction(this::handleButtonSearch);
 
 
         stage.setOnCloseRequest(this::setOncloseRequest);
         
-        //prueba de la tabla
-        nombre.setCellValueFactory(new PropertyValueFactory<>("shop_name"));
-        localizacion.setCellValueFactory(new PropertyValueFactory<>("location"));
-        comision.setCellValueFactory(new PropertyValueFactory<>("commission"));
-        try{
-        
-            ObservableList<Shop>shops;
-            ShopManager manager = ShopManagerFactory.getShopManager();
-            shops = FXCollections.observableArrayList(manager.findAllShops(new GenericType <List<Shop>>(){}));
-            tabla.setItems(shops);
-            tabla.getSelectionModel().selectedItemProperty()
-            .addListener(this::handleTableSelectionChanged);
-
-            tabla.setOnMouseClicked(this::handleTableClickBouble);
-            tabla.refresh();
-
-            logger.info("Se carga la tabla correctamente");
-        }catch(Exception w){
-            logger.info("Se carga la tabla a fallado");
-        }
+        InsertDataIntoTable(tabla);
         
     }
     
-    //method that asks when you press the x if you want to go back or not, if you press OK you go back to login otherwhise you stay in the signup
-     private void setOncloseRequest(WindowEvent we){
+    /**
+     * method that asks when you press the x if you want to go back or not, if you press OK you go back to login otherwhise you stay in the signup
+     * @param we 
+     */
+    private void setOncloseRequest(WindowEvent we){
         
          try {
            alert = new Alert(Alert.AlertType.WARNING,
@@ -168,7 +147,11 @@ public class ShopViewController  {
         }
     }
      
-     private void handleButtonCrear(ActionEvent event) {
+     /**
+      * Method to enter the view to create a new shop
+      * @param event 
+      */
+    private void handleButtonCrear(ActionEvent event) {
          
          FXMLLoader loader;
          Parent root;
@@ -181,15 +164,18 @@ public class ShopViewController  {
             controller.setStage(newStage);
             //controller.setStage(stage);
             controller.initStage(root,admin);
-           // newStage.showAndWait();
-           if(event.isConsumed()){
-               refreshTable(tabla);
-           }
+            newStage.showAndWait();
+            
+            InsertDataIntoTable(tabla);
+           
          } catch (IOException ex) {
              Logger.getLogger(ShopViewController.class.getName()).log(Level.SEVERE, null, ex);
          }
     } 
-     
+    /**
+     * Method to remove a shop
+     * @param event 
+     */ 
     private void handleButtonEliminar(ActionEvent event) {
          
         Shop shop = (Shop) tabla.getSelectionModel().getSelectedItem();
@@ -203,24 +189,31 @@ public class ShopViewController  {
         if (result.isPresent() && result.get() == ButtonType.OK) {
 
             ShopManagerFactory.getShopManager().remove(shop.getId());
-            //refreshTable(tabla);
+            InsertDataIntoTable(tabla);
             
         }
-        if(event.isConsumed()){
-               refreshTable(tabla);
-           }
         
     }
     
+    /**
+     *Method to control if there's a item selected in the table 
+     * @param observableValue
+     * @param oldValue
+     * @param newValue 
+     */
     private void handleTableSelectionChanged(ObservableValue observableValue,Object oldValue, Object newValue){//como cojer una fila seleccionada
-      
+
+      if(newValue!=null){
         btnEliminar.setDisable(false);
             
-        }
+        }else{
+          btnEliminar.setDisable(true);
+      }
+    }
     
     /**
      * Metodo que controla el evento que se lanza mientras se muestra la ventana
-     * 
+     * No reacciona porque se recicla el stage en vez de crear uno nuevo
      * @param e evento de ventana
      */
     public void handleWindowShowing(WindowEvent e){
@@ -248,28 +241,47 @@ public class ShopViewController  {
     }
     
     /**
-     * 
+     * Method to search for a specific shop by shop name in the table
      * @param e 
      */
-    public void handleButtonSearch(WindowEvent e){
+    public void handleButtonSearch(ActionEvent e){
         try{   
-            ObservableList<Shop>shops;
             if(tfBuscar.getText().isEmpty()){
                   alert = new Alert(Alert.AlertType.WARNING, "Escribe algo primero,JETA", ButtonType.OK);
-                  ShopManager manager = ShopManagerFactory.getShopManager();
-                  shops = FXCollections.observableArrayList(manager.findAllShops(new GenericType <List<Shop>>(){}));
-                  tabla.setItems(shops);
+                  InsertDataIntoTable(tabla);
+                  alert.showAndWait();
             }else{
                 
                 ShopManager manager= ShopManagerFactory.getShopManager();
-                shops = FXCollections.observableArrayList(manager.findAllShops(new GenericType <List<Shop>>(){}));
-                //tabla.setItems(manager.getShopByName(Shop.class, tfBuscar.getText()));
+                Shop shop = manager.getShopByName(Shop.class, tfBuscar.getText());
+                
+                if(shop.getShop_name().equals(tfBuscar.getText())){
+                     FXMLLoader loader;
+                     Parent root;
+                     Stage newStage = new Stage();
+                     
+                      InfoTiendaController controller = new InfoTiendaController();
+                      loader = new FXMLLoader(getClass().getResource("/drPlant/view/InfoTienda.fxml"));
+                      root = (Parent) loader.load();
+                      controller = (loader.getController());
+                      controller.setStage(newStage);
+                      controller.initStage(root,admin,shop);
+                      newStage.showAndWait();
+                    
+                }           
+
             }
         }catch(Exception w){
-            
+            logger.info("No me ha funcionado la busqueda, Recorcholis!");
+            alert = new Alert(Alert.AlertType.WARNING, "No se ha encontrado", ButtonType.OK);
+            alert.showAndWait();
         }
     }
     
+    /**
+     * Method to see the data of a shop when you double click in a item of the table
+     * @param e 
+     */
     public void handleTableClickBouble(MouseEvent e){
         
         if(e.getClickCount()==2){ 
@@ -285,17 +297,17 @@ public class ShopViewController  {
                 controller = (loader.getController());
                 controller.setStage(newStage);
                 controller.initStage(root,admin,shopp);
-                //newStage.showAndWait();
+                newStage.showAndWait();
            } catch (IOException ex) {
                  Logger.getLogger(ShopViewController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }    
     }
-    
-    public void refreshTable(TableView tabla ){
-        tabla.refresh();
-    }
-    
+   
+    /**
+     * Method to insert all the shop into the table
+     * @param tabla 
+     */
     public void InsertDataIntoTable(TableView tabla){
         
          //prueba de la tabla

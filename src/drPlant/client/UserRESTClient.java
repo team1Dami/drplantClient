@@ -79,5 +79,10 @@ public class UserRESTClient implements UserManager{
     public void close() {
         client.close();
     }
+    public void changePassword(String email) throws ClientErrorException {
+            WebTarget resource = webTarget;
+            resource = resource.path(java.text.MessageFormat.format("email/{0}", new Object[]{email}));
+            resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get();
+        }
     
 }

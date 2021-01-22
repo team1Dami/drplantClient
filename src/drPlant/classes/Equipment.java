@@ -1,6 +1,6 @@
 package drPlant.classes;
 
-import DrPlant.enumerations.Use;
+import drPlant.enumerations.Use;
 import java.util.Set;
 import java.util.logging.Logger;
 
