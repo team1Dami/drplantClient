@@ -29,10 +29,16 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -158,7 +164,7 @@ public class PlagueViewController {
      * @param user
      */
     public void initStage(Parent root) {
-        setIsAdmin(false);
+        setIsAdmin(true);
         plagueManager = PlagueManagerFactory.getPlagueManager();
         Scene scene = new Scene(root);
 
@@ -186,26 +192,32 @@ public class PlagueViewController {
         }));
         tbPlague.setItems((ObservableList) plagues);
         tbPlague.getSelectionModel().selectedItemProperty().addListener(this::handlePlagueTableSelectionChanged);
+        if (isAdmin) {
+            tbPlague.setEditable(true);
+            colCommonName.setCellFactory(TextFieldTableCell.forTableColumn());
+            colCommonName.setOnEditCommit(t -> {
+                updateCommonName((CellEditEvent<Plague, String>) t);
+            });
+        }
 
-        tfSearch.requestFocus();
         tfSearch.setPromptText("Introduce la plaga que buscas");
-        //   tfSearch.focusedProperty().addListener(this::handleFocusChanged);
+        tfSearch.requestFocus();
 
         chBox.setItems(FXCollections.observableArrayList(
                 "Nombre científico", "Nombre común", "Selecciona un tipo de gravedad:",
                 "Leve", "Medio", "Grave"));
         chBox.setValue("Nombre científico");
 
-        /* chBox.getItems().add("Nombre científico");
-        chBox.getItems().add("Nombre común");
-        chBox.getItems().add("Tipo");*/
-        // idea: en función de la selección del choice box se mostrará un promp text u otro
-        if (isAdmin == true) {
+        if (isAdmin) {
             btnAdd.setVisible(true);
             btnEdit.setVisible(true);
             btnDelete.setVisible(true);
             btnEdit.setDisable(true);
             btnDelete.setDisable(true);
+
+            btnAdd.setOnAction(this::handleAddAction);
+            btnEdit.setOnAction(this::handleEditAction);
+            btnDelete.setOnAction(this::handleDeleteAction);
         } else {
             btnAdd.setVisible(false);
             btnEdit.setVisible(false);
@@ -229,109 +241,110 @@ public class PlagueViewController {
     @FXML
     private void handleSearchAction(ActionEvent event) {
         Alert alert;
-        
-        if (tfSearch.getText().isEmpty()) {
+
+        if (tfSearch.getText().isEmpty() && chBox.getSelectionModel().getSelectedItem().equals("Nombre científico")) {
             ObservableList<Plague> plagues = FXCollections.observableArrayList(plagueManager.findAllPlagues(new GenericType<List<Plague>>() {
             }));
             tbPlague.setItems((ObservableList) plagues);
-        }
-        
-        if (chBox.getSelectionModel().getSelectedItem().equals("Nombre científico")) {
+        } else {
 
-            Plague plague = plagueManager.find(Plague.class, tfSearch.getText().trim());
+            if (chBox.getSelectionModel().getSelectedItem().equals("Nombre científico")) {
 
-            if (plague != null) {
-                Parent root;
-                Stage stage2 = new Stage();
-                try {
-                    InfoPlagueController controller = new InfoPlagueController();
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/infoPlague.fxml"));
+                Plague plague = plagueManager.find(Plague.class, tfSearch.getText().trim());
 
+                if (plague != null) {
+                    Parent root;
+                    Stage stage2 = new Stage();
                     try {
-                        root = (Parent) loader.load();
-                        controller = (loader.getController());
-                        controller.setStage(stage2);
-                        controller.initStage(root, isAdmin, plague);
-                    } catch (IOException ex) {
-                        ex.getMessage();//Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, ex);
+                        InfoPlagueController controller = new InfoPlagueController();
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/infoPlague.fxml"));
+
+                        try {
+                            root = (Parent) loader.load();
+                            controller = (loader.getController());
+                            controller.setStage(stage2);
+                            controller.initStage(root, isAdmin, plague);
+                        } catch (IOException ex) {
+                            //  Logger.getLogger(drPlantApplication.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+                        }
+                    } catch (ClientErrorException e) {
+                        alert = new Alert(Alert.AlertType.INFORMATION, "No se ha encontrado la plaga que buscas", ButtonType.OK);
+                        alert.showAndWait();
+                        //    Logger.getLogger(drPlantApplication.class.getName()).log(Level.SEVERE, e.getMessage(), e);
+                    }
+                }
+            }
+            if (chBox.getSelectionModel().getSelectedItem().equals("Nombre común")) {
+
+                Plague plague = plagueManager.findPlagueByCommonName(Plague.class, tfSearch.getText().trim());
+
+                if (plague != null) {
+                    Parent root;
+                    Stage stage2 = new Stage();
+                    try {
+                        InfoPlagueController controller = new InfoPlagueController();
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/infoPlague.fxml"));
+
+                        try {
+                            root = (Parent) loader.load();
+                            controller = (loader.getController());
+                            controller.setStage(stage2);
+                            controller.initStage(root, isAdmin, plague);
+                        } catch (IOException ex) {
+                            //  Logger.getLogger(drPlantApplication.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+                        }
+                    } catch (ClientErrorException e) {
+                        alert = new Alert(Alert.AlertType.INFORMATION, "No se ha encontrado la plaga que buscas", ButtonType.OK);
+                        alert.showAndWait();
+                        //  Logger.getLogger(drPlantApplication.class.getName()).log(Level.SEVERE, e.getMessage(), e);
+                    }
+                }
+            }
+
+            if (chBox.getSelectionModel().getSelectedItem().equals("Leve")) {
+                try {
+                    String searchedType = "light";
+                    ObservableList<Plague> plagues = FXCollections.observableArrayList(plagueManager.findPlaguesByType(new GenericType<List<Plague>>() {
+                    }, searchedType));
+                    tbPlague.setItems(plagues);
+                } catch (ClientErrorException e) {
+                    alert = new Alert(Alert.AlertType.INFORMATION, "Ops! se ha producido un error inesperado", ButtonType.OK);
+                    alert.showAndWait();
+                }
+            }
+
+            if (chBox.getSelectionModel().getSelectedItem().equals("Medio")) {
+                try {
+                    String searchedType = "middle";
+                    ObservableList<Plague> plagues = FXCollections.observableArrayList(plagueManager.findPlaguesByType(new GenericType<List<Plague>>() {
+                    }, searchedType));
+                    if (plagues.size() == 0) {
+                        alert = new Alert(Alert.AlertType.INFORMATION, "No se han encontrado plagas de tipo medio", ButtonType.OK);
+                        alert.showAndWait();
+                    } else {
+                        tbPlague.setItems(plagues);
                     }
                 } catch (ClientErrorException e) {
-                    alert = new Alert(Alert.AlertType.INFORMATION, "No se ha encontrado la plaga que buscas", ButtonType.OK);
+                    alert = new Alert(Alert.AlertType.INFORMATION, "Ops! se ha producido un error inesperado", ButtonType.OK);
                     alert.showAndWait();
-                    // Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, e);
                 }
             }
-        }
-        if (chBox.getSelectionModel().getSelectedItem().equals("Nombre común")) {
 
-            Plague plague = plagueManager.findPlagueByCommonName(Plague.class, tfSearch.getText().trim());
-            
-            if (plague != null) {
-                Parent root;
-                Stage stage2 = new Stage();
+            if (chBox.getSelectionModel().getSelectedItem().equals("Grave")) {
                 try {
-                    InfoPlagueController controller = new InfoPlagueController();
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/infoPlague.fxml"));
-
-                    try {
-                        root = (Parent) loader.load();
-                        controller = (loader.getController());
-                        controller.setStage(stage2);
-                        controller.initStage(root, isAdmin, plague);
-                    } catch (IOException ex) {
-                        ex.getMessage();//Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, ex);
+                    String searchedType = "severe";
+                    ObservableList<Plague> plagues = FXCollections.observableArrayList(plagueManager.findPlaguesByType(new GenericType<List<Plague>>() {
+                    }, searchedType));
+                    if (plagues.size() == 0) {
+                        alert = new Alert(Alert.AlertType.INFORMATION, "No se han encontrado plagas de tipo medio", ButtonType.OK);
+                        alert.showAndWait();
+                    } else {
+                        tbPlague.setItems(plagues);
                     }
                 } catch (ClientErrorException e) {
-                    alert = new Alert(Alert.AlertType.INFORMATION, "No se ha encontrado la plaga que buscas", ButtonType.OK);
+                    alert = new Alert(Alert.AlertType.INFORMATION, "No se han encontrado plagas de tipo grave", ButtonType.OK);
                     alert.showAndWait();
-                    // Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, e);
                 }
-            }
-        }
-        
-        if (chBox.getSelectionModel().getSelectedItem().equals("Leve")) {
-            try {
-                String searchedType = "light";
-                ObservableList<Plague> plagues = FXCollections.observableArrayList(plagueManager.findPlaguesByType(new GenericType<List<Plague>>() {
-                }, searchedType));
-                tbPlague.setItems(plagues);
-            } catch (ClientErrorException e) {
-                alert = new Alert(Alert.AlertType.INFORMATION, "Ops! se ha producido un error inesperado", ButtonType.OK);
-                alert.showAndWait();
-            }
-        }
-       
-        if (chBox.getSelectionModel().getSelectedItem().equals("Medio")) {
-            try {
-                String searchedType = "middle";
-                ObservableList<Plague> plagues = FXCollections.observableArrayList(plagueManager.findPlaguesByType(new GenericType<List<Plague>>() {
-                }, searchedType));
-                if (plagues.size() == 0) {
-                    alert = new Alert(Alert.AlertType.INFORMATION, "No se han encontrado plagas de tipo medio", ButtonType.OK);
-                    alert.showAndWait();
-                } else {
-                    tbPlague.setItems(plagues);
-                }
-            } catch (ClientErrorException e) {
-                alert = new Alert(Alert.AlertType.INFORMATION, "Ops! se ha producido un error inesperado", ButtonType.OK);
-                alert.showAndWait();
-            }
-        }
-        
-        if (chBox.getSelectionModel().getSelectedItem().equals("Grave")) {
-            try {
-                String searchedType = "severe";
-                ObservableList<Plague> plagues = FXCollections.observableArrayList(plagueManager.findPlaguesByType(new GenericType<List<Plague>>() {
-                }, searchedType));
-                if (plagues.size() == 0) {
-                    alert = new Alert(Alert.AlertType.INFORMATION, "No se han encontrado plagas de tipo medio", ButtonType.OK);
-                    alert.showAndWait();
-                } else {
-                    tbPlague.setItems(plagues);
-                }
-            } catch (ClientErrorException e) {
-                alert = new Alert(Alert.AlertType.INFORMATION, "No se han encontrado plagas de tipo grave", ButtonType.OK);
-                alert.showAndWait();
             }
         }
     }
@@ -343,25 +356,19 @@ public class PlagueViewController {
      * @param event
      */
     @FXML
-    private void handleAddAction(ActionEvent event
-    ) {
+    private void handleAddAction(ActionEvent event) {
         Parent root;
         Stage stage2 = new Stage();
         try {
             InfoPlagueController controller = new InfoPlagueController();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/infoPlague.fxml"));
 
-            try {
-                root = (Parent) loader.load();
-                controller = (loader.getController());
-                controller.setStage(stage2);
-                controller.initStage(root, isAdmin, plague);
-            } catch (IOException ex) {
-                ex.getMessage();//Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } catch (Exception e) {
-            e.getMessage();
-            // Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, e);
+            root = (Parent) loader.load();
+            controller = (loader.getController());
+            controller.setStage(stage2);
+            controller.initStage(root, isAdmin, null);
+        } catch (IOException ex) {
+            //  Logger.getLogger(drPlantApplication.class.getName(abcd)).log(Level.SEVERE, ex.getMessage(), ex);
         }
     }
 
@@ -372,15 +379,23 @@ public class PlagueViewController {
     @FXML
     private void handlePlagueTableSelectionChanged(ObservableValue observable,
             Object oldValue,
-            Object newValue
-    ) {
+            Object newValue) {
+     
         if (newValue != null) {
-            plague = plagueManager.find(Plague.class, colScientName.getText());
+           Plague p = (Plague) tbPlague.getSelectionModel().getSelectedItem();
+
             if (isAdmin) {
                 btnEdit.setDisable(false);
                 btnDelete.setDisable(false);
             }
+            tfSearch.setText(p.getScienceName());
+        } else {
+            btnEdit.setDisable(true);
+            btnDelete.setDisable(true);
         }
+        
+        
+      //  tfSearch.requestFocus();
     }
 
     /**
@@ -390,28 +405,26 @@ public class PlagueViewController {
      * @param event
      */
     @FXML
-    private void handleEditAction(ActionEvent event
-    ) {
+    private void handleEditAction(ActionEvent event) {
 
         Parent root;
         Stage stage2 = new Stage();
-        plague = plagueManager.find(Plague.class, colScientName.getText());
+
+        Plague plagueEdit = (Plague) tbPlague.getSelectionModel().getSelectedItem();
+        
+        plagueEdit = plagueManager.find(Plague.class, plagueEdit.getScienceName());
 
         try {
             InfoPlagueController controller = new InfoPlagueController();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/infoPlague.fxml"));
 
-            try {
-                root = (Parent) loader.load();
-                controller = (loader.getController());
-                controller.setStage(stage2);
-                controller.initStage(root, isAdmin, plague);
-            } catch (IOException ex) {
-                ex.getMessage();//Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } catch (Exception e) {
-            e.getMessage();
-            // Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, e);
+            root = (Parent) loader.load();
+            controller = (loader.getController());
+            controller.setStage(stage2);
+            controller.initStage(root, true, plagueEdit);
+            
+        } catch (IOException ex) {
+            ex.getMessage();//Logger.getLogger(drPlantApplication.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -424,21 +437,22 @@ public class PlagueViewController {
      * @param event
      */
     @FXML
-    private void handleDeleteAction(ActionEvent event
-    ) {
+    private void handleDeleteAction(ActionEvent event) {
+
         Plague plague = (Plague) tbPlague.getSelectionModel().getSelectedItem();
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
                 "¿Borrar la fila seleccionada?\n"
                 + "Esta operación no se puede deshacer.",
                 ButtonType.OK, ButtonType.CANCEL);
         alert.getDialogPane();
         Optional<ButtonType> result = alert.showAndWait();
+
         //If OK to deletion
         if (result.isPresent() && result.get() == ButtonType.OK) {
-
             PlagueManagerFactory.getPlagueManager().remove(plague.getScienceName());
+            tbPlague.refresh();
         }
-
     }
     //
 
@@ -473,17 +487,10 @@ public class PlagueViewController {
         }
     }
 
-    /*  public void handleFocusChanged(ObservableValue observable, Boolean oldValue,
-            Boolean newValue) {
-        Alert alert;
-        if (newValue) {
-            if (!tfSearch.getText().trim().matches("[a-zA-Z]")) {
-                alert = new Alert(Alert.AlertType.INFORMATION, "Debes rellenar el campo correctamente!", ButtonType.OK);
-                alert.showAndWait();
-            }
-        }
-        else{
-            
-        }
-    }*/
+    private void updateCommonName(CellEditEvent<Plague, String> t) {
+        Plague plague = t.getRowValue();
+        plague.setCommonName(t.getNewValue());
+        PlantManagerFactory.getPlantManager().edit(plague);
+        tbPlague.refresh();
+    }
 }

@@ -4,14 +4,3 @@
  * and open the template in the editor.
  */
 package drPlant.enumerations;
-
-/**
- *
- * @author Ruben
- */
-public enum PetFriendly {
-    dog,
-    cat, 
-    both,
-    no
-}

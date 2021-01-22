@@ -5,8 +5,8 @@
  */
 package drPlant.controller;
 
-import DrPlant.enumerations.PlagueType;
 import drPlant.classes.Plague;
+import drPlant.enumerations.PlagueType;
 import drPlant.factory.PlagueManagerFactory;
 import drPlant.interfaces.PlagueManager;
 import java.util.logging.Level;
@@ -126,27 +126,9 @@ public class InfoPlagueController {
      *
      * @param root
      */
- /*   public void initStage(Parent root, boolean isAdmin) {
-        setIsAdmin(false);
-
-        Scene scene = new Scene(root);
-
-        stage.setScene(scene);
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setTitle("Información de la plaga");
-        stage.setResizable(false);
-
-        stage.setOnShowing(this::handleWindowShowing);
-        stage.show();
-    }*/
-
-    /**
-     *
-     * @param root
-     */
     public void initStage(Parent root, boolean isAdmin, Plague plague) {
-        setIsAdmin(false);
-        this.plague = plague;
+        setIsAdmin(isAdmin);
+        setPlague(plague);
         Scene scene = new Scene(root);
 
         stage.setScene(scene);
@@ -163,22 +145,52 @@ public class InfoPlagueController {
      * @param event onClick in button Accept and onClick in button Cancel
      */
     private void handleWindowShowing(WindowEvent event) {
-        if (plague != null && isAdmin) {
+        if (plague != null) {
+            if (isAdmin) {
+                tfScientName.setDisable(true);
+                tfScientName.setEditable(false);
+                tfCommonName.setEditable(true);
+                txAreaDescription.setEditable(true);
+                txAreaControl.setEditable(true);
+                txAreaRemedy.setEditable(true);
+
+                btnSaveChanges.setVisible(true);
+                btnSaveChanges.setOnAction(this::handleSaveChangesAction);
+                btnDelete.setVisible(true);
+                btnDelete.setOnAction(this::handleDeleteAction);
+
+                rbLight.setDisable(false);
+                rbMedium.setDisable(false);
+                rbSevere.setDisable(false);
+
+                rbLight.setOnAction(this::handleCheckedRadioButton);
+                rbMedium.setOnAction(this::handleCheckedRadioButton);
+                rbSevere.setOnAction(this::handleCheckedRadioButton);
+            } else {
+                tfScientName.setDisable(true);
+                tfScientName.setEditable(false);
+                tfCommonName.setDisable(true);
+                tfCommonName.setEditable(false);
+                txAreaDescription.setDisable(true);
+                txAreaDescription.setEditable(false);
+                txAreaControl.setDisable(true);
+                txAreaControl.setEditable(false);
+                txAreaRemedy.setDisable(true);
+                txAreaRemedy.setEditable(false);
+
+                rbLight.setDisable(true);
+                rbMedium.setDisable(true);
+                rbSevere.setDisable(true);
+
+                btnSaveChanges.setVisible(false);
+                btnDelete.setVisible(false);
+            }
             tfScientName.setText(plague.getScienceName());
-            tfScientName.setEditable(isAdmin);
-            
             tfCommonName.setText(plague.getCommonName());
-            tfCommonName.setEditable(isAdmin);
-            
             txAreaDescription.setText(plague.getDescription());
-            txAreaDescription.setEditable(isAdmin);
-            
             txAreaControl.setText(plague.getControl());
-            txAreaControl.setEditable(isAdmin);
-            
             txAreaRemedy.setText(plague.getRemedy());
-            txAreaRemedy.setEditable(isAdmin);
-            
+
             if (plague.getType().equals(PlagueType.light)) {
                 rbLight.setSelected(true);
             }
@@ -188,31 +200,29 @@ public class InfoPlagueController {
             if (plague.getType().equals(PlagueType.severe)) {
                 rbSevere.setSelected(true);
             }
+        }
+
+        if (plague == null) {
+            // codificar cuando no recibe una plaga
+            //   imgPlague.setVisible(false);
+            tfScientName.setEditable(true);
+            tfScientName.textProperty().addListener(this::handleTextChanged);
+            tfCommonName.setEditable(true);
+            tfCommonName.textProperty().addListener(this::handleTextChanged);
+
+            txAreaDescription.setEditable(true);
+            txAreaDescription.textProperty().addListener(this::handleTextChanged);
+            txAreaControl.setEditable(true);
+            txAreaControl.textProperty().addListener(this::handleTextChanged);
+            txAreaRemedy.setEditable(true);
+            txAreaRemedy.textProperty().addListener(this::handleTextChanged);
+
+            rbLight.setSelected(false);
+            rbMedium.setSelected(false);
+            rbSevere.setSelected(false);
 
             btnSaveChanges.setOnAction(this::handleSaveChangesAction);
             btnDelete.setOnAction(this::handleDeleteAction);
-        }
-        if(plague == null){
-        // codificar cuando recibe una plaga
-        //   imgPlague.setVisible(false);
-        tfScientName.setEditable(isAdmin);
-        tfScientName.textProperty().addListener(this::handleTextChanged);
-        tfCommonName.setEditable(isAdmin);
-        tfCommonName.textProperty().addListener(this::handleTextChanged);
-
-        txAreaDescription.setEditable(isAdmin);
-        txAreaDescription.textProperty().addListener(this::handleTextChanged);
-        txAreaControl.setEditable(isAdmin);
-        txAreaControl.textProperty().addListener(this::handleTextChanged);
-        txAreaRemedy.setEditable(isAdmin);
-        txAreaRemedy.textProperty().addListener(this::handleTextChanged);
-
-        rbLight.setSelected(false);
-        rbMedium.setSelected(false);
-        rbSevere.setSelected(false);
-
-        btnSaveChanges.setOnAction(this::handleSaveChangesAction);
-        btnDelete.setOnAction(this::handleDeleteAction);
         }
     }
 
@@ -255,6 +265,22 @@ public class InfoPlagueController {
         }
     }
 
+    private void handleCheckedRadioButton(ActionEvent event) {
+
+        if (rbLight.isSelected()) {
+            rbMedium.setSelected(false);
+            rbSevere.setSelected(false);
+        }
+        if (rbMedium.isSelected()) {
+            rbLight.setSelected(false);
+            rbSevere.setSelected(false);
+        }
+        if (rbSevere.isSelected()) {
+            rbLight.setSelected(false);
+            rbMedium.setSelected(false);
+        }
+    }
+
     /**
      *
      * @param event
@@ -280,17 +306,27 @@ public class InfoPlagueController {
             if (rbSevere.isSelected()) {
                 plague.setType(PlagueType.severe);
             }
-            if (!rbLight.isSelected() || !rbMedium.isSelected() || !rbSevere.isSelected()) {
+            /* else if (!rbLight.isSelected() || !rbMedium.isSelected() || !rbSevere.isSelected()) {
                 alert = new Alert(Alert.AlertType.WARNING, "Debes seleccionar un tipo de gravedad!", ButtonType.OK);
                 alert.showAndWait();
-            }
+            }*/
 
             alert = new Alert(Alert.AlertType.WARNING, "¿Enviar cambios?", ButtonType.YES, ButtonType.NO);
             if (!alert.getResult().getButtonData().isCancelButton()) {
                 plagueManager = PlagueManagerFactory.getPlagueManager();
-                plagueManager.create(plague);
-                alert = new Alert(Alert.AlertType.INFORMATION, "Se ha registrado correctamente", ButtonType.OK);
-                alert.showAndWait();
+                try {
+                    Plague p = plagueManager.find(Plague.class, tfScientName.getText().trim());
+                    if (p != null) {
+                        alert = new Alert(Alert.AlertType.INFORMATION, "Esta plaga ya está registrada", ButtonType.OK);
+                        alert.showAndWait();
+                    } else {
+                        plagueManager.create(plague);
+                        alert = new Alert(Alert.AlertType.INFORMATION, "Se ha registrado correctamente", ButtonType.OK);
+                        alert.showAndWait();
+                    }
+                } catch (ClientErrorException e) {
+                    
+                }
             }
 
         } catch (ClientErrorException e) {
@@ -337,6 +373,5 @@ public class InfoPlagueController {
     private void setOncloseRequest(WindowEvent we) {
 
         stage.close();
-
     }
 }

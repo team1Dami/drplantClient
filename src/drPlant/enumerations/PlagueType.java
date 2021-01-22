@@ -1,5 +1,5 @@
 
-package DrPlant.enumerations;
+package drPlant.enumerations;
 
 /**
  * This class encapsulates the data of the types of plague.

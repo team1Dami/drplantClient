@@ -5,13 +5,13 @@
  */
 package drPlant.Encrypted;
 
-import drPlant.main.CifrarMensaje;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.ResourceBundle;
 import javax.crypto.Cipher;
 
 /**
@@ -19,43 +19,43 @@ import javax.crypto.Cipher;
  * @author saray
  */
 public class Encrypt {
-    public byte[] getPublicFileKey() throws IOException {
 
-        InputStream keyfis = CifrarMensaje.class.getClassLoader()
-                .getResourceAsStream("drPlant/main/key/RSA_Public.key");
-        
+    private static ResourceBundle resource;
+
+    public byte[] getPublicFileKey() throws IOException {
+        resource = ResourceBundle.getBundle("drPlant/main/key/KEY_PROPERTIES_FILE");
+        String path = resource.getString("PUBLIC_KEY_PATH");
+        InputStream keyfis = Encrypt.class.getClassLoader()
+                .getResourceAsStream(path);
 
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
         int len;
-        // read bytes from the input stream and store them in buffer
+
         while ((len = keyfis.read(buffer)) != -1) {
-            // write bytes from the buffer into output stream
+
             os.write(buffer, 0, len);
         }
         keyfis.close();
         return os.toByteArray();
     }
-    
-    
+
     public byte[] cifrarPass(String passwd) {
         byte[] encodedMessage = null;
         try {
-            // Cargamos la clave pública
 
             byte fileKey[] = getPublicFileKey();
 
-            // Obtenemos una instancia de KeyFactory, algoritmo RSA
             KeyFactory myKeyFactory = KeyFactory.getInstance("RSA");
-            // Creamos un nuevo X509EncodedKeySpec del fileKey
+
             X509EncodedKeySpec encodedKey = new X509EncodedKeySpec(fileKey);
-            // Generamos la public key con el keyFactory
+
             PublicKey publicKey = myKeyFactory.generatePublic(encodedKey);
-            // Obtenemos una instancia del Cipher "RSA/ECB/PKCS1Padding"
+
             Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-            // Iniciamos el cipher (ENCRYPT_MODE)
+
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-            // El método doFinal nos cifra el mensaje
+
             encodedMessage = cipher.doFinal(passwd.getBytes());
 
         } catch (Exception e) {
