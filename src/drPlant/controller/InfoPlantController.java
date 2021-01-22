@@ -6,14 +6,13 @@
 package drPlant.controller;
 
 //import drPlant.classes.Plant;
-import DrPlant.enumerations.Climate;
-import DrPlant.enumerations.PetFriendly;
-import DrPlant.enumerations.PlantType;
-import DrPlant.enumerations.UserPrivilege;
+import drPlant.enumerations.Climate;
+import drPlant.enumerations.PetFriendly;
+import drPlant.enumerations.PlantType;
+import drPlant.enumerations.UserPrivilege;
 import drPlant.classes.Plant;
 import drPlant.classes.User;
 import drPlant.factory.PlantManagerFactory;
-//import drPlant.factory.PlantManagerFactory;
 import drPlant.factory.UserManagerFactory;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -296,6 +295,7 @@ public class InfoPlantController {
             newPlant.setScienceName(txtScience.getText());
             newPlant.setCommonName(txtCommon.getText());
             newPlant.setCares(txtCares.getText());
+            newPlant.setDescription(txtDescription.getText());
             if (cbClimate.getValue().equals("Calido")) {
                 newPlant.setClimate(Climate.hot);
             } else if (cbClimate.getValue().equals("Frio")) {
@@ -404,7 +404,7 @@ public class InfoPlantController {
 
     private boolean ValidateText(String text) {
         // Patron para validar el email
-        if (text.length() > 500) {
+        if (text.length() > 255) {
             return false;
         } else {
             return true;

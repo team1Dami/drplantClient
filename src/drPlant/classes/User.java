@@ -1,7 +1,7 @@
 package drPlant.classes;
 
-import DrPlant.enumerations.UserPrivilege;
-import DrPlant.enumerations.Userstatus;
+import drPlant.enumerations.UserPrivilege;
+import drPlant.enumerations.Userstatus;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
@@ -30,23 +30,17 @@ public class User implements Serializable {
     private String passwd;
     private java.sql.Date lastAccess;
     private java.sql.Date lastPasswdChange;
-   //private Set<UserPlant> plants;
-    private Set<Plant> plants;
+    private Set<UserPlant> plants;
+    //private Set<Plant> plants;
     private Set<Equipment> equipments;
 
-    public Set<Plant> getPlants() {
-        return plants;
+    /* public Set<Plant> getPlants() {
+    return plants;
     }
-
+    
     public void setPlants(Set<Plant> plants) {
-        this.plants = plants;
-    }
-
-    
-    
-    
-    
-    
+    this.plants = plants;
+    }*/
     
     
     /**
@@ -206,17 +200,17 @@ public class User implements Serializable {
      * Get list of plants asociated with the user
      * @return list of plants
      */
-    /*public Set<UserPlant> getPlants() {
+    public Set<UserPlant> getPlants() {
         return plants;
-    }*/
+    }
 
     /**
      * Set all user´s plants 
      * @param plants 
      */
-  /*  public void setPlants(Set<UserPlant> plants) {
+    public void setPlants(Set<UserPlant> plants) {
         this.plants = plants;
-    }*/
+    }
     /**
     * Get list of equipments
     * @return list of user´s equipment
