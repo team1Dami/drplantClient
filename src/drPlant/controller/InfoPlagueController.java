@@ -19,6 +19,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
@@ -43,9 +44,15 @@ public class InfoPlagueController {
     @FXML
     private TextField tfCommonName;
     @FXML
+    private ScrollPane scrollPaneDescription;
+    @FXML
     private TextArea txAreaDescription;
     @FXML
+    private ScrollPane scrollPaneControl;
+    @FXML
     private TextArea txAreaControl;
+    @FXML
+    private ScrollPane scrollPaneRemedy;
     @FXML
     private TextArea txAreaRemedy;
     @FXML
@@ -167,7 +174,7 @@ public class InfoPlagueController {
                 rbMedium.setOnAction(this::handleCheckedRadioButton);
                 rbSevere.setOnAction(this::handleCheckedRadioButton);
             } else {
-                tfScientName.setDisable(true);
+              //  tfScientName.setDisable(true);
                 tfScientName.setEditable(false);
                 tfCommonName.setDisable(true);
                 tfCommonName.setEditable(false);
@@ -223,7 +230,19 @@ public class InfoPlagueController {
 
             btnSaveChanges.setOnAction(this::handleSaveChangesAction);
             btnDelete.setOnAction(this::handleDeleteAction);
-        }
+        }      
+        
+        scrollPaneDescription.setContent(txAreaDescription);
+        scrollPaneDescription.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPaneDescription.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        
+        scrollPaneControl.setContent(txAreaControl);
+        scrollPaneControl.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPaneControl.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        
+        scrollPaneRemedy.setContent(txAreaRemedy);
+        scrollPaneRemedy.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPaneRemedy.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
     }
 
     private void handleTextChanged(ObservableValue observable, String oldValue,
@@ -289,43 +308,42 @@ public class InfoPlagueController {
     private void handleSaveChangesAction(ActionEvent event) {
         Alert alert;
         try {
-            Plague plague = new Plague();
+            Plague p = new Plague();
 
-            plague.setScienceName(tfScientName.getText().trim());
-            plague.setCommonName(tfCommonName.getText().trim());
-            plague.setDescription(txAreaDescription.getText());
-            plague.setControl(txAreaControl.getText());
-            plague.setRemedy(txAreaRemedy.getText());
+            p.setScienceName(tfScientName.getText().trim());
+            p.setCommonName(tfCommonName.getText().trim());
+            p.setDescription(txAreaDescription.getText());
+            p.setControl(txAreaControl.getText());
+            p.setRemedy(txAreaRemedy.getText());
 
             if (rbLight.isSelected()) {
-                plague.setType(PlagueType.light);
+                p.setType(PlagueType.light);
             }
             if (rbMedium.isSelected()) {
-                plague.setType(PlagueType.middle);
+                p.setType(PlagueType.middle);
             }
             if (rbSevere.isSelected()) {
-                plague.setType(PlagueType.severe);
+                p.setType(PlagueType.severe);
             }
-            /* else if (!rbLight.isSelected() || !rbMedium.isSelected() || !rbSevere.isSelected()) {
-                alert = new Alert(Alert.AlertType.WARNING, "Debes seleccionar un tipo de gravedad!", ButtonType.OK);
-                alert.showAndWait();
-            }*/
 
             alert = new Alert(Alert.AlertType.WARNING, "¿Enviar cambios?", ButtonType.YES, ButtonType.NO);
+            alert.showAndWait();
             if (!alert.getResult().getButtonData().isCancelButton()) {
                 plagueManager = PlagueManagerFactory.getPlagueManager();
                 try {
-                    Plague p = plagueManager.find(Plague.class, tfScientName.getText().trim());
-                    if (p != null) {
-                        alert = new Alert(Alert.AlertType.INFORMATION, "Esta plaga ya está registrada", ButtonType.OK);
+                    if (plague != null) {                      
+                        plagueManager.edit(p);
+                        alert = new Alert(Alert.AlertType.INFORMATION, "Se han guardado los cambios correctamente", ButtonType.OK);
                         alert.showAndWait();
+                        stage.close();
                     } else {
-                        plagueManager.create(plague);
+                        plagueManager.create(p);
                         alert = new Alert(Alert.AlertType.INFORMATION, "Se ha registrado correctamente", ButtonType.OK);
                         alert.showAndWait();
+                        stage.close();
                     }
                 } catch (ClientErrorException e) {
-                    
+
                 }
             }
 

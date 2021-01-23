@@ -7,6 +7,7 @@ package drPlant.interfaces;
 
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
 
 /**
  *
@@ -25,6 +26,8 @@ public interface PlantManager {
     public <T> T getPlantByPetFriendlyAndClimate(Class<T> responseType, String petFriendly, String climate) throws ClientErrorException ;
 
     public <T> T getAllPlants(Class<T> responseType) throws ClientErrorException ;
+    
+    public <T> T getAllPlants(GenericType<T> responseType) throws ClientErrorException ;
 
     public void remove(String id) throws ClientErrorException ;
 

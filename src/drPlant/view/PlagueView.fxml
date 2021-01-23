@@ -8,12 +8,12 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="875.0" prefWidth="1235.0" stylesheets="@css/drPlantstyles.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.controller.PlagueViewController">   
+<BorderPane id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="875.0" prefWidth="1235.0" stylesheets="@css/drPlantstyles.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.controller.PlagueViewController">   
     <center>
       <AnchorPane fx:id="PlagueView" prefHeight="875.0" prefWidth="1235.0" BorderPane.alignment="CENTER">         
          <children>
             <fx:include prefWidth="1235.0" source="Menu.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-            <ChoiceBox fx:id="chBox" layoutX="669.0" layoutY="103.0" prefHeight="37.0" prefWidth="225.0" AnchorPane.rightAnchor="341.0" AnchorPane.topAnchor="103.0" />
+            <ChoiceBox fx:id="chBox" layoutX="669.0" layoutY="103.0" prefHeight="37.0" prefWidth="303.0" AnchorPane.rightAnchor="307.0" AnchorPane.topAnchor="103.0" />
             <TextField fx:id="tfSearch" layoutX="76.0" layoutY="106.0" prefHeight="31.0" prefWidth="524.0" promptText="Introduce la plaga que buscas" AnchorPane.leftAnchor="76.0" AnchorPane.rightAnchor="635.0" />
             <TableView fx:id="tbPlague" layoutX="76.0" layoutY="196.0" prefHeight="586.0" prefWidth="1062.0" AnchorPane.bottomAnchor="93.0" AnchorPane.leftAnchor="76.0" AnchorPane.rightAnchor="97.0" AnchorPane.topAnchor="196.0">
                <columns>

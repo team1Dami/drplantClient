@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<SplitPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="578.0" prefWidth="785.0" stylesheets="@drPlantstyles.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.controller.LoginController">
+  <items>
+    <AnchorPane id="StageLogin" minHeight="0.0" minWidth="0.0" prefHeight="546.0" prefWidth="783.0" stylesheets="@../css/drPlantstyles.css">
+         <children>
+            <VBox id="VBox" layoutX="98.0" layoutY="199.0" prefHeight="221.0" prefWidth="578.0" stylesheets="@drPlantstyles.css" AnchorPane.bottomAnchor="156.0">
+               <children>
+                  <Label prefHeight="17.0" prefWidth="707.0" text="User" textFill="#282727">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <font>
+                        <Font size="28.0" />
+                     </font>
+                     <padding>
+                        <Insets top="30.0" />
+                     </padding>
+                  </Label>
+                  <TextField fx:id="tfLogin" promptText="Nombre de usuario" />
+                  <Label prefHeight="17.0" prefWidth="731.0" text="Password">
+                     <padding>
+                        <Insets top="10.0" />
+                     </padding>
+                     <font>
+                        <Font size="28.0" />
+                     </font>
+                  </Label>
+                  <PasswordField fx:id="tfPasswd" promptText="Introduzca contraseña" />
+               </children>
+               <padding>
+                  <Insets bottom="40.0" />
+               </padding>
+            </VBox>
+            <Button id="btnLogin" fx:id="btnLogin" layoutX="323.0" layoutY="400.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="138.0" text="Entrar">
+               <font>
+                  <Font name="Centaur" size="19.0" />
+               </font>
+            </Button>
+            <Label contentDisplay="CENTER" layoutX="50.0" layoutY="448.0" prefHeight="17.0" prefWidth="674.0" style="-fx-background-color: white;" text="Si no tiene cuenta, puede registrarse clickando en el siguiente boton" textFill="#282828" underline="true" wrapText="true">
+               <font>
+                  <Font name="Bodoni MT" size="22.0" />
+               </font>
+               <padding>
+                  <Insets left="20.0" />
+               </padding>
+            </Label>
+            <Button id="btnRegister" fx:id="btnRegister" layoutX="318.0" layoutY="487.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="138.0" text="Registrar" textAlignment="CENTER">
+               <font>
+                  <Font name="Bodoni MT" size="20.0" />
+               </font>
+            </Button>
+            <Hyperlink id="nuevaContraseña" fx:id="nuevaContraseña" layoutX="521.0" layoutY="409.0" prefHeight="23.0" prefWidth="191.0" style="-fx-background-color: white;" text="He olvidado mi contraseña" underline="true" />
+         </children></AnchorPane>
+  </items>
+</SplitPane>

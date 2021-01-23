@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package DrPlant.enumerations;
+package drPlant.enumerations;
 
 /**
  *
  * @author Eneko
  */
 public enum Use {
-        riego,
-        sustrato,
-        general
+    riego,
+    sustrato,
+    general
 }

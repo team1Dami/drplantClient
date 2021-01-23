@@ -71,18 +71,20 @@ public class MenuController {
     @FXML
     private void handlePlantViewAction(ActionEvent event) {
         Parent root;
-        Stage stage = new Stage();
-        
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("PlantView.fxml"));
+        Stage stage2 = new Stage();
+
+        PlantViewController controller = new PlantViewController();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/PlantView.fxml"));
         try {
             root = (Parent) loader.load();
-            PlantViewController controller = ((PlantViewController) loader.getController());
             controller = (loader.getController());
-            controller.setStage(stage);
+            controller = (loader.getController());
+            controller.setStage(stage2);
             controller.initStage(root);
-            
+            stage.close();
+
         } catch (IOException ex) {
-            logger.log(Level.SEVERE, "Can't opne PlantView");
+            logger.log(Level.SEVERE, "Can't open PlantView");
             Alert alert = new Alert(Alert.AlertType.WARNING, "Ops! Ha ocurrido un error inesperado!", ButtonType.OK);
             alert.showAndWait();
         }
@@ -95,13 +97,24 @@ public class MenuController {
      */
     @FXML
     private void handleMyPlantsViewAction(ActionEvent event) {
-        /*    FXMLLoader loader
-                    = new FXMLLoader(getClass().getResource("MyPlantsView.fxml"));
-            Parent root = (Parent) loader.load();
-            MyPlantsViewController controller = ((MyPlantsViewController) loader.getController());
+        Parent root;
+        Stage stage2 = new Stage();
+
+       /* MyPlantsViewController controller = new MyPlantsViewController();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/MyPlantsView.fxml"));
+        try {
+            root = (Parent) loader.load();
             controller = (loader.getController());
-            controller.setStage(stage);
-            controller.initStage(root);*/
+            controller = (loader.getController());
+            controller.setStage(stage2);
+            controller.initStage(root);
+            stage.close();
+
+        } catch (IOException ex) {
+            logger.log(Level.SEVERE, "Can't open MyPlantsView");
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Ops! Ha ocurrido un error inesperado!", ButtonType.OK);
+            alert.showAndWait();
+        }*/
     }
 
     /**
@@ -112,19 +125,20 @@ public class MenuController {
     @FXML
     private void handlePlagueViewAction(ActionEvent event) {
         Parent root;
-        Stage stage = new Stage();
-        
+        Stage stage2 = new Stage();
+
         try {
             FXMLLoader loader
                     = new FXMLLoader(getClass().getResource("PlagueView.fxml"));
             root = (Parent) loader.load();
             PlagueViewController controller = ((PlagueViewController) loader.getController());
             controller = (loader.getController());
-            controller.setStage(stage);
+            controller.setStage(stage2);
             controller.initStage(root);
-          
+            stage.close();
+
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Can't opne PlagueView");
+            logger.log(Level.SEVERE, "Can't open PlagueView");
             Alert alert = new Alert(Alert.AlertType.WARNING, "Ops! Ha ocurrido un error inesperado!", ButtonType.OK);
             alert.showAndWait();
         }
@@ -139,13 +153,24 @@ public class MenuController {
      */
     @FXML
     private void handleEquipmentViewAction(ActionEvent event) {
-        /*    FXMLLoader loader
-                    = new FXMLLoader(getClass().getResource("EquipmentView.fxml"));
-            Parent root = (Parent) loader.load();
-            EquipmentViewController controller = ((EquipmentViewController) loader.getController());
+        Parent root;
+        Stage stage2 = new Stage();
+
+       /* EquipmentViewController controller = new EquipmentViewController();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/EquipmentView.fxml"));
+        try {
+            root = (Parent) loader.load();
             controller = (loader.getController());
-            controller.setStage(stage);
-            controller.initStage(root);*/
+            controller = (loader.getController());
+            controller.setStage(stage2);
+            controller.initStage(root);
+            stage.close();
+
+        } catch (IOException ex) {
+            logger.log(Level.SEVERE, "Can't open EquipmentView");
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Ops! Ha ocurrido un error inesperado!", ButtonType.OK);
+            alert.showAndWait();
+        }*/
     }
 
     /**
@@ -155,13 +180,24 @@ public class MenuController {
      */
     @FXML
     private void handleShopViewAction(ActionEvent event) {
-        /*    FXMLLoader loader
-                    = new FXMLLoader(getClass().getResource("ShopView.fxml"));
-            Parent root = (Parent) loader.load();
-            ShopViewController controller = ((ShopViewController) loader.getController());
+        Parent root;
+        Stage stage2 = new Stage();
+
+       /* ShopViewController controller = new ShopViewController();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/ShopView.fxml"));
+        try {
+            root = (Parent) loader.load();
             controller = (loader.getController());
-            controller.setStage(stage);
-            controller.initStage(root);*/
+            controller = (loader.getController());
+            controller.setStage(stage2);
+            controller.initStage(root);
+            stage.close();
+
+        } catch (IOException ex) {
+            logger.log(Level.SEVERE, "Can't open ShopView");
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Ops! Ha ocurrido un error inesperado!", ButtonType.OK);
+            alert.showAndWait();
+        }*/
     }
 
     /**
@@ -171,13 +207,24 @@ public class MenuController {
      */
     @FXML
     private void handleViewProfileAction(ActionEvent event) {
-        /*    FXMLLoader loader
-                    = new FXMLLoader(getClass().getResource("MyProfileView.fxml"));
-            Parent root = (Parent) loader.load();
-            MyProfileViewController controller = ((MyProfileViewController) loader.getController());
+        Parent root;
+        Stage stage2 = new Stage();
+
+       /* MyProfileViewController controller = new MyProfileViewController();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/MyProfileView.fxml"));
+        try {
+            root = (Parent) loader.load();
             controller = (loader.getController());
-            controller.setStage(stage);
-            controller.initStage(root);*/
+            controller = (loader.getController());
+            controller.setStage(stage2);
+            controller.initStage(root);
+            stage.close();
+
+        } catch (IOException ex) {
+            logger.log(Level.SEVERE, "Can't open MyProfileView");
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Ops! Ha ocurrido un error inesperado!", ButtonType.OK);
+            alert.showAndWait();
+        }*/
     }
 
     /**
@@ -186,19 +233,24 @@ public class MenuController {
      * @param event
      */
     @FXML
-    private void handleCloseSessionAction(ActionEvent event) {          
-            Parent root;
-      /*  try {
-            FXMLLoader loader
-                    = new FXMLLoader(getClass().getResource("LoginView.fxml"));
+    private void handleCloseSessionAction(ActionEvent event) {
+        Parent root;
+        Stage stage2 = new Stage();
+
+       LoginController controller = new LoginController();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/Login.fxml"));
+        try {
             root = (Parent) loader.load();
-            LoginController controller = ((LoginViewController) loader.getController());
             controller = (loader.getController());
-            controller.setStage(stage);
+            controller = (loader.getController());
+            controller.setStage(stage2);
             controller.initStage(root);
-            
+            stage.close();
+
         } catch (IOException ex) {
-            Logger.getLogger(MenuController.class.getName()).log(Level.SEVERE, null, ex);
-        }*/          
+            logger.log(Level.SEVERE, "Can't open LoginView");
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Ops! Ha ocurrido un error inesperado!", ButtonType.OK);
+            alert.showAndWait();
+        }
     }
 }

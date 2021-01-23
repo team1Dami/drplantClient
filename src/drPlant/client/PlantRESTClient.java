@@ -9,6 +9,7 @@ import drPlant.interfaces.PlantManager;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
 
 /**
  * Jersey REST client generated for REST resource:PlantFacadeREST [plant]<br>
@@ -119,6 +120,13 @@ public class PlantRESTClient implements PlantManager{  // hacer que implemente l
 
     public void close() {
         client.close();
+    }
+
+    @Override
+    public <T> T getAllPlants(GenericType<T> responseType) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
+                .get(responseType);
     }
     
 }

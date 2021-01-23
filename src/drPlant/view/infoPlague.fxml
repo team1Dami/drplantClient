@@ -3,6 +3,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
@@ -10,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="936.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.controller.InfoPlagueController">
+<VBox prefHeight="936.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.controller.InfoPlagueController">
   <children>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="916.0" prefWidth="640.0" style="-fx-background-color: white;" VBox.vgrow="ALWAYS">
          <children>
@@ -20,7 +21,10 @@
                   <Font name="System Bold" size="15.0" />
                </font>
             </Label>
-            <TextField fx:id="tfScientName" layoutX="251.0" layoutY="85.0" prefHeight="31.0" prefWidth="350.0" />
+            <TextField fx:id="tfScientName" layoutX="251.0" layoutY="85.0" prefHeight="31.0" prefWidth="350.0">
+               <font>
+                  <Font name="System Italic" size="15.0" />
+               </font></TextField>
             <Label layoutX="251.0" layoutY="128.0" prefHeight="21.0" prefWidth="350.0" text="Nombre común">
                <font>
                   <Font name="System Bold" size="15.0" />
@@ -32,19 +36,16 @@
                   <Font name="System Bold" size="15.0" />
                </font>
             </Label>
-            <TextArea fx:id="txAreaDescription" layoutX="41.0" layoutY="277.0" prefHeight="135.0" prefWidth="571.0" />
             <Label layoutX="41.0" layoutY="432.0" prefHeight="21.0" prefWidth="350.0" text="Control">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>
             </Label>
-            <TextArea fx:id="txAreaControl" layoutX="41.0" layoutY="453.0" prefHeight="135.0" prefWidth="571.0" />
             <Label layoutX="41.0" layoutY="606.0" prefHeight="21.0" prefWidth="350.0" text="Remedio">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>
             </Label>
-            <TextArea id="txAreaRemedy" fx:id="txAreaRemedy" layoutX="41.0" layoutY="627.0" prefHeight="135.0" prefWidth="571.0" />
             <Label layoutX="41.0" layoutY="781.0" prefHeight="21.0" prefWidth="350.0" text="Gravedad">
                <font>
                   <Font name="System Bold" size="15.0" />
@@ -54,7 +55,34 @@
             <Button fx:id="btnDelete" layoutX="359.0" layoutY="875.0" mnemonicParsing="false" onAction="#handleDeleteAction" prefHeight="31.0" prefWidth="125.0" text="Eliminar" />
             <RadioButton fx:id="rbLight" layoutX="41.0" layoutY="814.0" mnemonicParsing="false" prefHeight="21.0" prefWidth="104.0" text="Leve" />
             <RadioButton fx:id="rbMedium" layoutX="161.0" layoutY="814.0" mnemonicParsing="false" prefHeight="21.0" prefWidth="118.0" text="Media" />
-            <RadioButton fx:id="rbSevere" layoutX="279.0" layoutY="814.0" mnemonicParsing="false" text="Grave" />           
+            <RadioButton fx:id="rbSevere" layoutX="279.0" layoutY="814.0" mnemonicParsing="false" text="Grave" />
+            <ScrollPane fx:id="scrollPaneControl" hbarPolicy="NEVER" layoutX="38.0" layoutY="453.0" pannable="true" prefHeight="135.0" prefWidth="580.0">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="134.0" prefWidth="554.0">
+                     <children>
+                        <TextArea fx:id="txAreaControl" layoutX="-1.0" layoutY="-2.0" prefHeight="135.0" prefWidth="564.0" wrapText="true" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </ScrollPane>
+            <ScrollPane fx:id="scrollPaneRemedy" hbarPolicy="NEVER" layoutX="37.0" layoutY="627.0" pannable="true" prefHeight="135.0" prefWidth="580.0">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="135.0" prefWidth="560.0">
+                     <children>
+                        <TextArea id="txAreaRemedy" fx:id="txAreaRemedy" prefHeight="135.0" prefWidth="564.0" wrapText="true" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </ScrollPane>
+            <ScrollPane fx:id="scrollPaneDescription" hbarPolicy="NEVER" layoutX="38.0" layoutY="277.0" pannable="true" prefHeight="135.0" prefWidth="580.0">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="134.0" prefWidth="554.0">
+                     <children>
+                        <TextArea fx:id="txAreaDescription" layoutX="-1.0" layoutY="-2.0" prefHeight="135.0" prefWidth="564.0" wrapText="true" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </ScrollPane>           
          </children>
     </AnchorPane>
   </children>
