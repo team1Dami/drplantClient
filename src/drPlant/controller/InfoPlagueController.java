@@ -174,17 +174,12 @@ public class InfoPlagueController {
                 rbMedium.setOnAction(this::handleCheckedRadioButton);
                 rbSevere.setOnAction(this::handleCheckedRadioButton);
             } else {
-              //  tfScientName.setDisable(true);
                 tfScientName.setEditable(false);
-                tfCommonName.setDisable(true);
                 tfCommonName.setEditable(false);
-                txAreaDescription.setDisable(true);
                 txAreaDescription.setEditable(false);
-                txAreaControl.setDisable(true);
                 txAreaControl.setEditable(false);
-                txAreaRemedy.setDisable(true);
                 txAreaRemedy.setEditable(false);
-
+               
                 rbLight.setDisable(true);
                 rbMedium.setDisable(true);
                 rbSevere.setDisable(true);

@@ -6,6 +6,7 @@ import drPlant.enumerations.UserPrivilege;
 import drPlant.enumerations.Userstatus;
 import drPlant.factory.UserManagerFactory;
 import drPlant.interfaces.UserManager;
+import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.logging.Level;
@@ -104,23 +105,23 @@ public class SignUpController {
      */
     private void handleWindowShowing(WindowEvent event) {
 
+        /*   errorFullName.setDisable(true);
         errorFullName.setVisible(false);
         errorFormatUser.setVisible(false);
         errorFormatEmail.setVisible(false);
         errorFormatPassword.setVisible(false);
-        errorFormatPassword2.setVisible(false);
-
+        errorFormatPassword2.setVisible(false);*/
         tfFullName.setPromptText("Introduzca su nombre completo");
         tfUser.setPromptText("Introduzca un nombre de usuario");
         tfEmail.setPromptText("Introduzca un email: example@example.com");
         tfPasswd.setPromptText("Introduzca una contraseña");
         tfPasswd2.setPromptText("Repita su contraseña");
 
-        tfFullName.focusedProperty().addListener(this::handleFocusChanged);
-        tfUser.focusedProperty().addListener(this::handleFocusChanged);
-        tfEmail.focusedProperty().addListener(this::handleFocusChanged);
-        tfPasswd.focusedProperty().addListener(this::handleFocusChanged);
-        tfPasswd2.focusedProperty().addListener(this::handleFocusChanged);
+        tfFullName.textProperty().addListener(this::handleTextChanged);
+        tfUser.textProperty().addListener(this::handleTextChanged);
+        tfEmail.textProperty().addListener(this::handleTextChanged);
+        tfPasswd.textProperty().addListener(this::handleTextChanged);
+        tfPasswd2.textProperty().addListener(this::handleTextChanged);
 
         btnCancel.setOnAction(this::handleButtonCancelarAction);
         btnAccept.setOnAction(this::handleButtonAceptarAction);
@@ -132,53 +133,61 @@ public class SignUpController {
      * @param oldValue
      * @param newValue
      */
-    private void handleFocusChanged(ObservableValue observable, Boolean oldValue,
-            Boolean newValue) {
+    private void handleTextChanged(ObservableValue observable,
+            String oldValue,
+            String newValue) {
+        btnAccept.setDisable(true);
+        if (tfFullName.getText().isEmpty() && tfUser.getText().isEmpty()
+                && tfEmail.getText().isEmpty() && tfPasswd.getText().isEmpty()
+                && tfPasswd2.getText().isEmpty()) {
+            errorFullName.setVisible(false);
+            errorFormatUser.setVisible(false);
+            errorFormatEmail.setVisible(false);
+            errorFormatPassword.setVisible(false);
+            errorFormatPassword2.setVisible(false);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION,
+                    "Debes rellenar todos los campos",
+                    ButtonType.OK);
+            alert.showAndWait();
 
-        if (oldValue) {
-            if (tfFullName.getText().isEmpty() && tfUser.getText().isEmpty()
-                    && tfEmail.getText().isEmpty() && tfPasswd.getText().isEmpty()
-                    && tfPasswd2.getText().isEmpty()) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION,
-                        "Debes rellenar todos los campos",
-                        ButtonType.OK);
-                alert.showAndWait();
-            }
+        } else if (!newValue.isEmpty()) {
 
-            if (!tfEmail.getText().isEmpty() && !validateEmail(tfEmail.getText().trim())) {
-                errorFormatEmail.setVisible(false);
-
-                //  IMPORTANTE  ------> IMPLEMENTAR MÉTODO findUserByEmail() DEL SERVER!!!
-            }
-            if (!tfFullName.getText().isEmpty() && !tfFullName.getText().matches("[a-zA-Z]")) {
+            if (!tfFullName.getText().matches("^[a-zA-Z\\s]*$")) {
                 errorFullName.setVisible(true);
+            } else {
+                errorFullName.setVisible(false);
             }
-            if (!tfUser.getText().isEmpty() && tfUser.getText().contains(" ")) {
+
+            if (tfUser.getText().contains(" ")) {
                 errorFormatUser.setVisible(true);
+            } else {
+                errorFormatUser.setVisible(false);
             }
-            if (!tfUser.getText().isEmpty() && !tfUser.getText().contains(" ")) {
+            /*if (!tfUser.getText().isEmpty() && !tfUser.getText().contains(" ")) {
                 try {
-                    UserManager um = UserManagerFactory.getUserManager();
-                    // IMPORTANTE -----> IMPLEMENTAR MÉTODO findUserByLogin DEL SERVER!!!!!!
-                    // User u = um.findUserByLogin(tfUser.getText().trim());
+                    UserManager um = UserManagerFactory.getUserManager();                  
+                    User u = um.findUserByLogin(tfUser.getText().trim());
                 } catch (Exception e) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION,
                             "Este usuario ya está registrado!",
                             ButtonType.OK);
                     alert.showAndWait();
                 }
+            }*/
+            if (tfEmail.isFocused() && validateEmail(tfEmail.getText().trim())) {
+                errorFormatEmail.setVisible(false);
             }
-            if (!tfPasswd.getText().isEmpty() && tfPasswd.getText().contains(" ")) {
+
+            if (tfPasswd.getText().contains(" ")) {
                 errorFormatPassword.setVisible(true);
+            } else {
+                errorFormatPassword.setVisible(false);
             }
-            if (!tfPasswd2.getText().isEmpty() && tfPasswd2.getText().contains(" ")) {
+            if (tfPasswd2.isFocused() && tfPasswd2.getText().contains(" ")) {
                 errorFormatPassword2.setVisible(true);
-            }
-            if (!tfPasswd.getText().trim().equals(tfPasswd2.getText().trim())) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION,
-                        "Las contraseñas no coinciden",
-                        ButtonType.OK);
-                alert.showAndWait();
+            } else {
+                errorFormatPassword2.setVisible(false);
+                btnAccept.setDisable(false);
             }
         }
     }
@@ -196,34 +205,57 @@ public class SignUpController {
      */
     @FXML
     private void handleButtonAceptarAction(ActionEvent event) {
-        Alert alert;
-        try {
-            User newUser = new User();
-            byte[] passCipher = encrypt.cifrarPass(tfPasswd.getText().trim());
-            String passHex = printHexBinary(passCipher);
 
-            newUser.setPasswd(passHex);
-            newUser.setLastAccess(Date.valueOf(LocalDate.now()));
-            newUser.setLastPasswdChange(Date.valueOf(LocalDate.now()));
-            newUser.setPrivilege(UserPrivilege.USER);
-            newUser.setStatus(Userstatus.ENABLE);
-
-            UserManager um = UserManagerFactory.getUserManager();
-            um.create_XML(newUser);
-
-            alert = new Alert(Alert.AlertType.CONFIRMATION, "Se ha registrado correctamente\nLe enviaremos a la ventana de login", ButtonType.OK);
-            /*   FXMLLoader loader
-                    = new FXMLLoader(getClass().getResource("Login.fxml"));
-            Parent root = (Parent) loader.load();
-            LoginController controller = ((LoginController) loader.getController());
-            controller = (loader.getController());
-            controller.setStage(stage);
-            controller.initStage(root);*/
-        } catch (ClientErrorException e) {
-            logger.log(Level.SEVERE, "User can not be set", e.getMessage());
-            alert = new Alert(Alert.AlertType.ERROR, "No se ha podido conectar con el servidor."
-                    + "Inténtelo de nuevo más tarde.", ButtonType.OK);
+        if (!tfPasswd.getText().trim().equals(tfPasswd2.getText().trim())) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION,
+                    "Las contraseñas no coinciden",
+                    ButtonType.OK);
             alert.showAndWait();
+        } else {
+
+            Alert alert;
+            try {
+                User newUser = new User();
+                Encrypt encrypt = new Encrypt();
+
+                byte[] passCipher = encrypt.cifrarPass(tfPasswd.getText().trim());
+                String passHex = printHexBinary(passCipher);
+                newUser.setFullname(tfFullName.getText().trim());
+                newUser.setLogin(tfUser.getText().trim());
+                newUser.setPasswd(passHex);
+                newUser.setEmail(tfEmail.getText().trim());
+                newUser.setLastAccess(Date.valueOf(LocalDate.now()));
+                newUser.setLastPasswdChange(Date.valueOf(LocalDate.now()));
+                newUser.setPrivilege(UserPrivilege.USER);
+                newUser.setStatus(Userstatus.ENABLE);
+
+                UserManager um = UserManagerFactory.getUserManager();
+                um.create_XML(newUser);
+
+                alert = new Alert(Alert.AlertType.CONFIRMATION, "Se ha registrado correctamente\nLe enviaremos a la ventana de login", ButtonType.OK);
+                alert.showAndWait();
+
+                Parent root;
+                try {
+                    LoginController controller = new LoginController();
+                    FXMLLoader loader
+                            = new FXMLLoader(getClass().getResource("/drPlant/view/Login.fxml"));
+
+                    root = (Parent) loader.load();
+                    controller = (loader.getController());
+                    controller.setStage(stage);
+                    controller.initStage(root);
+
+                } catch (IOException ex) {
+                    Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            } catch (ClientErrorException e) {
+                logger.log(Level.SEVERE, "User can not be set", e.getMessage());
+                alert = new Alert(Alert.AlertType.ERROR, "No se ha podido conectar con el servidor."
+                        + "Inténtelo de nuevo más tarde.", ButtonType.OK);
+                alert.showAndWait();
+            }
         }
     }
 
@@ -236,15 +268,16 @@ public class SignUpController {
     @FXML
     private void handleButtonCancelarAction(ActionEvent event
     ) {
-
+        Parent root;
         try {
+            LoginController controller = new LoginController();
             FXMLLoader loader
-                    = new FXMLLoader(getClass().getResource("Login.fxml"));
-            Parent root = (Parent) loader.load();
-            /*    LoginController controller = ((LoginController) loader.getController());
+                    = new FXMLLoader(getClass().getResource("/drPlant/view/Login.fxml"));
+
+            root = (Parent) loader.load();
             controller = (loader.getController());
             controller.setStage(stage);
-            controller.initStage(root);*/
+            controller.initStage(root);
 
         } catch (Exception ex) {
             logger.log(Level.SEVERE,
@@ -269,6 +302,7 @@ public class SignUpController {
 
         Matcher mather = pattern.matcher(email);
         if (!mather.find()) {
+            errorFormatEmail.setVisible(true);
             return false;
         } else {
             return true;

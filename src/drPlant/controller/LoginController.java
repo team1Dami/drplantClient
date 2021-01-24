@@ -35,11 +35,12 @@ import static javax.xml.bind.DatatypeConverter.printHexBinary;
  *
  * @author gonza
  */
-public class LoginController{
+public class LoginController {
+
     private Alert alert;
 
-    private static final Logger logger =
-            Logger.getLogger("drplant.Controller.LoginController");
+    private static final Logger logger
+            = Logger.getLogger("drplant.Controller.LoginController");
     //Declaration of attributes
     @FXML
     private Stage StageLogin;
@@ -51,10 +52,10 @@ public class LoginController{
     private TextField tfLogin;
     @FXML
     private PasswordField tfPasswd;
-    
+
     @FXML
     private Hyperlink nuevaContraseña;
-    
+
     /**
      * Set the stage of the view
      *
@@ -63,7 +64,7 @@ public class LoginController{
     public void setStage(Stage stage) {
         this.StageLogin = stage;
     }
-    
+
     /**
      * Initialize the view and set actions on different widgets
      *
@@ -75,18 +76,16 @@ public class LoginController{
         StageLogin.setResizable(false);
         StageLogin.setTitle("Login");
         StageLogin.show();
-        
-        
+
         tfLogin.textProperty().addListener(this::textChange);
         tfPasswd.textProperty().addListener(this::textChange);
         btnLogin.setOnAction(this::handleButtonLogin);
         btnRegister.setOnAction(this::handleButtonRegister);
         nuevaContraseña.setOnAction(this::handleLinkNewPassword);
         StageLogin.setOnCloseRequest(this::setOncloseRequest);
-        
-        
+
     }
-    
+
     /**
      * Text changed event handler. If both fields are empty the button is
      * disable
@@ -103,7 +102,7 @@ public class LoginController{
             btnLogin.setDisable(true);
         } //If text fields are empty 
         else if (tfLogin.getText().trim().isEmpty()
-                || tfPasswd.getText().trim().isEmpty()){
+                || tfPasswd.getText().trim().isEmpty()) {
             btnLogin.setDisable(true);
         } //Else, enable accept button
         else {
@@ -111,10 +110,10 @@ public class LoginController{
         }
 
     }
-    
+
     /**
-     * 
-     * @param event 
+     *
+     * @param event
      */
     private void handleButtonLogin(ActionEvent event) {
         if (tfLogin.getText().isEmpty() || tfPasswd.getText().isEmpty()) {
@@ -123,43 +122,34 @@ public class LoginController{
             User myUser = new User();
             myUser.setLogin(tfLogin.getText().toString());
 
-            
             //cipher of the password
             Encrypt encrypt = new Encrypt();
-            
+
             //El string que se recoge del textfield se cifra y se convierte en una array de bytes
             //Ese array de bytes hay que pasarlo a a hexadecimal
-            
             byte[] cifrada = encrypt.cifrarPass(tfPasswd.getText().toString());//Change to array of bytes
             String pass = printHexBinary(cifrada);//change the array of bytes and introduce inside the password of the user
 
-            
             //find the user by login and password 
             UserManager imp = UserManagerFactory.getUserManager();
             User serverUser = null;
-            try{
+            try {
                 serverUser = imp.findUserByLoginAndPasswd(User.class, tfLogin.getText(), pass);
-            }catch(InternalServerErrorException exx){
+            } catch (InternalServerErrorException exx) {
                 exx.getCause().getMessage();
             }
-            
-            //prueba para ver que user se recoje
-            System.out.println(serverUser.getEmail());
-            System.out.println(serverUser.getFullname());
-            System.out.println(serverUser.getPasswd());
 
-            
             if (serverUser != null) { //user exists
-
-               // LogoutController controller = new LogoutController();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("Logout.fxml"));//me falta la siguiente ventana
                 Parent root;
-
+                Stage stage2 = new Stage();
+                PlagueViewController controller = new PlagueViewController();
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/PlagueView.fxml"));//me falta la siguiente ventana
+                
                 try {
                     root = (Parent) loader.load();
-                    //controller = (loader.getController());
-                    //controller.setStage(stage);
-                    //controller.initStage(root);
+                    controller = (loader.getController());
+                    controller.setStage(stage2);
+                    controller.initStage(root);
                 } catch (IOException ex) {
                     //Logger.getLogger(LogoutController.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -169,40 +159,46 @@ public class LoginController{
         }
 
     }
-    
+
     /**
      * Method that control the button register
-     * @param event 
+     *
+     * @param event
      */
     private void handleButtonRegister(ActionEvent event) {
-        
+
         Parent root;
+        Stage stage2 = new Stage();
         try {
             //if in the view signup you press the x the aplication won't stop, it will go back to the login 
             //stage.hide();
-         /*   ShopViewController controller = new ShopViewController();
+            /*   ShopViewController controller = new ShopViewController();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/ShopView.fxml"));//necesito la pagina principal para colocar*/
-         PlagueViewController controller = new PlagueViewController();         
-               FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/PlagueView.fxml"));
+            SignUpController controller = new SignUpController();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/SignUp.fxml"));
             root = (Parent) loader.load();
             controller = (loader.getController());
-            controller.setStage(StageLogin);
+            controller.setStage(stage2);
+            StageLogin.close();
             controller.initStage(root);
+            
+            
             //newStage.showAndWait();
         } catch (IOException ex) {
-           // Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, ex);
+            // Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, ex);
             Alert alert = new Alert(Alert.AlertType.WARNING,
                     "No se ha podido cargar la ventana", ButtonType.OK);
         }
     }
-    
+
     /**
      * Method that controls if the hiperlink it's clicked
-     * @param event 
+     *
+     * @param event
      */
     private void handleLinkNewPassword(ActionEvent event) {
-        
-      /*  Parent root;
+
+        /*  Parent root;
         Stage newStage = new Stage();
         try {
             //if you press the x the aplication won't stop, it will go back to the login 
@@ -221,33 +217,33 @@ public class LoginController{
             alert.showAndWait();
         }*/
     }
-    
 
     /**
-     * method that asks when you press the x if you want to go back or not,
-     * if you press OK you go back to login otherwhise you stay in the signup
-     * @param we 
+     * method that asks when you press the x if you want to go back or not, if
+     * you press OK you go back to login otherwhise you stay in the signup
+     *
+     * @param we
      */
-     private void setOncloseRequest(WindowEvent we){
-        
-         try {
-           alert = new Alert(Alert.AlertType.WARNING,
-                   "Desea Salir de esta ventana", ButtonType.OK,ButtonType.CANCEL);//alert to ask the user to confirm
-           alert.showAndWait();
-           if(alert.getResult().getButtonData().isCancelButton()){          
-               alert = new Alert(Alert.AlertType.WARNING,
-                       "Se ha cancelado la accion",ButtonType.OK);//alert to advise that the action has being cancel
-               alert.showAndWait();
-               we.consume();//do as nothing has happen
-            
-           }    
+    private void setOncloseRequest(WindowEvent we) {
+
+        try {
+            alert = new Alert(Alert.AlertType.WARNING,
+                    "Desea Salir de esta ventana", ButtonType.OK, ButtonType.CANCEL);//alert to ask the user to confirm
+            alert.showAndWait();
+            if (alert.getResult().getButtonData().isCancelButton()) {
+                alert = new Alert(Alert.AlertType.WARNING,
+                        "Se ha cancelado la accion", ButtonType.OK);//alert to advise that the action has being cancel
+                alert.showAndWait();
+                we.consume();//do as nothing has happen
+
+            }
         } catch (Exception ex) {
             logger.log(Level.SEVERE,
                     "UI LoginController: Error opening users managing window: {0}",
                     ex.getMessage());
-           alert = new Alert(Alert.AlertType.WARNING,
-                   "No se ha podido cargar la ventana", ButtonType.OK);
-           alert.showAndWait();
+            alert = new Alert(Alert.AlertType.WARNING,
+                    "No se ha podido cargar la ventana", ButtonType.OK);
+            alert.showAndWait();
         }
     }
 }

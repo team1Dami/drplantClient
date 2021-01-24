@@ -53,6 +53,7 @@ public class MenuController {
      */
     public void initStage(Parent root) {
 
+        menu.prefWidthProperty().bind(stage.widthProperty());
         allPlantsItem.setOnAction(this::handlePlantViewAction);
         myPlantsItem.setOnAction(this::handleMyPlantsViewAction);
         allPlaguesItem.setOnAction(this::handlePlagueViewAction);
@@ -80,8 +81,9 @@ public class MenuController {
             controller = (loader.getController());
             controller = (loader.getController());
             controller.setStage(stage2);
-            controller.initStage(root);
             stage.close();
+            controller.initStage(root);
+            
 
         } catch (IOException ex) {
             logger.log(Level.SEVERE, "Can't open PlantView");
@@ -127,22 +129,23 @@ public class MenuController {
         Parent root;
         Stage stage2 = new Stage();
 
+        PlagueViewController controller = new PlagueViewController();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/PlagueView.fxml"));
         try {
-            FXMLLoader loader
-                    = new FXMLLoader(getClass().getResource("PlagueView.fxml"));
             root = (Parent) loader.load();
-            PlagueViewController controller = ((PlagueViewController) loader.getController());
+            controller = (loader.getController());
             controller = (loader.getController());
             controller.setStage(stage2);
-            controller.initStage(root);
             stage.close();
+            controller.initStage(root);
+            
 
-        } catch (IOException e) {
+        } catch (IOException ex) {
             logger.log(Level.SEVERE, "Can't open PlagueView");
             Alert alert = new Alert(Alert.AlertType.WARNING, "Ops! Ha ocurrido un error inesperado!", ButtonType.OK);
             alert.showAndWait();
         }
-        //   }
+       
     }
 
     /**

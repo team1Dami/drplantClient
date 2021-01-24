@@ -6,17 +6,15 @@
 package drPlant.controller;
 
 import drPlant.classes.Plague;
-import drPlant.classes.Plant;
 import drPlant.classes.User;
 import drPlant.factory.PlagueManagerFactory;
-import drPlant.factory.PlantManagerFactory;
 import drPlant.interfaces.PlagueManager;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,9 +27,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableRow;
@@ -39,8 +34,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.layout.HBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
@@ -48,93 +41,92 @@ import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.GenericType;
 
 /**
- * Controller class for plague' management view . 
- * It contains event handlers and initialization code for the view defined in 
- * PlagueView.fmxl file.
- * 
+ * Controller class for plague' management view . It contains event handlers and
+ * initialization code for the view defined in PlagueView.fmxl file.
+ *
  * @author saray
  */
 public class PlagueViewController {
 
     private static final Logger logger = Logger.getLogger("drPlant.controller.PlagueViewController");
     /**
-     * 
+     *
      */
     @FXML
     private Stage stage;
     /**
-     * 
+     *
      */
     @FXML
     private TextField tfSearch;
     /**
-     * 
+     *
      */
     @FXML
     private ChoiceBox chBox;
     /**
-     * 
+     *
      */
     @FXML
     private TableView tbPlague;
     /**
-     * 
+     *
      */
     @FXML
     private TableColumn colImage;
     /**
-     * 
+     *
      */
     @FXML
     private TableColumn colScientName;
     /**
-     * 
+     *
      */
     @FXML
     private TableColumn colCommonName;
     /**
-     * 
+     *
      */
     @FXML
     private TableColumn colType;
     /**
-     * 
+     *
      */
     @FXML
     private Button btnSearch;
     /**
-     * 
+     *
      */
     @FXML
     private Button btnAdd;
     /**
-     * 
+     *
      */
     @FXML
     private Button btnEdit;
     /**
-     * 
+     *
      */
     @FXML
     private Button btnDelete;
     /**
-     * 
+     *
      */
     private boolean isAdmin;
     /**
-     * 
+     *
      */
     private PlagueManager plagueManager;
     /**
-     * 
+     *
      */
     private ObservableList<Plague> plagues;
     /**
-     * 
+     *
      */
     private User user;
     /**
-     * 
+     *
      */
     private Plague plague;
 
@@ -229,45 +221,50 @@ public class PlagueViewController {
     }
 
     /**
-     *Method of the logic layer called to show all pests in the table: findAllPlagues(); 
-     * 
-     * In case of being <strong>Admin</strong> the following columns of the table will be editable:
+     * Method of the logic layer called to show all pests in the table:
+     * findAllPlagues();
+     *
+     * Behaviour of the tableView: In case of being <strong>Admin</strong> the
+     * following columns of the table will be editable:
      * <ul>
-     *  <li>Common name</li>
-     *  <li>Type</li>
+     * <li>Common name</li>
+     * <li>Type</li>
      * </ul>
      * Buttons will also be displayed under the table:
      * <ul>
-     *  <li> Add to </li>
-     *  <li> Edit (disabled when any row is selected) </li>
-     *  <li> Remove (disabled when any row is selected)</li>
+     * <li> Add to </li>
+     * <li> Edit (disabled when any row is selected) </li>
+     * <li> Remove (disabled when any row is selected)</li>
      * </ul>
-     * 
-     * Behaviour of the tableView: 
-     * 
-     * Double click on a row if the user is not admin:
-     * A modal window (infoPlague.fxml) opens where the complete pest information is displayed.
-     * To close the infoPlague window, press the close button of the window itself.
-     * 
-     * In case of <strong>User</strong> the table will not be editable. In case of <strong>admin</strong>
+     *
+     *
+     * Double click on a row if the user is not admin: A modal window
+     * (infoPlague.fxml) opens where the complete pest information is displayed.
+     * To close the infoPlague window, press the close button of the window
+     * itself.
+     *
+     * In case of <strong>User</strong> the table will not be editable. In case
+     * of <strong>admin</strong>
      * Allows to modify:
      * <ul>
-     *  <li> Common name </li>
-     *  <li> Type </li>
+     * <li> Common name </li>
+     * <li> Type </li>
      * </ul>
-     * 
-     * ChoiceBox to filter the plagues. Shows "by Scient Name" by default. The other filters are:
+     *
+     * ChoiceBox to filter the plagues. Shows "by Scient Name" by default. The
+     * other filters are:
      * <ul>
-     *  <li> by Common name</li>
-     *  <li> type: light </li>
-     *  <li> type:middle </li>
-     *  <li> type: severe </li>
+     * <li> by Common name</li>
+     * <li> type: light </li>
+     * <li> type:middle </li>
+     * <li> type: severe </li>
      * </ul>
-     * 
-     * TextField Searched shows a promp text to indicates to the user what kind of data has to be write in. 
-     * 
+     *
+     * TextField Searched shows a promp text to indicates to the user what kind
+     * of data has to be write in.
+     *
      * Search button enabled and visible for both types of user.
-     * 
+     *
      * @param event event type: Window event
      */
     private void handleWindowShowing(WindowEvent event) {
@@ -278,9 +275,10 @@ public class PlagueViewController {
         colCommonName.setCellValueFactory(new PropertyValueFactory<>("commonName"));
         colType.setCellValueFactory(new PropertyValueFactory<>("type"));
 
-        ObservableList<Plague> plagues = FXCollections.observableArrayList(plagueManager.findAllPlagues(new GenericType<List<Plague>>() {
+        plagues = FXCollections.observableArrayList(plagueManager.findAllPlagues(new GenericType<List<Plague>>() {
         }));
         tbPlague.setItems((ObservableList) plagues);
+
         tbPlague.getSelectionModel().selectedItemProperty().addListener(this::handlePlagueTableSelectionChanged);
         if (isAdmin) {
             tbPlague.setEditable(true);
@@ -312,7 +310,7 @@ public class PlagueViewController {
                                 } catch (IOException ex) {
                                     alert = new Alert(Alert.AlertType.INFORMATION, "Ops! No se ha podido abrir la ventana de información", ButtonType.OK);
                                     alert.showAndWait();
-                                    logger.log(Level.SEVERE, "PlagueView controller: Error opening users managing window: {0}",ex.getMessage());
+                                    logger.log(Level.SEVERE, "PlagueView controller: Error opening users managing window: {0}", ex.getMessage());
                                 }
                             } catch (ClientErrorException e) {
                                 alert = new Alert(Alert.AlertType.INFORMATION, "Ops! Ha ocurrido un error inesperado, inténtelo de nuevo más tarde", ButtonType.OK);
@@ -358,11 +356,13 @@ public class PlagueViewController {
     }
 
     /**
-     * It gathers the text that has been introduced in the textFieldBuscador 
-     * and the option selected in the choice box in case of finding the plague will show it in the list (if is more than one plague)
-     * or will opened the infoView to show the info about the plague.
-     * 
-     * If the user has <strong>User privileges</strong> any area of the infoView will be editable.
+     * It gathers the text that has been introduced in the textFieldBuscador and
+     * the option selected in the choice box in case of finding the plague will
+     * show it in the list (if is more than one plague) or will opened the
+     * infoView to show the info about the plague.
+     *
+     * If the user has <strong>User privileges</strong> any area of the infoView
+     * will be editable.
      *
      * @param event event - onClick event
      */
@@ -371,19 +371,21 @@ public class PlagueViewController {
         Alert alert;
 
         if (tfSearch.getText().isEmpty() && chBox.getSelectionModel().getSelectedItem().equals("Nombre científico")) {
-            ObservableList<Plague> plagues = FXCollections.observableArrayList(plagueManager.findAllPlagues(new GenericType<List<Plague>>() {
+            plagues = FXCollections.observableArrayList(plagueManager.findAllPlagues(new GenericType<List<Plague>>() {
             }));
             tbPlague.setItems((ObservableList) plagues);
+
         } else {
 
             if (chBox.getSelectionModel().getSelectedItem().equals("Nombre científico")) {
 
-                Plague plague = plagueManager.find(Plague.class, tfSearch.getText().trim());
+                try {
+                    Plague plague = plagueManager.find(Plague.class, tfSearch.getText().trim());
 
-                if (plague != null) {
-                    Parent root;
-                    Stage stage2 = new Stage();
-                    try {
+                    if (plague != null) {
+                        Parent root;
+                        Stage stage2 = new Stage();
+
                         InfoPlagueController controller = new InfoPlagueController();
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/infoPlague.fxml"));
 
@@ -395,21 +397,23 @@ public class PlagueViewController {
                         } catch (IOException ex) {
                             //  Logger.getLogger(drPlantApplication.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
                         }
-                    } catch (ClientErrorException e) {
-                        alert = new Alert(Alert.AlertType.INFORMATION, "No se ha encontrado la plaga que buscas", ButtonType.OK);
-                        alert.showAndWait();
-                        //    Logger.getLogger(drPlantApplication.class.getName()).log(Level.SEVERE, e.getMessage(), e);
                     }
+                } catch (ClientErrorException e) {
+                    alert = new Alert(Alert.AlertType.INFORMATION, "No se ha encontrado la plaga que buscas", ButtonType.OK);
+                    alert.showAndWait();
+                    //    Logger.getLogger(drPlantApplication.class.getName()).log(Level.SEVERE, e.getMessage(), e);
                 }
             }
+
             if (chBox.getSelectionModel().getSelectedItem().equals("Nombre común")) {
 
-                Plague plague = plagueManager.findPlagueByCommonName(Plague.class, tfSearch.getText().trim());
+                try {
+                    Plague plague = plagueManager.findPlagueByCommonName(Plague.class, tfSearch.getText().trim());
 
-                if (plague != null) {
-                    Parent root;
-                    Stage stage2 = new Stage();
-                    try {
+                    if (plague != null) {
+                        Parent root;
+                        Stage stage2 = new Stage();
+
                         InfoPlagueController controller = new InfoPlagueController();
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/infoPlague.fxml"));
 
@@ -421,25 +425,27 @@ public class PlagueViewController {
                         } catch (IOException ex) {
                             //  Logger.getLogger(drPlantApplication.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
                         }
-                    } catch (ClientErrorException e) {
-                        alert = new Alert(Alert.AlertType.INFORMATION, "No se ha encontrado la plaga que buscas", ButtonType.OK);
-                        alert.showAndWait();
-                        //  Logger.getLogger(drPlantApplication.class.getName()).log(Level.SEVERE, e.getMessage(), e);
                     }
+                } catch (ClientErrorException e) {
+                    alert = new Alert(Alert.AlertType.INFORMATION, "No se ha encontrado la plaga que buscas", ButtonType.OK);
+                    alert.showAndWait();
+                    //  Logger.getLogger(drPlantApplication.class.getName()).log(Level.SEVERE, e.getMessage(), e);
                 }
             }
 
-            if (chBox.getSelectionModel().getSelectedItem().equals("Selecciona un tipo de gravedad:")) {
+            if (chBox.getSelectionModel()
+                    .getSelectedItem().equals("Selecciona un tipo de gravedad:")) {
 
                 alert = new Alert(Alert.AlertType.INFORMATION, "Debes seleccionar un filtro!", ButtonType.OK);
                 alert.showAndWait();
 
             }
 
-            if (chBox.getSelectionModel().getSelectedItem().equals("Leve")) {
+            if (chBox.getSelectionModel()
+                    .getSelectedItem().equals("Leve")) {
                 try {
                     String searchedType = "light";
-                    ObservableList<Plague> plagues = FXCollections.observableArrayList(plagueManager.findPlaguesByType(new GenericType<List<Plague>>() {
+                    plagues = FXCollections.observableArrayList(plagueManager.findPlaguesByType(new GenericType<List<Plague>>() {
                     }, searchedType));
                     tbPlague.setItems(plagues);
                 } catch (ClientErrorException e) {
@@ -448,10 +454,11 @@ public class PlagueViewController {
                 }
             }
 
-            if (chBox.getSelectionModel().getSelectedItem().equals("Medio")) {
+            if (chBox.getSelectionModel()
+                    .getSelectedItem().equals("Medio")) {
                 try {
                     String searchedType = "middle";
-                    ObservableList<Plague> plagues = FXCollections.observableArrayList(plagueManager.findPlaguesByType(new GenericType<List<Plague>>() {
+                    plagues = FXCollections.observableArrayList(plagueManager.findPlaguesByType(new GenericType<List<Plague>>() {
                     }, searchedType));
                     if (plagues.size() == 0) {
                         alert = new Alert(Alert.AlertType.INFORMATION, "No se han encontrado plagas de tipo medio", ButtonType.OK);
@@ -465,10 +472,11 @@ public class PlagueViewController {
                 }
             }
 
-            if (chBox.getSelectionModel().getSelectedItem().equals("Grave")) {
+            if (chBox.getSelectionModel()
+                    .getSelectedItem().equals("Grave")) {
                 try {
                     String searchedType = "severe";
-                    ObservableList<Plague> plagues = FXCollections.observableArrayList(plagueManager.findPlaguesByType(new GenericType<List<Plague>>() {
+                    plagues = FXCollections.observableArrayList(plagueManager.findPlaguesByType(new GenericType<List<Plague>>() {
                     }, searchedType));
                     if (plagues.size() == 0) {
                         alert = new Alert(Alert.AlertType.INFORMATION, "No se han encontrado plagas de tipo medio", ButtonType.OK);
@@ -485,8 +493,8 @@ public class PlagueViewController {
     }
 
     /**
-     * The infoPlague.fxml modal window will open.
-     * all next fields (common name, description, control, remedy and type) will be editable.
+     * The infoPlague.fxml modal window will open. all next fields (common name,
+     * description, control, remedy and type) will be editable.
      *
      * @param event event- ActionEvent
      */
@@ -508,11 +516,13 @@ public class PlagueViewController {
     }
 
     /**
-     * Highlight the selected row and set the scient name of the plague in textField searched
-     * If the user is <strong>admin</strong> enable edit button and delete button
-     * 
-     * When the row is unselected, the buttons edit and delete will be disabled and the textField cleared.
-     * 
+     * Highlight the selected row and set the scient name of the plague in
+     * textField searched If the user is <strong>admin</strong> enable edit
+     * button and delete button
+     *
+     * When the row is unselected, the buttons edit and delete will be disabled
+     * and the textField cleared.
+     *
      * @param event event- ObservableValue
      */
     @FXML
@@ -537,19 +547,19 @@ public class PlagueViewController {
     }
 
     /**
-     * 
+     *
      * Shows the infoPlague view with the fields editables:
      * <ul>
-     *  <li> common name </li>
-     *  <li> description </li>
-     *  <li> control </li>
-     *  <li> remedy </li>
+     * <li> common name </li>
+     * <li> description </li>
+     * <li> control </li>
+     * <li> remedy </li>
      * Radiobuttons:
-     *  <ul>
-     *   <li> light </li>
-     *   <li> middle </li>
-     *   <li> severe </li>
-     *  </ul>
+     * <ul>
+     * <li> light </li>
+     * <li> middle </li>
+     * <li> severe </li>
+     * </ul>
      * </ul>
      *
      * @param event event- ActionEvent
@@ -562,7 +572,9 @@ public class PlagueViewController {
 
         Plague plagueEdit = (Plague) tbPlague.getSelectionModel().getSelectedItem();
 
-        plagueEdit = plagueManager.find(Plague.class, plagueEdit.getScienceName());
+        plagueEdit
+                = plagueManager.find(Plague.class,
+                        plagueEdit.getScienceName());
 
         try {
             InfoPlagueController controller = new InfoPlagueController();
@@ -579,9 +591,9 @@ public class PlagueViewController {
     }
 
     /**
-     * An alert will be displayed indicating the action with the options YES / NO. 
-     * If press YES the selected pest will be removed. Method of the logic layer called: remove(); 
-     * If press NOT, the alert will be closed.
+     * An alert will be displayed indicating the action with the options YES /
+     * NO. If press YES the selected pest will be removed. Method of the logic
+     * layer called: remove(); If press NOT, the alert will be closed.
      *
      * @param event event - ActionEvent
      */
@@ -619,13 +631,10 @@ public class PlagueViewController {
             alert = new Alert(Alert.AlertType.WARNING,
                     "¿Desea Salir de la aplicación?", ButtonType.OK, ButtonType.CANCEL);//alert to ask the user to confirm
             alert.showAndWait();
-            if (alert.getResult().getButtonData().isCancelButton()) {
-                alert = new Alert(Alert.AlertType.WARNING,
-                        "Se ha cancelado la accion", ButtonType.OK);//alert to advise that the action has being cancel
-                alert.showAndWait();
-                we.consume();// do as nothing has happen
-
+            if (!alert.getResult().getButtonData().isCancelButton()) {
+                Platform.exit();
             }
+
         } catch (Exception ex) {
             logger.log(Level.SEVERE,
                     "UI LoginController: Error opening users managing window: {0}",
@@ -635,10 +644,12 @@ public class PlagueViewController {
             alert.showAndWait();
         }
     }
-    
+
     /**
-     * Update the value commonName in the table cell editable
-     * @param t the text to be setted in the plague that is being modified
+     * Update the value commonName in the table cell editable After, the table
+     * will be refreshed
+     *
+     * @param t table to be edited
      */
     private void updateCommonName(CellEditEvent<Plague, String> t) {
         Plague plague = t.getRowValue();
