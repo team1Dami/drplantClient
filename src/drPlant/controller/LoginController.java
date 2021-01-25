@@ -27,6 +27,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javax.ws.rs.InternalServerErrorException;
+import static javax.xml.bind.DatatypeConverter.printHexBinary;
 import org.apache.commons.codec.binary.Hex;
 
 /**
@@ -130,14 +131,16 @@ public class LoginController{
             //Ese array de bytes hay que pasarlo a a hexadecimal
             
             byte[] cifrada = cifrado.cifrarTexto(tfPasswd.getText().toString());//Change to array of bytes
-            myUser.setPasswd(Hex.encodeHexString(cifrada));//change the array of bytes and introduce inside the password of the user
+            String pass = printHexBinary(cifrada);//change the array of bytes and introduce inside the password of the user
+
+           // myUser.setPasswd(Hex.encodeHexString(cifrada));//change the array of bytes and introduce inside the password of the user
 
             
             //find the user by login and password 
             UserManager imp = UserManagerFactory.getUserManager();
             User serverUser = null;
             try{
-                serverUser = imp.findUserByLoginAndPasswd(User.class, tfLogin.getText(), myUser.getPasswd());
+                serverUser = imp.findUserByLoginAndPasswd(User.class, tfLogin.getText(), pass);
             }catch(InternalServerErrorException exx){
                 exx.getCause().getMessage();
             }
@@ -176,6 +179,7 @@ public class LoginController{
     private void handleButtonRegister(ActionEvent event) {
         
         Parent root;
+        Stage newStage = new Stage();
         try {
             //if in the view signup you press the x the aplication won't stop, it will go back to the login 
             //stage.hide();
@@ -183,7 +187,8 @@ public class LoginController{
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/ShopView.fxml"));//necesito la pagina principal para colocar
             root = (Parent) loader.load();
             controller = (loader.getController());
-            controller.setStage(StageLogin);
+            controller.setStage(newStage);
+            StageLogin.close();
             controller.initStage(root);
             //newStage.showAndWait();
         } catch (IOException ex) {

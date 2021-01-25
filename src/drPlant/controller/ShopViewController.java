@@ -17,7 +17,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import static javafx.collections.FXCollections.observableArrayList;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -106,14 +105,13 @@ public class ShopViewController  {
         
         btnEliminar.setDisable(true);
 
-        //tfLogin.textProperty().addListener(this::textChange);
- 
+        tfBuscar.textProperty().addListener(this::textChange);
         btnCrear.setOnAction(this::handleButtonCrear);
         btnEliminar.setOnAction(this::handleButtonEliminar);
         
         btnBuscar.setOnAction(this::handleButtonSearch);
-
-
+        
+        
         stage.setOnCloseRequest(this::setOncloseRequest);
         
         InsertDataIntoTable(tabla);
@@ -213,31 +211,21 @@ public class ShopViewController  {
     
     /**
      * Metodo que controla el evento que se lanza mientras se muestra la ventana
-     * No reacciona porque se recicla el stage en vez de crear uno nuevo
+     * No reacciona
      * @param e evento de ventana
      */
     public void handleWindowShowing(WindowEvent e){
-        logger.info("En el evento windows Showing");
         
-        nombre.setCellValueFactory(new PropertyValueFactory<>("shop_name"));
-        localizacion.setCellValueFactory(new PropertyValueFactory<>("location"));
-        comision.setCellValueFactory(new PropertyValueFactory<>("commission"));
-        try{
-            
-            ObservableList<Shop>shops;
-            ShopManager manager = ShopManagerFactory.getShopManager();
-            shops = FXCollections.observableArrayList(manager.findAllShops(new GenericType <List<Shop>>(){}));
-            tabla.setItems(shops);
-            tabla.getSelectionModel().selectedItemProperty()
-                 .addListener(this::handleTableSelectionChanged);  
-            logger.info("Se carga la tabla correctamente");
-
-            Iterator<Shop> it=shops.iterator();
-            while(it.hasNext()){
-            System.out.println(it.next().getEmail());}
-        }catch(Exception w){
-            
-        }
+        tfBuscar.textProperty().addListener(this::textChange);
+        btnCrear.setOnAction(this::handleButtonCrear);
+        btnEliminar.setOnAction(this::handleButtonEliminar);
+        
+        btnBuscar.setOnAction(this::handleButtonSearch);
+        
+        
+        stage.setOnCloseRequest(this::setOncloseRequest);
+        
+        InsertDataIntoTable(tabla);
     }
     
     /**
@@ -330,6 +318,21 @@ public class ShopViewController  {
         }catch(Exception w){
             logger.info("Se carga la tabla a fallado");
         }
+    }
+    
+     /**
+     * Text changed event handler. not more than 255 character in the textfield
+     *
+     * @param observable
+     * @param oldValue
+     * @param newValue
+     */
+    private void textChange(ObservableValue observable, String oldValue, String newValue) {
+   
+        if (tfBuscar.getText().length() > 255 ) {
+             alert = new Alert(Alert.AlertType.WARNING, "No te pases de listo", ButtonType.OK);
+            alert.showAndWait();
+        } 
     }
   
 }

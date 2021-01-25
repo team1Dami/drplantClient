@@ -109,7 +109,6 @@ public class InfoTiendaController  {
         tfEmail.textProperty().addListener(this::textChange);
         tfLocation.textProperty().addListener(this::textChange);
         tfComision.textProperty().addListener(this::textChange);
-        tfComision.textProperty().addListener(this::isNumber);
         tfnombre.textProperty().addListener(this::textChange);
 
     }  
@@ -171,6 +170,10 @@ public class InfoTiendaController  {
                       //the gmail is not correct
                        alert = new Alert(Alert.AlertType.WARNING, "Error en el gmail", ButtonType.OK);
                        alert.showAndWait();
+                  }else if(!OnlyNumer(tfComision.getText())){
+                      alert = new Alert(Alert.AlertType.WARNING, "solo se permiten numeros en la comision", ButtonType.OK);
+                       alert.showAndWait();
+                  
                   }else{
                       
                     Shop shopEsta=null;
@@ -246,24 +249,7 @@ public class InfoTiendaController  {
             StagePopUpTienda.close();         
     }
     
-   
-    /**
-     * force the field to be numeric only
-     * @param observable
-     * @param oldValue
-     * @param newValue
-     * 
-     */
-    private void isNumber(ObservableValue<? extends String> observable, String oldValue, String newValue){
-         
-        if (!newValue.matches("\\d*")) {
-        tfComision.setText(newValue.replaceAll("[^\\d]", ""));
-             btnGuardar.setDisable(true);
-        }else{
-            btnGuardar.setDisable(false);
-        }  
-    }
-            
+      
     /**
      * Method to control the value of the textfields
      * @param observable
@@ -314,5 +300,14 @@ public class InfoTiendaController  {
     public void setStage(Stage stage){
         this.StagePopUpTienda = stage;
     }
+    
+     private boolean OnlyNumer(String text) {
+      try {
+         Integer.parseInt(text);
+         return true;
+      } catch (NumberFormatException e) {
+         return false;
+      }
+   }
     
 }

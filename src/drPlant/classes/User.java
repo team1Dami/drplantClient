@@ -6,11 +6,13 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 import java.util.logging.Logger;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author saray
  */
+@XmlRootElement
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;

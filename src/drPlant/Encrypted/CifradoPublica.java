@@ -32,7 +32,7 @@ public class CifradoPublica {
         byte[] encodedMessage = null;
         try {
             // Cargamos la clave pública
-            byte fileKey[] = fileReader(".\\src\\drPlant\\Encrypted\\Publica.txt");
+            byte fileKey[] = fileReader(".\\src\\drPlant\\Encrypted\\RSA_Public.key");
             System.out.println("Tamaño -> " + fileKey.length + " bytes");
 
             // Obtenemos una instancia de KeyFactory, algoritmo RSA
