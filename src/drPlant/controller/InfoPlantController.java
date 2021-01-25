@@ -32,6 +32,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -82,6 +83,12 @@ public class InfoPlantController {
     private ChoiceBox cbType;
 
     @FXML
+    private Label lblCommon;
+   
+    @FXML
+    private Label lblScience;
+    
+    @FXML
     private Label lblType;
 
     @FXML
@@ -92,8 +99,6 @@ public class InfoPlantController {
 
     @FXML
     private Label lblCares;
-    
-    
 
     private User user;
     private boolean isAdmin;
@@ -148,7 +153,7 @@ public class InfoPlantController {
         //Set stage properties
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
-        stage.setTitle("Lista plantas");
+        stage.setTitle("Info planta");
         stage.setResizable(false);
         stage.setOnShowing(this::handleShowWindow);
 
@@ -222,7 +227,7 @@ public class InfoPlantController {
             setValues();
         }
 
-        txtCommon.focusedProperty().addListener(this::handleNameChange);
+        //txtCommon.focusedProperty().addListener(this::handleNameChange);
 
         btnSave.setOnAction(this::handleButtonSave);
         btnCancel.setOnAction(this::handleButtonCancel);
@@ -284,11 +289,29 @@ public class InfoPlantController {
             System.out.println("Solo letras");
         }*/
         boolean correct = true;
+        if (!ValidateText(txtScience.getText())) {
+            correct = false;
+            lblScience.setTextFill(Paint.valueOf("red"));
+        }
+        if (!ValidateText(txtCommon.getText())) {
+            correct = false;
+            lblCommon.setTextFill(Paint.valueOf("red"));
+        }
         if (!ValidateText(txtDescription.getText())) {
             correct = false;
+            lblDescription.setTextFill(Paint.valueOf("red"));
         }
         if (!ValidateText(txtCares.getText())) {
             correct = false;
+            lblCares.setTextFill(Paint.valueOf("red"));
+        }
+        if(cbClimate.getValue().equals("")){
+            correct=false;
+            lblClimate.setTextFill(Paint.valueOf("red"));
+        }
+        if(cbType.getValue().equals("")){
+            correct=false;
+            lblType.setTextFill(Paint.valueOf("red"));
         }
         if (correct) {
             Plant newPlant = new Plant();
@@ -323,7 +346,7 @@ public class InfoPlantController {
             }
             if (plant != null) {
                 try {
-                    Plant plantSearch = PlantManagerFactory.getPlantManager().find(Plant.class, newPlant.getScienceName());
+                    //Plant plantSearch = PlantManagerFactory.getPlantManager().find(Plant.class, newPlant.getScienceName());
 
                     PlantManagerFactory.getPlantManager().edit(newPlant);
                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Se ha editado correctamente");
@@ -353,9 +376,8 @@ public class InfoPlantController {
                     alert.show();
                 }
             }
-        }
-        else{
-            Alert alert=new Alert(Alert.AlertType.ERROR,"Introduce correct values");
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Introduce correct values");
             alert.show();
         }
 
@@ -377,38 +399,39 @@ public class InfoPlantController {
         setValues();
     }
 
-    private void handleNameChange(ObservableValue observable,
-            Boolean oldValue,
-            Boolean newValue) {
-        if (newValue) {
-            LOGGER.info("onFocus");
-        } else if (oldValue) {
-            LOGGER.info("onBlur");
-            if (!ValidateText(txtScience.getText())) {
-                System.out.println("mal");
-            }
-        }
+    /*    private void handleNameChange(ObservableValue observable,
+    Boolean oldValue,
+    Boolean newValue) {
+    if (newValue) {
+    LOGGER.info("onFocus");
+    } else if (oldValue) {
+    LOGGER.info("onBlur");
+    if (!ValidateText(txtScience.getText())) {
+    System.out.println("mal");
     }
-    
-    private boolean ValidateName(String text) {
-        // Patron para validar el email
-        Pattern pattern = Pattern.compile("[a-zA-Z]*");
+    }
+    }*/
 
-        Matcher mather = pattern.matcher(text);
-        if (!mather.find()) {
-            return false;
-        } else {
-            return true;
-        }
-    }
 
     private boolean ValidateText(String text) {
-        // Patron para validar el email
+
         if (text.length() > 255) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Texto demasiado largo");
+            alert.show();
             return false;
-        } else {
-            return true;
         }
+        for (int i = 0; i < text.length(); i++) {
+            char caracter = text.toUpperCase().charAt(i);
+            int valorASCII = (int) caracter;
+            if (valorASCII != 165 && (valorASCII < 65 || valorASCII > 90)) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Caracter no valido introducido");
+                alert.show();
+                return false; //Se ha encontrado un caracter que no es letra
+            }
+        }
+
+        //Terminado el bucle sin que se haya retornado false, es que todos los caracteres son letras
+        return true;
     }
 
 }

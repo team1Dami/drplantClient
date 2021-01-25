@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
-<BorderPane id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="662.0" prefWidth="943.0" stylesheets="@drPlantstyles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.controller.ListPlantController">
+<BorderPane fx:id="listPlantPane" id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="662.0" prefWidth="943.0" stylesheets="@drPlantstyles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.controller.ListPlantController">
    <center>
       <AnchorPane fx:id="pane" centerShape="false" pickOnBounds="false" prefHeight="200.0" prefWidth="200.0" scaleShape="false" BorderPane.alignment="CENTER">
          <children>

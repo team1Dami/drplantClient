@@ -39,6 +39,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.converter.DefaultStringConverter;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.GenericType;
 
@@ -47,7 +48,6 @@ import javax.ws.rs.core.GenericType;
  * @author Ruben
  */
 public class ListPlantController {
-
 
     private static final Logger LOGGER = Logger.getLogger("drPlant.controller.ListPlantController");
 
@@ -98,15 +98,13 @@ public class ListPlantController {
 
     @FXML
     private ChoiceBox cbPet;
-    
+
     @FXML
     private Button btnRefresh;
 
     private User user;
 
-    private Plant plantEdit;
-    
-
+    //private Plant plantEdit;
     public void setUser(User user) {
         if (user.getPrivilege() == UserPrivilege.ADMIN) {
             isAdmin = true;
@@ -117,7 +115,7 @@ public class ListPlantController {
         this.user = user;
     }
 
-    public boolean isAdmin=true;
+    public boolean isAdmin = true;
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -126,12 +124,14 @@ public class ListPlantController {
     public Stage getStage() {
         return stage;
     }
-/**
- * Method that initialize the window
- * @param root 
- * @param user 
- */
-    public void initStage(Parent root,User user) {
+
+    /**
+     * Method that initialize the window
+     *
+     * @param root
+     * @param user
+     */
+    public void initStage(Parent root, User user) {
         try {
             setUser(user);
             Scene scene = new Scene(root);
@@ -146,13 +146,15 @@ public class ListPlantController {
             stage.setOnCloseRequest(this::setOncloseRequest);
             stage.show();
         } catch (Exception e) {
-            System.out.println("Error");
+            LOGGER.log(Level.SEVERE, "Could not initialize the window");
         }
     }
-/**
- * Method to handle the first view the windows element
- * @param e 
- */
+
+    /**
+     * Method to handle the first view the windows element
+     *
+     * @param e
+     */
     private void handleShowWindow(WindowEvent e) {
         clImage.setCellValueFactory(
                 new PropertyValueFactory<>("image"));
@@ -172,7 +174,8 @@ public class ListPlantController {
             }));
             tblPlants.setItems(plants);
         } catch (ClientErrorException e2) {
-            Alert alert=new Alert(Alert.AlertType.ERROR);
+            LOGGER.log(Level.SEVERE, "Error adding items in the table");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.show();
         }
 
@@ -185,7 +188,7 @@ public class ListPlantController {
         );
         cbClimate.setValue(" ");
         cbPet.setItems(FXCollections.observableArrayList(
-                " ", "Perro", "Gato", "Ambos","No")
+                " ", "Perro", "Gato", "Ambos", "No")
         );
         cbPet.setValue(" ");
         if (isAdmin) {
@@ -206,45 +209,50 @@ public class ListPlantController {
         btnAdd.setOnAction(this::handleAddButton);
         btnEdit.setOnAction(this::handleEditButton);
         btnRemove.setOnAction(this::handleRemoveButton);
-        
+
         btnRefresh.setOnAction(this::refreshTable);
 
         tblPlants.setOnMouseClicked(this::handleClickTable);
 
     }
-/**
- * Method that handle the clicks on the tableview
- * @param ev 
- */
+
+    /**
+     * Method that handle the clicks on the tableview
+     *
+     * @param ev
+     */
     private void handleClickTable(MouseEvent ev) {
         if (ev.getClickCount() == 2 & isAdmin) {
-        
-        tblPlants.setEditable(true);
-        
-        clCommonName.setCellFactory(TextFieldTableCell.forTableColumn());
-        clCommonName.setOnEditCommit(t -> {updateCommonName((CellEditEvent<Plant, String>) t);
-        });
-        ChoiceBox box=new ChoiceBox();
-        box.getItems().addAll("Calido" , "Frio", "Humedo", "Seco");
-        
-        
-        
-        /*clClimate.setCellValueFactory( cellData -> new ReadOnlyBooleanWrapper(cellData.getValue().getIsXyz()));
-        clClimate.setCellFactory(CheckBoxTableCell.<Plant>forTableColumn(clClimate));*/
-       
-        
-        
-        //clClimate.setCellValueFactory((Callback) box);
-        clClimate.setCellFactory(ChoiceBoxTableCell.forTableColumn());
-        clClimate.setOnEditCommit(t -> {
-            updateClimate((CellEditEvent<Plant, String>) t);
-        });
-        /*clClimate.setCellFactory(TextFieldTableCell.forTableColumn());
-        clAnimal.setCellFactory(TextFieldTableCell.forTableColumn());
-        clType.setCellFactory(TextFieldTableCell.forTableColumn());*/
-        }   
-        
-        if (ev.getClickCount() == 2 & !isAdmin) { 
+
+            tblPlants.setEditable(true);
+
+            clCommonName.setCellFactory(TextFieldTableCell.forTableColumn());
+            clCommonName.setOnEditCommit(t -> {
+                updateCommonName((CellEditEvent<Plant, String>) t);
+            });
+
+            ObservableList<String> cbClimate = FXCollections.observableArrayList("hot", "cold", "wet", "dry");
+            clClimate.setCellFactory(ChoiceBoxTableCell.forTableColumn(cbClimate));
+            clClimate.getCellData(cbClimate);
+            clClimate.setOnEditCommit(t -> {
+                updateClimate((CellEditEvent<Plant, String>) t);
+            });
+
+            ObservableList<String> cbType = FXCollections.observableArrayList("indoor", "outdoor", "succulent");
+            clType.setCellFactory(ChoiceBoxTableCell.forTableColumn(cbType));
+            clType.getCellData(cbClimate);
+            clType.setOnEditCommit(t -> {
+                updateType((CellEditEvent<Plant, String>) t);
+            });
+
+            ObservableList<String> cbPet = FXCollections.observableArrayList("no", "cat", "dog", "both");
+            clAnimal.setCellFactory(ChoiceBoxTableCell.forTableColumn(cbPet));
+            clAnimal.getCellData(cbClimate);
+            clAnimal.setOnEditCommit(t -> {
+                updatePet((CellEditEvent<Plant, String>) t);
+            });
+        }
+        if (ev.getClickCount() == 2 & !isAdmin) {
             //user.setPrivilege(UserPrivilege.ADMIN);
             Plant plant = (Plant) tblPlants.getSelectionModel().getSelectedItem();
             InfoPlantController controller = new InfoPlantController();
@@ -260,13 +268,15 @@ public class ListPlantController {
             }
         }
     }
-/**
- * Method that handle the selection on the table
- * Make button edit and remove enableif there is a row selected
- * @param observable
- * @param oldValue
- * @param newValue 
- */
+
+    /**
+     * Method that handle the selection on the table Make button edit and remove
+     * enableif there is a row selected
+     *
+     * @param observable
+     * @param oldValue
+     * @param newValue
+     */
     private void handleUsersTableSelection(ObservableValue observable,
             Object oldValue,
             Object newValue) {
@@ -295,34 +305,34 @@ public class ListPlantController {
             root = (Parent) loader.load();
             controller = (loader.getController());
             controller.setStage(stage);
-            controller.initStage(root,isAdmin);
+            controller.initStage(root, isAdmin);
         } catch (IOException ex) {
             System.out.println("Casca");
         }
     }
 
     private void handleEditButton(ActionEvent e) {
-        
+
         Plant plant = (Plant) tblPlants.getSelectionModel().getSelectedItem();
-       
-            InfoPlantController controller = new InfoPlantController();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/InfoPlanta.fxml"));
-            Parent root;
-            try {
-                root = (Parent) loader.load();
-                controller = (loader.getController());
-                controller.setStage(stage);
-                controller.initStage(root, plant, user);
-            } catch (IOException ex) {
-                System.out.println("Error");
-            }
-        
+
+        InfoPlantController controller = new InfoPlantController();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/InfoPlanta.fxml"));
+        Parent root;
+        try {
+            root = (Parent) loader.load();
+            controller = (loader.getController());
+            controller.setStage(stage);
+            controller.initStage(root, plant, user);
+        } catch (IOException ex) {
+            System.out.println("Error");
+        }
+
     }
 
-/*
+    /*
  * Method that handle button remove
  * @param e 
- */
+     */
     private void handleRemoveButton(ActionEvent e) {
         Plant plant = (Plant) tblPlants.getSelectionModel().getSelectedItem();
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
@@ -337,16 +347,14 @@ public class ListPlantController {
             refreshTable();
         }
     }
-/**
- * 
- * @param e 
- */
+
+    /**
+     *
+     * @param e
+     */
     private void handleSearchButton(ActionEvent e) {
         ObservableList<Plant> plants = null;
-        String nombre = null, clima = null, tipo = null, pet = null;
-        if (txtSearch.getText().equalsIgnoreCase(" ")) {
-            nombre = txtSearch.getText();
-        }
+        String clima = null, tipo = null, pet = null;
         if (cbClimate.getValue() != " ") {
             if (cbClimate.getValue() == "Calido") {
                 clima = "hot";
@@ -385,11 +393,7 @@ public class ListPlantController {
                 tipo = "outdoor";
             }
         }
-        System.out.println(nombre);
-        System.out.println(pet);
-        System.out.println(clima);
-        System.out.println(tipo);
-        if (nombre == null) {
+        if (txtSearch.getText().isEmpty()) {
             if (pet != null & clima != null & tipo != null) {
                 LOGGER.log(Level.INFO, "pet, clima y tipo distintos de null");
                 plants = FXCollections.observableArrayList(PlantManagerFactory.getPlantManager().getPlantWithAll(new GenericType<Set<Plant>>() {
@@ -421,27 +425,21 @@ public class ListPlantController {
                 LOGGER.log(Level.INFO, "pet, clima y tipo distintos de null");
                 plants = FXCollections.observableArrayList(PlantManagerFactory.getPlantManager().getAllPlants(new GenericType<Set<Plant>>() {
                 }));
-            }
-            else if(pet==null & clima!=null & tipo==null){
+            } else if (pet == null & clima != null & tipo == null) {
                 LOGGER.log(Level.INFO, "pet, clima y tipo distintos de null");
                 plants = FXCollections.observableArrayList(PlantManagerFactory.getPlantManager().getPlantByClimate(new GenericType<Set<Plant>>() {
-                },clima));
+                }, clima));
             }
-        
-        } else {
-            if (pet != null | clima != null | tipo != null) {
-                LOGGER.log(Level.INFO, "Hay texto. nombre, clima o tipo distintos de null");
-                plants = FXCollections.observableArrayList(PlantManagerFactory.getPlantManager().getPlantWithAll(new GenericType<Set<Plant>>() {
-                }, tipo, pet, clima));
-            } else {
 
-                LOGGER.log(Level.INFO, "Hay texto. nombre, clima y tipo distintos de null");
-                plants =FXCollections.observableArrayList(PlantManagerFactory.getPlantManager().getPlantByCommonName(new GenericType<Set<Plant>>() {
-                }, nombre));
-                if (plants.isEmpty()) {
-                    plants = FXCollections.observableArrayList(PlantManagerFactory.getPlantManager().getPlantByCommonName(new GenericType<Set<Plant>>() {
-                    }, nombre));
-                }
+        } else {
+
+            LOGGER.log(Level.INFO, "Hay texto. nombre, clima y tipo distintos de null");
+            try {
+                plants = FXCollections.observableArrayList(PlantManagerFactory.getPlantManager().find(Plant.class, txtSearch.getText()));
+            } catch (ClientErrorException ex) {
+                System.out.println("No existe");
+                plants = FXCollections.observableArrayList(PlantManagerFactory.getPlantManager().getPlantByCommonName(new GenericType<Set<Plant>>() {
+                }, txtSearch.getText()));
             }
 
         }
@@ -471,41 +469,55 @@ public class ListPlantController {
         }
     }
 
-    private void updateCommonName(CellEditEvent<Plant,String> t) {
-        Plant p=t.getRowValue();
+    private void updateCommonName(CellEditEvent<Plant, String> t) {
+        Plant p = t.getRowValue();
         p.setCommonName(t.getNewValue());
         PlantManagerFactory.getPlantManager().edit(p);
         tblPlants.refresh();
     }
 
-    private void updateClimate(CellEditEvent<Plant,String> t) {
-        Plant p=t.getRowValue();
-        if(t.getNewValue().equals("Calido"))
+    private void updateClimate(CellEditEvent<Plant, String> t) {
+        Plant p = t.getRowValue();
+        if (p.getClimate().equals(Climate.hot)) {
             p.setClimate(Climate.hot);
+        } else if (p.getClimate().equals(Climate.cold)) {
+            p.setClimate(Climate.cold);
+        } else if (p.getClimate().equals(Climate.dry)) {
+            p.setClimate(Climate.dry);
+        } else if (p.getClimate().equals(Climate.wet)) {
+            p.setClimate(Climate.wet);
+        }
         PlantManagerFactory.getPlantManager().edit(p);
-        tblPlants.refresh();
+        //tblPlants.refresh();
     }
 
-   
-    
-    private void refreshTable(ActionEvent e){
+    private void refreshTable(ActionEvent e) {
         try {
             ObservableList<Plant> plants = FXCollections.observableArrayList(PlantManagerFactory.getPlantManager().getAllPlants(new GenericType<Set<Plant>>() {
             }));
             tblPlants.setItems(plants);
         } catch (ClientErrorException e2) {
-            Alert alert=new Alert(Alert.AlertType.ERROR);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.show();
         }
     }
-    private void refreshTable(){
+
+    private void refreshTable() {
         try {
             ObservableList<Plant> plants = FXCollections.observableArrayList(PlantManagerFactory.getPlantManager().getAllPlants(new GenericType<Set<Plant>>() {
             }));
             tblPlants.setItems(plants);
         } catch (ClientErrorException e2) {
-            Alert alert=new Alert(Alert.AlertType.ERROR);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.show();
         }
+    }
+
+    private void updateType(CellEditEvent<Plant, String> cellEditEvent) {
+
+    }
+
+    private void updatePet(CellEditEvent<Plant, String> cellEditEvent) {
+
     }
 }
