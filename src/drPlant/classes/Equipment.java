@@ -1,6 +1,7 @@
 package drPlant.classes;
 
 import drPlant.enumerations.Use;
+
 import java.io.Serializable;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -21,6 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Eneko
  */
 
+
 @XmlRootElement(name="equipment")
 public class Equipment implements Serializable{
     
@@ -37,8 +39,7 @@ public class Equipment implements Serializable{
     private Shop shop;
     private Set<User> usuarios;
     
-    public Equipment(){}
-    
+    public Equipment(){}    
     /**
      *
      * @return ID the ID of the equipment

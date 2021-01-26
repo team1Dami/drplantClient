@@ -6,6 +6,7 @@
 package drPlant.client;
 
 import drPlant.interfaces.UserManager;
+import java.util.ResourceBundle;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
@@ -23,14 +24,18 @@ import javax.ws.rs.core.GenericType;
  *
  * @author saray
  */
-public class UserRESTClient implements UserManager{
+public class UserRESTClient implements UserManager {
 
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:8080/drPlantServer/webresources"; // esta ruta se debe leer de un archivo de propiedades
+    //private static final String BASE_URI = "http://localhost:8080/drplant/webresources"; // esta ruta se debe leer de un archivo de propiedades
+    private static ResourceBundle resource;
+    private String BASE_URI;
 
     public UserRESTClient() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
+        resource = ResourceBundle.getBundle("drPlant/client/BaseUrl");
+        BASE_URI = resource.getString("BaseUri");
         webTarget = client.target(BASE_URI).path("user");
     }
 
@@ -40,7 +45,6 @@ public class UserRESTClient implements UserManager{
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
                 .get(responseType);
     }
-    
     /*
     Ejemplo de llamada:
     
@@ -53,22 +57,16 @@ public class UserRESTClient implements UserManager{
                 .put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
     }
 
-    public <T> T find(Class<T> responseType, String id) throws ClientErrorException {
+    public <T> T find(Class<T> responseType, Integer id) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("{0}", new Object[]{id}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
                 .get(responseType);
     }
-    
+  
     public void create_XML(Object requestEntity) throws ClientErrorException {
         webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
                 .post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
-    }
-
-    public <T> T findAll(Class<T> responseType) throws ClientErrorException {
-        WebTarget resource = webTarget;
-        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
-                .get(responseType);
     }
 
     public void remove(String id) throws ClientErrorException {
@@ -88,5 +86,10 @@ public class UserRESTClient implements UserManager{
         client.close();
     }
 
-    
+    public <T> T findAll(GenericType<T> responseType) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
+                .get(responseType);
+    }
+
 }
