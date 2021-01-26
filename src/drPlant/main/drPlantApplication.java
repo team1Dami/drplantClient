@@ -63,14 +63,6 @@ public class drPlantApplication extends Application {
      */
     public static void main(String[] args) {
         launch(args);
-        /*ObservableList<Shop>shops;
-        ShopManager manager = ShopManagerFactory.getShopManager();
-        shops = FXCollections.observableArrayList(manager.findAllShops(new GenericType <List<Shop>>(){}));
-        
-        Iterator<Shop> it=shops.iterator();
-        while(it.hasNext()){
-        System.out.println(it.next().getEmail());
-        }*/
     }
     
 }

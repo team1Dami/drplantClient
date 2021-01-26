@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Set;
 import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
