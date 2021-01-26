@@ -1,6 +1,6 @@
 package drPlant.classes;
 
-import DrPlant.enumerations.PlagueType;
+import drPlant.enumerations.PlagueType;
 import java.io.Serializable;
 import java.util.Set;
 import java.util.logging.Level;

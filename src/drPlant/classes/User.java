@@ -1,7 +1,7 @@
 package drPlant.classes;
 
-import DrPlant.enumerations.UserPrivilege;
-import DrPlant.enumerations.Userstatus;
+import drPlant.enumerations.UserPrivilege;
+import drPlant.enumerations.Userstatus;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
