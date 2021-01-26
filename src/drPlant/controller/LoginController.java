@@ -107,7 +107,6 @@ public class LoginController {
         else {
             btnLogin.setDisable(false);
         }
-
     }
 
     /**
@@ -235,7 +234,6 @@ public class LoginController {
                         "Se ha cancelado la accion", ButtonType.OK);//alert to advise that the action has being cancel
                 alert.showAndWait();
                 we.consume();//do as nothing has happen
-
             }
         } catch (Exception ex) {
             logger.log(Level.SEVERE,
