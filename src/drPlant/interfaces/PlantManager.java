@@ -26,6 +26,7 @@ public interface PlantManager {
     public <T> T getPlantByPetFriendlyAndClimate(GenericType<T> responseType, String petFriendly, String climate) throws ClientErrorException ;
 
     public <T> T getAllPlants(Class<T> responseType) throws ClientErrorException ;
+  
     public <T> T getAllPlants(GenericType<T> responseType) throws ClientErrorException ;
 
     public void remove(String id) throws ClientErrorException ;

@@ -1,0 +1,50 @@
+
+.root{
+    -fx-button-base-color: dodgerblue;
+    -fx-button-hover-color: deepskyblue;
+    -fx-button-armed-color: #4CAF50;
+}
+#fondoLogin{
+    -fx-background-image: url('login1.png')
+}
+
+#pane{
+    -fx-background-image: url('fondo5.jpg')
+}
+.TextField:armed{
+    -fx-background-color: rgb(93, 163, 46);             
+    
+  }
+.button:hover {
+    -fx-background-color: rgb(93, 163, 46);
+  }
+.label:hover {
+    -fx-color: tomato;
+  }
+.button:armed {
+    -fx-background-color:-fx-inner-border,-fx-outer-border, -fx-button-armed-color;
+ }
+.button{
+    -fx-font-family: "Trebuchet MS", Helvetica, sans-serif;
+    -fx-font-weight: bold;
+    -fx-border-radius: 100px;
+ }
+#titulo{
+    -fx-background-color: #4CAF50;
+}
+th {
+    -fx-padding-top: 12px;
+    -fx-padding-bottom: 12px;
+    -fx-text-align: left;
+    -fx-background-color: #4CAF50;
+    -fx-color: white; 
+}
+tr:nth-child(even){-fx-background-color: #f2f2f2}
+
+#TextBuscar {
+    -fx-font-family: "Comic Sans MS", cursive, sans-serif;
+}
+#fondo{
+    -fx-background-image: url('fondo1.jpg')
+}
+

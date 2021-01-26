@@ -3,22 +3,40 @@ package drPlant.classes;
 import drPlant.enumerations.UserPrivilege;
 import drPlant.enumerations.Userstatus;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Set;
+import java.util.Date;
 import java.util.logging.Logger;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
+ * This class encapsultaes the data of each user:
+ * <ul>
+ *  <li><strong>id:</strong> It's the id of the user. It's the identifier</li>
+ *  <li><strong>login:</strong> It's the user's login</li>
+ *  <li><strong>email:</strong> It's the user's email</li>
+ *  <li><strong>fullname:</strong> It's the user's fullname</li>
+ *  <li><strong>status:</strong> It's the user's status, that can be:
+ *      <ul>
+ *          <li>ENABLE</li>
+ *          <li>DISABLE</li>
+ *      </ul>
+ *  </li>
+ *  <li><strong>privilege:</strong> It's the user's privilege, that can be:
+ *      <ul>
+ *          <li>USER</li>
+ *          <li>ADMIN</li>
+ *      </ul>
+ *  </li>
+ *  <li><strong>passwd:</strong> It's the user's password, that it's going to be ciphered</li>
+ *  <li><strong>lastAccess:</strong> It's the user's lastAccess</li>
+ * </ul>
+ * 
  * @author saray
  */
 @XmlRootElement
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
-    private static final Logger LOGGER =
-            Logger.getLogger("drPlant.classes.User");
+   
 
     private Integer id;
     private String login;
@@ -27,8 +45,8 @@ public class User implements Serializable {
     private Userstatus status;
     private UserPrivilege privilege;
     private String passwd;
-    private java.sql.Date lastAccess;
-    private java.sql.Date lastPasswdChange;
+    private Date lastAccess;
+    private Date lastPasswdChange;
     private Set<UserPlant> plants;
     //private Set<Plant> plants;
     private Set<Equipment> equipments;
@@ -46,8 +64,8 @@ public class User implements Serializable {
      *
      * @return the privilege of the user
      */
-    public String getPrivilage() {
-        return privilege.name();
+    public UserPrivilege getPrivilege() {
+        return privilege;
     }
 
     /**
@@ -55,16 +73,16 @@ public class User implements Serializable {
      *
      * @param privilage
      */
-    public void setPrivilage(UserPrivilege privilage) {
-        this.privilege = privilage;
+    public void setPrivilege(UserPrivilege privilege) {
+        this.privilege = privilege;
     }
 
     /**
      *
      * @return the status of the user
      */
-    public String getStatus() {
-        return status.name();
+    public Userstatus getStatus() {
+        return status;
     }
 
     /**
@@ -73,7 +91,7 @@ public class User implements Serializable {
      * @param status
      */
     public void setStatus(Userstatus status) {
-       this.status=status;
+       this.status = status;
     }
 
     /**
@@ -175,7 +193,7 @@ public class User implements Serializable {
      * @param lastAccess
      */
     public void setLastAccess(Date lastAccess) {
-        this.lastAccess = (java.sql.Date) lastAccess;
+        this.lastAccess =  lastAccess;
     }
 
     /**
@@ -192,7 +210,7 @@ public class User implements Serializable {
      * @param lastPasswdChange
      */
     public void setLastPasswdChange(Date lastPasswdChange) {
-        this.lastPasswdChange = (java.sql.Date) lastPasswdChange;
+        this.lastPasswdChange = lastPasswdChange;
     }
 
     /**
@@ -224,22 +242,6 @@ public class User implements Serializable {
      */
     public void setEquipments(Set<Equipment> equipments) {
         this.equipments = equipments;
-    }
-
-    /**
-     * Get privilege
-     * @return privilege
-     */
-    public UserPrivilege getPrivilege() {
-        return privilege;
-    }
-
-    /**
-     * Set user´s privilege
-     * @param privilege 
-     */
-    public void setPrivilege(UserPrivilege privilege) {
-        this.privilege = privilege;
     }
 
 }

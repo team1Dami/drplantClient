@@ -53,7 +53,7 @@ public class PlantRESTClient implements PlantManager{  // hacer que implemente l
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
                 .get(responseType);
     }
-
+  
     public <T> T getPlantByTypeAndClimate(GenericType<T> responseType, String plantType, String climate) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("TypeAndClimate/{0}/{1}", new Object[]{plantType, climate}));
@@ -65,7 +65,7 @@ public class PlantRESTClient implements PlantManager{  // hacer que implemente l
         webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
                 .put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
     }
-
+  
     public <T> T getPlantByClimate(GenericType<T> responseType, String climate) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("climate/{0}", new Object[]{climate}));

@@ -4,10 +4,21 @@ import java.io.Serializable;
 import java.util.Set;
 import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
- *
+ * This class encapsultaes the data of each shop:
+ * 
+ * <ul>
+ *  <li><strong>id_shop:</strong> It's the id of the shop. It's the identifier</li>
+ *  <li><strong>shop_name:</strong> It's the shop's name</li>
+ *  <li><strong>url:</strong> It's the shop's url</li>
+ *  <li><strong>location:</strong> It's the shop's location</li>
+ *  <li><strong>commission:</strong> It's the commission that we receive of the shop</li>
+ *  <li><strong>email:</strong> It's the shop's email</li>
+ *  <li><strong>plants:</strong> Collection of objects of the Plant class that have to sold</li>
+ *  <li><strong>equipments:</strong> Collection of objects of the Equipment class that have to sold</li>
+ * </ul>
+ * 
  * @author saray
  */
 @XmlRootElement

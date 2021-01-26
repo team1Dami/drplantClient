@@ -5,35 +5,35 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.HBox?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="1028" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.controller.MenuController">
+<HBox fx:id="hboxMenu" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.controller.MenuController">
    <children>
-      <MenuBar fx:id="menu" prefHeight="25.0" prefWidth="1338.0">
+      <MenuBar fx:id="menu" maxWidth="2200.0" prefWidth="1235.0">
         <menus>
-          <Menu mnemonicParsing="false" text="Plantas">
+          <Menu fx:id="menuPlant" mnemonicParsing="false" text="Plantas">
             <items>
-              <MenuItem id="allPlantsItem" mnemonicParsing="false" onAction="#handlePlantViewAction" text="Lista general" />
-                  <MenuItem id="myPlantsItem" mnemonicParsing="false" onAction="#handleMyPlantsViewAction" text="Mis Plantas" />
+              <MenuItem id="allPlantsItem" fx:id="allPlantsItem" mnemonicParsing="false" onAction="#handlePlantViewAction" text="Lista general" />
+                  <MenuItem id="myPlantsItem" fx:id="myPlantsItem" mnemonicParsing="false" onAction="#handleMyPlantsViewAction" text="Mis Plantas" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Plagas">
+          <Menu fx:id="menuPlague" mnemonicParsing="false" text="Plagas">
             <items>
-              <MenuItem id="allPlaguesItem" mnemonicParsing="false" onAction="#handlePlagueViewAction" text="Lista general" />
+              <MenuItem id="allPlaguesItem" fx:id="allPlaguesItem" mnemonicParsing="false" onAction="#handlePlagueViewAction" text="Lista general" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Equipamiento">
+          <Menu fx:id="menuEquipment" mnemonicParsing="false" text="Equipamiento">
             <items>
-              <MenuItem id="allEquipmentItem" mnemonicParsing="false" onAction="#handleEquipmentViewAction" text="Lista general" />
+              <MenuItem id="allEquipmentItem" fx:id="allEquipmentItem" mnemonicParsing="false" onAction="#handleEquipmentViewAction" text="Lista general" />
             </items>
           </Menu>
-            <Menu mnemonicParsing="false" text="Tiendas">
+            <Menu fx:id="menuShops" mnemonicParsing="false" text="Tiendas">
                <items>
-                  <MenuItem id="allShopsItem" mnemonicParsing="false" onAction="#handleShopViewAction" text="Lista general" />
+                  <MenuItem id="allShopsItem" fx:id="allShopsItem" mnemonicParsing="false" onAction="#handleShopViewAction" text="Lista general" />
                </items>
             </Menu>
-            <Menu mnemonicParsing="false" text="Mi perfil">
+            <Menu fx:id="menuProfile" mnemonicParsing="false" text="Mi perfil">
                <items>
-                  <MenuItem id="myProfileItem" mnemonicParsing="false" onAction="#handleViewProfileAction" text="Ver mis datos" />
-                  <MenuItem id="closeSesionItem" mnemonicParsing="false" onAction="#handleCloseSessionAction" text="Cerrar sesión" />
+                  <MenuItem id="myProfileItem" fx:id="myProfileItem" mnemonicParsing="false" onAction="#handleViewProfileAction" text="Ver mis datos" />
+                  <MenuItem id="closeSesionItem" fx:id="closeSesionItem" mnemonicParsing="false" onAction="#handleCloseSessionAction" text="Cerrar sesión" />
                </items>
             </Menu>
         </menus>

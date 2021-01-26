@@ -12,7 +12,7 @@ package drPlant.enumerations;
  * @author Saray
  */
 public enum PlagueType {
-        light,
-        middle,
-        severe
+    light,
+    middle,
+    severe
 }
