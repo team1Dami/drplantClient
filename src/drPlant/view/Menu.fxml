@@ -11,8 +11,7 @@
         <menus>
           <Menu fx:id="menuPlant" mnemonicParsing="false" text="Plantas">
             <items>
-              <MenuItem id="allPlantsItem" fx:id="allPlantsItem" mnemonicParsing="false" onAction="#handlePlantViewAction" text="Lista general" />
-                  <MenuItem id="myPlantsItem" fx:id="myPlantsItem" mnemonicParsing="false" onAction="#handleMyPlantsViewAction" text="Mis Plantas" />
+              <MenuItem id="allPlantsItem" fx:id="allPlantsItem" mnemonicParsing="false" onAction="#handlePlantViewAction" text="Lista general" />        
             </items>
           </Menu>
           <Menu fx:id="menuPlague" mnemonicParsing="false" text="Plagas">

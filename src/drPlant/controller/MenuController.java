@@ -5,6 +5,7 @@
  */
 package drPlant.controller;
 
+import drPlant.classes.User;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,6 +47,8 @@ public class MenuController {
     @FXML
     private MenuItem closeSesionItem;
 
+    private static User user = new User();
+
     /**
      * Method to initialice the components of the menubar
      *
@@ -54,7 +57,6 @@ public class MenuController {
     public void initStage(Parent root) {
 
         allPlantsItem.setOnAction(this::handlePlantViewAction);
-        myPlantsItem.setOnAction(this::handleMyPlantsViewAction);
         allPlaguesItem.setOnAction(this::handlePlagueViewAction);
         allEquipmentItem.setOnAction(this::handleEquipmentViewAction);
         allShopsItem.setOnAction(this::handleShopViewAction);
@@ -73,16 +75,14 @@ public class MenuController {
         Parent root;
         Stage stage2 = new Stage();
 
-        PlantViewController controller = new PlantViewController();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/PlantView.fxml"));
+        ListPlantController controller = new ListPlantController();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/InfoPlanta.fxml"));
         try {
             root = (Parent) loader.load();
             controller = (loader.getController());
-            controller = (loader.getController());
             controller.setStage(stage2);
-            stage.close();
-            controller.initStage(root);
-            
+            //stage.close();
+            controller.initStage(root, user);
 
         } catch (IOException ex) {
             logger.log(Level.SEVERE, "Can't open PlantView");
@@ -90,7 +90,7 @@ public class MenuController {
             alert.showAndWait();
         }
     }
-   
+
     /**
      * Method to show the generic list of plagues view when the user click on it
      *
@@ -106,11 +106,9 @@ public class MenuController {
         try {
             root = (Parent) loader.load();
             controller = (loader.getController());
-            controller = (loader.getController());
             controller.setStage(stage2);
-            stage.close();
+            //stage.close();
             controller.initStage(root);
-            
 
         } catch (IOException ex) {
             logger.log(Level.SEVERE, "Can't open PlagueView");
@@ -130,11 +128,10 @@ public class MenuController {
         Parent root;
         Stage stage2 = new Stage();
 
-       /* EquipmentViewController controller = new EquipmentViewController();
+        EquipmentViewController controller = new EquipmentViewController();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/EquipmentView.fxml"));
         try {
             root = (Parent) loader.load();
-            controller = (loader.getController());
             controller = (loader.getController());
             controller.setStage(stage2);
             controller.initStage(root);
@@ -144,7 +141,7 @@ public class MenuController {
             logger.log(Level.SEVERE, "Can't open EquipmentView");
             Alert alert = new Alert(Alert.AlertType.WARNING, "Ops! Ha ocurrido un error inesperado!", ButtonType.OK);
             alert.showAndWait();
-        }*/
+        }
     }
 
     /**
@@ -162,10 +159,9 @@ public class MenuController {
         try {
             root = (Parent) loader.load();
             controller = (loader.getController());
-            controller = (loader.getController());
+            //stage.close();
             controller.setStage(stage2);
-            controller.initStage(root);
-            stage.close();
+            controller.initStage(root, user);
 
         } catch (IOException ex) {
             logger.log(Level.SEVERE, "Can't open ShopView");
@@ -185,11 +181,10 @@ public class MenuController {
         Parent root;
         Stage stage2 = new Stage();
 
-       /* MyProfileViewController controller = new MyProfileViewController();
+        /* MyProfileViewController controller = new MyProfileViewController();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/MyProfileView.fxml"));
         try {
             root = (Parent) loader.load();
-            controller = (loader.getController());
             controller = (loader.getController());
             controller.setStage(stage2);
             controller.initStage(root);
@@ -212,7 +207,7 @@ public class MenuController {
         Parent root;
         Stage stage2 = new Stage();
 
-       LoginController controller = new LoginController();
+        LoginController controller = new LoginController();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/Login.fxml"));
         try {
             root = (Parent) loader.load();
@@ -228,4 +223,9 @@ public class MenuController {
             alert.showAndWait();
         }
     }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
 }

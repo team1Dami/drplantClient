@@ -87,14 +87,16 @@ public class ShopViewController  {
      *
      * @param root
      */
-    public void initStage(Parent root/*,User user*/) {
+    public void initStage(Parent root,User user) {
  
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setResizable(true);
         stage.setTitle("Lista Tiendas");
         
+        if(user.getPrivilege().equals("ADMIN")){
         admin=true;
+        }
         if(!admin){
             btnCrear.setVisible(false);
             btnEliminar.setVisible(false);

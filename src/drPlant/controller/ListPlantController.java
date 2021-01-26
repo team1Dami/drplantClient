@@ -144,7 +144,9 @@ public class ListPlantController {
             stage.setOnShowing(this::handleShowWindow);
 
             stage.setOnCloseRequest(this::setOncloseRequest);
+            
             stage.show();
+            
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Could not initialize the window");
         }

@@ -142,14 +142,18 @@ public class LoginController {
             if (serverUser != null) { //user exists
                 Parent root;
                 Stage stage2 = new Stage();
-                ListPlantController controller = new ListPlantController();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/PlantList.fxml"));//me falta la siguiente ventana
+                /*ListPlantController controller = new ListPlantController();
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/PlantList.fxml"));//me falta la siguiente ventana*/
                 
+                
+                ShopViewController controller = new ShopViewController();
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/ShopView.fxml"));
                 try {
                     root = (Parent) loader.load();
                     controller = (loader.getController());
                     controller.setStage(stage2);
-                    controller.initStage(root);
+                    StageLogin.close();
+                    controller.initStage(root,serverUser);
                 } catch (IOException ex) {
                     //Logger.getLogger(LogoutController.class.getName()).log(Level.SEVERE, null, ex);
                 }

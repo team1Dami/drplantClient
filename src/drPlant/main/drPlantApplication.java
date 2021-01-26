@@ -1,4 +1,4 @@
-package drplant.main;
+package drPlant.main;
 
 /*
  * To change this license header, choose License Headers in Project Properties.

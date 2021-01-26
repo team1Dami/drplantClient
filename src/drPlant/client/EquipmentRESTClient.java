@@ -6,6 +6,7 @@
 package drPlant.client;
 
 import drPlant.interfaces.EquipmentManager;
+import java.util.ResourceBundle;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
@@ -40,7 +41,7 @@ public class EquipmentRESTClient implements EquipmentManager {
         webTarget = client.target(BASE_URI).path("equipment");
     }
 
-    public <T> T findAllEquipment(Class<T> responseType) throws ClientErrorException {
+    public <T> T findAllEquipment(GenericType<T> responseType) throws ClientErrorException {
 
         WebTarget resource = webTarget;
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
@@ -76,6 +77,12 @@ public class EquipmentRESTClient implements EquipmentManager {
     public void remove(String id) throws ClientErrorException {
         webTarget.path(java.text.MessageFormat.format("{0}", new Object[]{id})).request().delete();
     }
+    
+    public <T> T findEquipmentByNameAndUse(GenericType<T> responseType, String use, String name) throws ClientErrorException {
+            WebTarget resource = webTarget;
+            resource = resource.path(java.text.MessageFormat.format("equipment_name/{0}/{1}", new Object[]{use, name}));
+            return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+        }
 
     public void close() {
         client.close();
