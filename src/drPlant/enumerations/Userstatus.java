@@ -12,5 +12,4 @@ package drPlant.enumerations;
 public enum Userstatus {
      ENABLE,
      DISABLE
-     
 }
