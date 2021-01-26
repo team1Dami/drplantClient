@@ -6,9 +6,11 @@
 package drPlant.client;
 
 import drPlant.interfaces.UserManager;
+import java.util.ResourceBundle;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
 
 /**
  * Jersey REST client generated for REST resource:UserFacadeREST [user]<br>
@@ -22,29 +24,31 @@ import javax.ws.rs.client.WebTarget;
  *
  * @author saray
  */
-public class UserRESTClient implements UserManager{
+public class UserRESTClient implements UserManager {
 
     private WebTarget webTarget;
     private Client client;
-    
-    private static final String BASE_URI = "http://localhost:8080/drplant/webresources"; // esta ruta se debe leer de un archivo de propiedades
+    //private static final String BASE_URI = "http://localhost:8080/drplant/webresources"; // esta ruta se debe leer de un archivo de propiedades
+    private static ResourceBundle resource;
+    private String BASE_URI;
 
     public UserRESTClient() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
+        resource = ResourceBundle.getBundle("drPlant/client/BaseUrl");
+        BASE_URI = resource.getString("BaseUri");
         webTarget = client.target(BASE_URI).path("user");
     }
 
     public <T> T findUserByLoginAndPasswd(Class<T> responseType, String login, String passwd) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("login/{0}/{1}", new Object[]{login, passwd}));
-        return  resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
                 .get(responseType);
     }
-    
     /*
     Ejemplo de llamada:
     
-    User u = UserManagerFactory.getCustomerManager()
+    List <User> u = UserManagerFactory.getCustomerManager()
                     .findUserByLoginAndPasswd (User.class, login, password);
     */
    
@@ -55,35 +59,37 @@ public class UserRESTClient implements UserManager{
 
     public <T> T find(Class<T> responseType, Integer id) throws ClientErrorException {
         WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("/{0}", new Object[]{id}));
+        resource = resource.path(java.text.MessageFormat.format("{0}", new Object[]{id}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
                 .get(responseType);
     }
-    
-    public void create_XML(Object requestEntity)  {
-        try{
+  
+    public void create_XML(Object requestEntity) throws ClientErrorException {
         webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
                 .post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
-        }
-        catch(ClientErrorException e){
-            
-        }
     }
 
-    public <T> T findAll(Class<T> responseType) throws ClientErrorException {
+    public void remove(String id) throws ClientErrorException {
+        webTarget.path(java.text.MessageFormat.format("{0}", new Object[]{id}))
+                .request()
+                .delete();
+    }
+    
+    public void resetPassword( String email) throws ClientErrorException {
+            WebTarget resource = webTarget;
+            resource = resource.path(java.text.MessageFormat.format("email/{0}", new Object[]{email}));
+            resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
+                .get();
+        }
+
+    public void close() {
+        client.close();
+    }
+
+    public <T> T findAll(GenericType<T> responseType) throws ClientErrorException {
         WebTarget resource = webTarget;
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
                 .get(responseType);
     }
 
-    public void remove(String id) throws ClientErrorException {
-        webTarget.path(java.text.MessageFormat.format("/{0}", new Object[]{id}))
-                .request()
-                .delete();
-    }
-
-    public void close() {
-        client.close();
-    }
-    
 }

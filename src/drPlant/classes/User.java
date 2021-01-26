@@ -4,8 +4,8 @@ import drPlant.enumerations.UserPrivilege;
 import drPlant.enumerations.Userstatus;
 import java.io.Serializable;
 import java.util.Set;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
+import java.util.logging.Logger;
 
 /**
  * This class encapsultaes the data of each user:
@@ -48,8 +48,18 @@ public class User implements Serializable {
     private Date lastAccess;
     private Date lastPasswdChange;
     private Set<UserPlant> plants;
+    //private Set<Plant> plants;
     private Set<Equipment> equipments;
 
+    /* public Set<Plant> getPlants() {
+    return plants;
+    }
+    
+    public void setPlants(Set<Plant> plants) {
+    this.plants = plants;
+    }*/
+    
+    
     /**
      *
      * @return the privilege of the user

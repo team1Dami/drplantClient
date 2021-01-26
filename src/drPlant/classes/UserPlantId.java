@@ -3,6 +3,7 @@ package drPlant.classes;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *

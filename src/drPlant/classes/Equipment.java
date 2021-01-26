@@ -1,6 +1,8 @@
 package drPlant.classes;
 
 import drPlant.enumerations.Use;
+
+import java.io.Serializable;
 import java.util.Set;
 import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -19,8 +21,10 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Eneko
  */
-@XmlRootElement
-public class Equipment {
+
+
+@XmlRootElement(name="equipment")
+public class Equipment implements Serializable{
     
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER =
@@ -35,7 +39,7 @@ public class Equipment {
     private Shop shop;
     private Set<User> usuarios;
     
-    
+    public Equipment(){}    
     /**
      *
      * @return ID the ID of the equipment

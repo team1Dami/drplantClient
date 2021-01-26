@@ -15,29 +15,29 @@ import javax.ws.rs.core.GenericType;
  */
 public interface PlantManager {
     
-    public <T> T getPlantByPetFriendly(Class<T> responseType, String petFriendly) throws ClientErrorException ;
+    public <T> T getPlantByPetFriendly(GenericType<T> responseType, String petFriendly) throws ClientErrorException ;
 
-    public <T> T getPlantByTypeAndClimate(Class<T> responseType, String plantType, String climate) throws ClientErrorException ;
+    public <T> T getPlantByTypeAndClimate(GenericType<T> responseType, String plantType, String climate) throws ClientErrorException ;
 
     public void edit(Object requestEntity) throws ClientErrorException ;
 
-    public <T> T getPlantByClimate(Class<T> responseType, String climate) throws ClientErrorException ;
+    public <T> T getPlantByClimate(GenericType<T> responseType, String climate) throws ClientErrorException ;
 
-    public <T> T getPlantByPetFriendlyAndClimate(Class<T> responseType, String petFriendly, String climate) throws ClientErrorException ;
+    public <T> T getPlantByPetFriendlyAndClimate(GenericType<T> responseType, String petFriendly, String climate) throws ClientErrorException ;
 
     public <T> T getAllPlants(Class<T> responseType) throws ClientErrorException ;
-    
+  
     public <T> T getAllPlants(GenericType<T> responseType) throws ClientErrorException ;
 
     public void remove(String id) throws ClientErrorException ;
 
-    public <T> T getPlantWithAll(Class<T> responseType, String plantType, String petFriendly, String climate) throws ClientErrorException ;
+    public <T> T getPlantWithAll(GenericType<T> responseType, String plantType, String petFriendly, String climate) throws ClientErrorException ;
     
-    public <T> T getPlantByCommonName(Class<T> responseType, String commonName) throws ClientErrorException ;
+    public <T> T getPlantByCommonName(GenericType<T> responseType, String commonName) throws ClientErrorException ;
 
-    public <T> T getPlantByTypeAndPetFriendly(Class<T> responseType, String plantType, String petFriendly) throws ClientErrorException ;
+    public <T> T getPlantByTypeAndPetFriendly(GenericType<T> responseType, String plantType, String petFriendly) throws ClientErrorException ;
 
-    public <T> T getPlantByType(Class<T> responseType, String plantType) throws ClientErrorException ;
+    public <T> T getPlantByType(GenericType<T> responseType, String plantType) throws ClientErrorException ;
 
     public <T> T find(Class<T> responseType, String id) throws ClientErrorException ;
 

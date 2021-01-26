@@ -142,8 +142,8 @@ public class LoginController {
             if (serverUser != null) { //user exists
                 Parent root;
                 Stage stage2 = new Stage();
-                PlagueViewController controller = new PlagueViewController();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/PlagueView.fxml"));//me falta la siguiente ventana
+                ListPlantController controller = new ListPlantController();
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/PlantList.fxml"));//me falta la siguiente ventana
                 
                 try {
                     root = (Parent) loader.load();
@@ -198,7 +198,7 @@ public class LoginController {
      */
     private void handleLinkNewPassword(ActionEvent event) {
 
-        /*  Parent root;
+        Parent root;
         Stage newStage = new Stage();
         try {
             //if you press the x the aplication won't stop, it will go back to the login 
@@ -215,7 +215,7 @@ public class LoginController {
             alert = new Alert(Alert.AlertType.WARNING,
                     "No se ha podido cargar la ventana", ButtonType.OK);
             alert.showAndWait();
-        }*/
+        }
     }
 
     /**

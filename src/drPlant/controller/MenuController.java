@@ -53,7 +53,6 @@ public class MenuController {
      */
     public void initStage(Parent root) {
 
-        menu.prefWidthProperty().bind(stage.widthProperty());
         allPlantsItem.setOnAction(this::handlePlantViewAction);
         myPlantsItem.setOnAction(this::handleMyPlantsViewAction);
         allPlaguesItem.setOnAction(this::handlePlagueViewAction);
@@ -91,34 +90,7 @@ public class MenuController {
             alert.showAndWait();
         }
     }
-
-    /**
-     * Method to show the personal list of plants view when the user click on it
-     *
-     * @param event
-     */
-    @FXML
-    private void handleMyPlantsViewAction(ActionEvent event) {
-        Parent root;
-        Stage stage2 = new Stage();
-
-       /* MyPlantsViewController controller = new MyPlantsViewController();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/MyPlantsView.fxml"));
-        try {
-            root = (Parent) loader.load();
-            controller = (loader.getController());
-            controller = (loader.getController());
-            controller.setStage(stage2);
-            controller.initStage(root);
-            stage.close();
-
-        } catch (IOException ex) {
-            logger.log(Level.SEVERE, "Can't open MyPlantsView");
-            Alert alert = new Alert(Alert.AlertType.WARNING, "Ops! Ha ocurrido un error inesperado!", ButtonType.OK);
-            alert.showAndWait();
-        }*/
-    }
-
+   
     /**
      * Method to show the generic list of plagues view when the user click on it
      *
@@ -145,7 +117,6 @@ public class MenuController {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Ops! Ha ocurrido un error inesperado!", ButtonType.OK);
             alert.showAndWait();
         }
-       
     }
 
     /**
@@ -186,7 +157,7 @@ public class MenuController {
         Parent root;
         Stage stage2 = new Stage();
 
-       /* ShopViewController controller = new ShopViewController();
+        ShopViewController controller = new ShopViewController();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/ShopView.fxml"));
         try {
             root = (Parent) loader.load();
@@ -200,7 +171,7 @@ public class MenuController {
             logger.log(Level.SEVERE, "Can't open ShopView");
             Alert alert = new Alert(Alert.AlertType.WARNING, "Ops! Ha ocurrido un error inesperado!", ButtonType.OK);
             alert.showAndWait();
-        }*/
+        }
     }
 
     /**
@@ -210,6 +181,7 @@ public class MenuController {
      */
     @FXML
     private void handleViewProfileAction(ActionEvent event) {
+
         Parent root;
         Stage stage2 = new Stage();
 
