@@ -12,7 +12,6 @@
     <center>
       <AnchorPane fx:id="PlagueView" prefHeight="875.0" prefWidth="1235.0" BorderPane.alignment="CENTER">         
          <children>
-            <fx:include maxWidth="2200.0" prefWidth="1235.0" source="Menu.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
             <ChoiceBox fx:id="chBox" layoutX="669.0" layoutY="103.0" prefHeight="37.0" prefWidth="303.0" AnchorPane.rightAnchor="307.0" AnchorPane.topAnchor="103.0" />
             <TextField fx:id="tfSearch" layoutX="76.0" layoutY="106.0" prefHeight="31.0" prefWidth="524.0" promptText="Introduce la plaga que buscas" AnchorPane.leftAnchor="76.0" AnchorPane.rightAnchor="635.0" />
             <TableView fx:id="tbPlague" layoutX="76.0" layoutY="196.0" prefHeight="586.0" prefWidth="1062.0" AnchorPane.bottomAnchor="93.0" AnchorPane.leftAnchor="76.0" AnchorPane.rightAnchor="97.0" AnchorPane.topAnchor="196.0">
@@ -30,4 +29,7 @@
          </children>
       </AnchorPane>
    </center>
+   <top>
+     <fx:include fx:id="menuController" maxWidth="-Infinity" minWidth="0" source="Menu.fxml" />
+   </top>
 </BorderPane>

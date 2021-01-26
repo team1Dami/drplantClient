@@ -47,14 +47,14 @@ public class MenuController {
     @FXML
     private MenuItem closeSesionItem;
 
-    private static User user = new User();
+    private static User user = null;
 
     /**
      * Method to initialice the components of the menubar
      *
      * @param root
      */
-    public void initStage(Parent root) {
+    public void initStage(Parent root){
 
         allPlantsItem.setOnAction(this::handlePlantViewAction);
         allPlaguesItem.setOnAction(this::handlePlagueViewAction);

@@ -101,8 +101,13 @@ public class ListPlantController {
 
     @FXML
     private Button btnRefresh;
+    
+    @FXML 
+    private MenuController menuControllerController;
 
     private User user;
+    
+    
 
     //private Plant plantEdit;
     public void setUser(User user) {
@@ -134,6 +139,7 @@ public class ListPlantController {
     public void initStage(Parent root, User user) {
         try {
             setUser(user);
+            menuControllerController.setUser(user);
             Scene scene = new Scene(root);
             stage = new Stage();
             //Set stage properties

@@ -11,7 +11,7 @@
    <center>
       <AnchorPane id="pane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: transparent;" stylesheets="@../css/drPlantstyles.css" BorderPane.alignment="CENTER">
          <children>
-            <fx:include maxWidth="-Infinity" minWidth="0" source="Menu.fxml" />
+            
             <TextField fx:id="tfBuscar" layoutX="40.0" layoutY="109.0" prefHeight="31.0" prefWidth="596.0" promptText="Buscar de manera especifica" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="307.0" AnchorPane.topAnchor="109.0" />
             <TableView fx:id="tabla" layoutX="40.0" layoutY="197.0" prefHeight="362.0" prefWidth="863.0" AnchorPane.bottomAnchor="78.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="197.0">
                <columns>
@@ -26,4 +26,7 @@
          </children>
       </AnchorPane>
    </center>
+   <top>
+     <fx:include fx:id="menuController" maxWidth="-Infinity" minWidth="0" source="Menu.fxml" />
+   </top>
 </BorderPane>

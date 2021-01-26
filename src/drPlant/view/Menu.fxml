@@ -5,7 +5,8 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.HBox?>
 
-<HBox fx:id="hboxMenu" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.controller.MenuController">
+<HBox fx:id="hboxMenu" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="drPlant.controller.MenuController">
    <children>
       <MenuBar fx:id="menu" maxWidth="2200.0" prefWidth="1235.0">
         <menus>

@@ -7,6 +7,8 @@ package drPlant.controller;
 
 import drPlant.classes.Shop;
 import drPlant.classes.User;
+import drPlant.enumerations.UserPrivilege;
+import drPlant.enumerations.Userstatus;
 import drPlant.factory.ShopManagerFactory;
 import drPlant.interfaces.ShopManager;
 import java.io.IOException;
@@ -34,6 +36,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javax.ws.rs.core.GenericType;
+import netscape.security.Privilege;
 
 /**
  * FXML Controller class
@@ -67,7 +70,9 @@ public class ShopViewController  {
     @FXML
     private TextField tfBuscar;
     
-    private User user=null;
+    @FXML 
+    private MenuController menuControllerController;
+    
     private boolean admin=false;
     
     
@@ -88,21 +93,24 @@ public class ShopViewController  {
      * @param root
      */
     public void initStage(Parent root,User user) {
- 
+        
+        menuControllerController.setUser(user);
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setResizable(true);
         stage.setTitle("Lista Tiendas");
         
-        if(user.getPrivilege().equals("ADMIN")){
+        if(user.getPrivilege().equals(UserPrivilege.ADMIN)){
         admin=true;
         }
+        
         if(!admin){
             btnCrear.setVisible(false);
             btnEliminar.setVisible(false);
         }
         stage.show();
         
+        //No ejecuta
         stage.setOnShowing(this::handleWindowShowing);
         
         btnEliminar.setDisable(true);
@@ -318,7 +326,9 @@ public class ShopViewController  {
 
             logger.info("Se carga la tabla correctamente");
         }catch(Exception w){
-            logger.info("Se carga la tabla a fallado");
+            logger.info("la tabla a fallado");
+            alert = new Alert(Alert.AlertType.WARNING, "La carga de la tabla a fallado, intentelo mas tarde", ButtonType.OK);
+            alert.showAndWait();
         }
     }
     

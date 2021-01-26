@@ -27,7 +27,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javax.ws.rs.InternalServerErrorException;
-import javax.xml.bind.DatatypeConverter;
 import static javax.xml.bind.DatatypeConverter.printHexBinary;
 
 /**
@@ -112,7 +111,7 @@ public class LoginController {
     }
 
     /**
-     *
+     *Method to enter to the aplication validating if the user and password are correct
      * @param event
      */
     private void handleButtonLogin(ActionEvent event) {
@@ -142,15 +141,12 @@ public class LoginController {
             if (serverUser != null) { //user exists
                 Parent root;
                 Stage stage2 = new Stage();
-                /*ListPlantController controller = new ListPlantController();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/PlantList.fxml"));//me falta la siguiente ventana*/
+                ListPlantController controller = null;
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/PlantList.fxml"));//me falta la siguiente ventana
                 
-                
-                ShopViewController controller = new ShopViewController();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/ShopView.fxml"));
                 try {
                     root = (Parent) loader.load();
-                    controller = (loader.getController());
+                    controller = (ListPlantController)loader.getController();
                     controller.setStage(stage2);
                     StageLogin.close();
                     controller.initStage(root,serverUser);
@@ -165,7 +161,7 @@ public class LoginController {
     }
 
     /**
-     * Method that control the button register
+     * Method that control the button register that opens the register window
      *
      * @param event
      */

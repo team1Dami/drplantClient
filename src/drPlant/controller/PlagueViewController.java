@@ -109,6 +109,9 @@ public class PlagueViewController {
      */
     @FXML
     private Button btnDelete;
+    
+    @FXML 
+    private MenuController menuControllerController;
     /**
      *
      */
@@ -208,7 +211,8 @@ public class PlagueViewController {
      * @param user
      */
     public void initStage(Parent root) {
-        setIsAdmin(false);
+        menuControllerController.setUser(user);
+        setIsAdmin(false);//quitar y comprobar si admin es user o admin
         plagueManager = PlagueManagerFactory.getPlagueManager();
         Scene scene = new Scene(root);
 
