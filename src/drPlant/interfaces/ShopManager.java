@@ -7,6 +7,7 @@ package drPlant.interfaces;
 
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
 
 /**
  *
@@ -22,8 +23,8 @@ public interface ShopManager {
 
     public <T> T getShopByName(Class<T> responseType, String shop_name) throws ClientErrorException ;
 
-    public void remove(String id) throws ClientErrorException ;
+    public void remove(Long id) throws ClientErrorException ;
 
-    public <T> T findAllShops(Class<T> responseType) throws ClientErrorException ;
+    public <T> T findAllShops(GenericType<T> responseType) throws ClientErrorException ;
 
 }

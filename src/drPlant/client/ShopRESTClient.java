@@ -6,10 +6,10 @@
 package drPlant.client;
 
 import drPlant.interfaces.ShopManager;
-import java.util.ResourceBundle;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
 
 /**
  * Jersey REST client generated for REST resource:ShopFacadeREST [shop]<br>
@@ -23,19 +23,14 @@ import javax.ws.rs.client.WebTarget;
  *
  * @author saray
  */
-public class ShopRESTClient implements ShopManager {
+public class ShopRESTClient implements ShopManager{
 
     private WebTarget webTarget;
     private Client client;
-    //private static final String BASE_URI = "http://localhost:8080/drplant/webresources"; // esta ruta se debe leer de un archivo de propiedades
-
-    private static ResourceBundle resource;
-    private String BASE_URI;
-
+    private static final String BASE_URI = "http://localhost:8080/drplant/webresources"; // esta ruta se debe leer de un archivo de propiedades
+ 
     public ShopRESTClient() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
-        resource = ResourceBundle.getBundle("drPlant/client/BaseUrl");
-        BASE_URI = resource.getString("BaseUri");
         webTarget = client.target(BASE_URI).path("shop");
     }
 
@@ -63,12 +58,12 @@ public class ShopRESTClient implements ShopManager {
                 .get(responseType);
     }
 
-    public void remove(String id) throws ClientErrorException {
+    public void remove(Long id) throws ClientErrorException {
         webTarget.path(java.text.MessageFormat.format("{0}", new Object[]{id}))
                 .request().delete();
     }
 
-    public <T> T findAllShops(Class<T> responseType) throws ClientErrorException {
+    public <T> T findAllShops(GenericType<T> responseType) throws ClientErrorException {
         WebTarget resource = webTarget;
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
                 .get(responseType);
@@ -77,5 +72,5 @@ public class ShopRESTClient implements ShopManager {
     public void close() {
         client.close();
     }
-
+    
 }
