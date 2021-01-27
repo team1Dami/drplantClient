@@ -196,8 +196,8 @@ public class InfoTiendaController  {
                              manager.create(shop);
                              StagePopUpTienda.close();
                         }catch(Exception e){
-                            manager.create(shop);
-                            StagePopUpTienda.close();
+                             alert = new Alert(Alert.AlertType.WARNING, "Ha ocurrido un error en la creacion", ButtonType.OK);
+                             alert.showAndWait();
                         }
                     }
                    
