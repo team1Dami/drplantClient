@@ -9,7 +9,7 @@ import drPlant.client.EquipmentRESTClient;
 import drPlant.interfaces.EquipmentManager;
 
 /**
- *
+ * 
  * @author saray
  */
 public class EquipmentManagerFactory {

@@ -27,7 +27,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javax.ws.rs.InternalServerErrorException;
-import javax.xml.bind.DatatypeConverter;
 import static javax.xml.bind.DatatypeConverter.printHexBinary;
 
 /**
@@ -108,16 +107,15 @@ public class LoginController {
         else {
             btnLogin.setDisable(false);
         }
-
     }
 
     /**
-     *
+     *Method to enter to the aplication validating if the user and password are correct
      * @param event
      */
     private void handleButtonLogin(ActionEvent event) {
         if (tfLogin.getText().isEmpty() || tfPasswd.getText().isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Error", ButtonType.APPLY);
+             alert = new Alert(Alert.AlertType.ERROR, "Error", ButtonType.APPLY);
         } else {
             User myUser = new User();
             myUser.setLogin(tfLogin.getText().toString());
@@ -136,32 +134,38 @@ public class LoginController {
             try {
                 serverUser = imp.findUserByLoginAndPasswd(User.class, tfLogin.getText(), pass);
             } catch (InternalServerErrorException exx) {
+                 alert = new Alert(Alert.AlertType.WARNING,
+                    "Contraseña o login erroneo", ButtonType.OK);
+                alert.showAndWait();
                 exx.getCause().getMessage();
+                
             }
 
             if (serverUser != null) { //user exists
                 Parent root;
                 Stage stage2 = new Stage();
-                ListPlantController controller = new ListPlantController();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/PlantList.fxml"));//me falta la siguiente ventana
+                ListPlantController controller = null;
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/PlantList.fxml"));
                 
                 try {
                     root = (Parent) loader.load();
-                    controller = (loader.getController());
+                    controller = (ListPlantController)loader.getController();
                     controller.setStage(stage2);
-                    controller.initStage(root);
+                    StageLogin.close();
+                    controller.initStage(root,serverUser);
                 } catch (IOException ex) {
                     //Logger.getLogger(LogoutController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else { //user doesn't exist
                 logger.info("User null");
+               
             }
         }
 
     }
 
     /**
-     * Method that control the button register
+     * Method that control the button register that opens the register window
      *
      * @param event
      */
@@ -171,9 +175,7 @@ public class LoginController {
         Stage stage2 = new Stage();
         try {
             //if in the view signup you press the x the aplication won't stop, it will go back to the login 
-            //stage.hide();
-            /*   ShopViewController controller = new ShopViewController();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/ShopView.fxml"));//necesito la pagina principal para colocar*/
+           
             SignUpController controller = new SignUpController();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/SignUp.fxml"));
             root = (Parent) loader.load();
@@ -235,7 +237,6 @@ public class LoginController {
                         "Se ha cancelado la accion", ButtonType.OK);//alert to advise that the action has being cancel
                 alert.showAndWait();
                 we.consume();//do as nothing has happen
-
             }
         } catch (Exception ex) {
             logger.log(Level.SEVERE,

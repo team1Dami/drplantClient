@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane id="StagePopUpTienda" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="536.0" prefWidth="354.0" stylesheets="@../css/drPlantstyles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.controller.InfoTiendaController">
+<Pane id="StagePopUp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="536.0" prefWidth="354.0" stylesheets="@../css/drPlantstyles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.controller.InfoTiendaController">
    <children>
       <Label fx:id="tfNombre" layoutX="26.0" layoutY="33.0" prefHeight="30.0" prefWidth="302.0" text="Nombre:" textAlignment="CENTER">
          <font>

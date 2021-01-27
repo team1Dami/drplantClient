@@ -101,8 +101,13 @@ public class ListPlantController {
 
     @FXML
     private Button btnRefresh;
+    
+    @FXML 
+    private MenuController menuControllerController;
 
     private User user;
+    
+    
 
     //private Plant plantEdit;
     public void setUser(User user) {
@@ -134,8 +139,10 @@ public class ListPlantController {
     public void initStage(Parent root, User user) {
         try {
             setUser(user);
-            Scene scene = new Scene(root);
-            stage = new Stage();
+            menuControllerController.setUser(user);
+            Scene scene = new Scene(root);            
+            //stage = new Stage();
+            menuControllerController.setStageOld(stage);
             //Set stage properties
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(scene);
@@ -144,7 +151,9 @@ public class ListPlantController {
             stage.setOnShowing(this::handleShowWindow);
 
             stage.setOnCloseRequest(this::setOncloseRequest);
+            
             stage.show();
+            
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Could not initialize the window");
         }

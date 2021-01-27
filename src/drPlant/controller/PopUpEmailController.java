@@ -85,7 +85,7 @@ public class PopUpEmailController {
     private void handleButtonEnviar(ActionEvent event) {
         
         UserManager manager = UserManagerFactory.getUserManager();
-        manager.changePassword(tfEmail.getText());
+        manager.resetPassword(tfEmail.getText());
         alert = new Alert(Alert.AlertType.WARNING,
                 "Se ha enviado la nueva contraseña al correo", ButtonType.OK);
         alert.showAndWait();

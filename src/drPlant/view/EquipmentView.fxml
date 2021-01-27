@@ -8,11 +8,10 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="676.0" prefWidth="1028.0" stylesheets="@drPlantstyles.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.controller.EquipmentViewController">
+<BorderPane id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="676.0" prefWidth="1028.0" stylesheets="@../css/drPlantstyles.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.controller.EquipmentViewController">
     <center>
         <AnchorPane id="pane2" prefHeight="200.0" prefWidth="200.0" stylesheets="@drPlantstyles.css" BorderPane.alignment="CENTER">
             <children>
-                <fx:include source="Menu.fxml" />
                 <ChoiceBox fx:id="choiceBoxFiltros" layoutX="664.0" layoutY="106.0" prefHeight="38.0" prefWidth="166.0" />
                 <TextField fx:id="txtSearch" layoutX="53.0" layoutY="109.0" prefHeight="31.0" prefWidth="583.0" promptText="Buscar de manera especifica" />
                 <TableView fx:id="equipmentTable" layoutX="40.0" layoutY="197.0" prefHeight="394.0" prefWidth="986.0">
@@ -31,4 +30,7 @@
             </children>
         </AnchorPane>
     </center>
+    <top>
+     <fx:include fx:id="menuController" minWidth="0" source="Menu.fxml" />
+   </top>
 </BorderPane>

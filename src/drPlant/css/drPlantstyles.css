@@ -44,7 +44,7 @@ tr:nth-child(even){-fx-background-color: #f2f2f2}
 #TextBuscar {
     -fx-font-family: "Comic Sans MS", cursive, sans-serif;
 }
-#StagePopUpTienda{
+#StagePopUp{
     -fx-background-image: url('fondo1.jpg')
 }
 

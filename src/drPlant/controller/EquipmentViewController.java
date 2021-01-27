@@ -79,6 +79,9 @@ public class EquipmentViewController {
     private TableColumn useCol;
     @FXML
     private TableColumn priceCol;
+    
+    @FXML 
+    private MenuController menuControllerController;
 
     private boolean isAdmin;
     private ObservableList<Equipment> equipments;
@@ -105,7 +108,9 @@ public class EquipmentViewController {
      *
      * @param root
      */
-    public void initStage(Parent root) {
+    public void initStage(Parent root, User u) {
+        menuControllerController.setUser(u);
+        menuControllerController.setStageOld(stage);
         setIsAdmin(true);
         Scene scene = new Scene(root);
         stage.setScene(scene);
