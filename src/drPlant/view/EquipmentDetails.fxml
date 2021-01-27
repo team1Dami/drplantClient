@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="659.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.controller.EquipmentDetailsController">
+<VBox prefHeight="659.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@../css/drPlantstyles.css" fx:controller="drPlant.controller.EquipmentDetailsController">
     <children>
         <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="685.0" prefWidth="640.0" style="-fx-background-color: white;" VBox.vgrow="ALWAYS">
             <children>

@@ -48,6 +48,7 @@ public class MenuController {
     private MenuItem closeSesionItem;
 
     private static User user = null;
+    private Stage stageViejo;
 
     /**
      * Method to initialice the components of the menubar
@@ -75,11 +76,13 @@ public class MenuController {
         Parent root;
         Stage stage2 = new Stage();
 
-        ListPlantController controller = new ListPlantController();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/InfoPlanta.fxml"));
+        ListPlantController controller = null;
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/PlantList.fxml"));
+        stageViejo.close();//Close the stage of the old stage
         try {
             root = (Parent) loader.load();
-            controller = (loader.getController());
+            //controller = (loader.getController());
+            controller = (ListPlantController)loader.getController();
             controller.setStage(stage2);
             //stage.close();
             controller.initStage(root, user);
@@ -103,12 +106,13 @@ public class MenuController {
 
         PlagueViewController controller = new PlagueViewController();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/PlagueView.fxml"));
+        stageViejo.close();//Close the stage of the old stage
         try {
             root = (Parent) loader.load();
             controller = (loader.getController());
             controller.setStage(stage2);
             //stage.close();
-            controller.initStage(root);
+            controller.initStage(root,user);
 
         } catch (IOException ex) {
             logger.log(Level.SEVERE, "Can't open PlagueView");
@@ -130,12 +134,13 @@ public class MenuController {
 
         EquipmentViewController controller = new EquipmentViewController();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/EquipmentView.fxml"));
+        stageViejo.close();//Close the stage of the old stage
         try {
             root = (Parent) loader.load();
             controller = (loader.getController());
             controller.setStage(stage2);
-            controller.initStage(root);
-            stage.close();
+            controller.initStage(root,user);
+            //stage.close();
 
         } catch (IOException ex) {
             logger.log(Level.SEVERE, "Can't open EquipmentView");
@@ -152,15 +157,18 @@ public class MenuController {
     @FXML
     private void handleShopViewAction(ActionEvent event) {
         Parent root;
+        
         Stage stage2 = new Stage();
 
-        ShopViewController controller = new ShopViewController();
+        ShopViewController controller = null;
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/ShopView.fxml"));
+        stageViejo.close();//Close the stage of the old stage
         try {
             root = (Parent) loader.load();
-            controller = (loader.getController());
+            //controller = (loader.getController());
+            controller = (ShopViewController)loader.getController();
             //stage.close();
-            controller.setStage(stage2);
+            controller.setStage(stage2);  
             controller.initStage(root, user);
 
         } catch (IOException ex) {
@@ -209,6 +217,7 @@ public class MenuController {
 
         LoginController controller = new LoginController();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/Login.fxml"));
+        stageViejo.close();//Close the stage of the old stage
         try {
             root = (Parent) loader.load();
             controller = (loader.getController());
@@ -223,9 +232,20 @@ public class MenuController {
             alert.showAndWait();
         }
     }
-
+    /**
+     * Method to take the user
+     * @param user 
+     */
     public void setUser(User user) {
         this.user = user;
+    }
+    
+    /**
+     * Method to take the stage of the window
+     * @param stage 
+     */
+    public void setStageOld(Stage stage) {
+        this.stageViejo = stage;
     }
 
 }

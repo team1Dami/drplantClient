@@ -115,7 +115,7 @@ public class LoginController {
      */
     private void handleButtonLogin(ActionEvent event) {
         if (tfLogin.getText().isEmpty() || tfPasswd.getText().isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Error", ButtonType.APPLY);
+             alert = new Alert(Alert.AlertType.ERROR, "Error", ButtonType.APPLY);
         } else {
             User myUser = new User();
             myUser.setLogin(tfLogin.getText().toString());
@@ -134,14 +134,18 @@ public class LoginController {
             try {
                 serverUser = imp.findUserByLoginAndPasswd(User.class, tfLogin.getText(), pass);
             } catch (InternalServerErrorException exx) {
+                 alert = new Alert(Alert.AlertType.WARNING,
+                    "Contraseña o login erroneo", ButtonType.OK);
+                alert.showAndWait();
                 exx.getCause().getMessage();
+                
             }
 
             if (serverUser != null) { //user exists
                 Parent root;
                 Stage stage2 = new Stage();
                 ListPlantController controller = null;
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/PlantList.fxml"));//me falta la siguiente ventana
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/PlantList.fxml"));
                 
                 try {
                     root = (Parent) loader.load();
@@ -154,6 +158,7 @@ public class LoginController {
                 }
             } else { //user doesn't exist
                 logger.info("User null");
+               
             }
         }
 
@@ -170,9 +175,7 @@ public class LoginController {
         Stage stage2 = new Stage();
         try {
             //if in the view signup you press the x the aplication won't stop, it will go back to the login 
-            //stage.hide();
-            /*   ShopViewController controller = new ShopViewController();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/ShopView.fxml"));//necesito la pagina principal para colocar*/
+           
             SignUpController controller = new SignUpController();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/SignUp.fxml"));
             root = (Parent) loader.load();

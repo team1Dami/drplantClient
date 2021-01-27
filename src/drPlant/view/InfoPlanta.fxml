@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="infoPlantPane" id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@drPlantstyles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.controller.InfoPlantController">
+<BorderPane id="StageLogin" fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/drPlantstyles.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drPlant.controller.InfoPlantController">
     <top>
         <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="TOP_LEFT">
             <children>
@@ -109,17 +109,17 @@
                     <children>
                         <Button fx:id="btnSave" disable="true" mnemonicParsing="false" text="Guardar">
                             <HBox.margin>
-                                <Insets left="15.0" />
+                                <Insets bottom="20.0" left="60.0" />
                             </HBox.margin>
                         </Button>
                         <Button fx:id="btnCancel" disable="true" mnemonicParsing="false" text="Cancelar">
                             <HBox.margin>
-                                <Insets left="15.0" />
+                                <Insets bottom="20.0" left="15.0" />
                             </HBox.margin>
                         </Button>
                   <Button fx:id="btnEdit" mnemonicParsing="false" text="Editar">
                      <HBox.margin>
-                        <Insets left="15.0" />
+                        <Insets bottom="20.0" left="15.0" />
                      </HBox.margin>
                   </Button>
                     </children>

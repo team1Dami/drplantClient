@@ -95,6 +95,7 @@ public class ShopViewController  {
     public void initStage(Parent root,User user) {
         
         menuControllerController.setUser(user);
+        menuControllerController.setStageOld(stage);
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setResizable(true);

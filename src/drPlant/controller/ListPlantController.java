@@ -140,8 +140,9 @@ public class ListPlantController {
         try {
             setUser(user);
             menuControllerController.setUser(user);
-            Scene scene = new Scene(root);
-            stage = new Stage();
+            Scene scene = new Scene(root);            
+            //stage = new Stage();
+            menuControllerController.setStageOld(stage);
             //Set stage properties
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(scene);

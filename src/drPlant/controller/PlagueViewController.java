@@ -7,6 +7,7 @@ package drPlant.controller;
 
 import drPlant.classes.Plague;
 import drPlant.classes.User;
+import drPlant.enumerations.UserPrivilege;
 import drPlant.factory.PlagueManagerFactory;
 import drPlant.interfaces.PlagueManager;
 import java.io.IOException;
@@ -210,9 +211,15 @@ public class PlagueViewController {
      * @param root
      * @param user
      */
-    public void initStage(Parent root) {
-        menuControllerController.setUser(user);
-        setIsAdmin(false);//quitar y comprobar si admin es user o admin
+    public void initStage(Parent root, User u) {
+        menuControllerController.setUser(u);
+        menuControllerController.setStageOld(stage);
+       
+       if(u.getPrivilege().equals(UserPrivilege.ADMIN)){
+           setIsAdmin(true);
+       }else{
+           setIsAdmin(false);
+       }
         plagueManager = PlagueManagerFactory.getPlagueManager();
         Scene scene = new Scene(root);
 

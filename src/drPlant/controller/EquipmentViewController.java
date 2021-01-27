@@ -108,8 +108,9 @@ public class EquipmentViewController {
      *
      * @param root
      */
-    public void initStage(Parent root) {
-        menuControllerController.setUser(user);
+    public void initStage(Parent root, User u) {
+        menuControllerController.setUser(u);
+        menuControllerController.setStageOld(stage);
         setIsAdmin(true);
         Scene scene = new Scene(root);
         stage.setScene(scene);
