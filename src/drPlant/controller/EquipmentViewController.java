@@ -7,6 +7,7 @@ package drPlant.controller;
 
 import drPlant.classes.Equipment;
 import drPlant.classes.User;
+import drPlant.enumerations.UserPrivilege;
 import drPlant.factory.EquipmentManagerFactory;
 import java.io.IOException;
 import java.util.Set;
@@ -111,7 +112,11 @@ public class EquipmentViewController {
     public void initStage(Parent root, User u) {
         menuControllerController.setUser(u);
         menuControllerController.setStageOld(stage);
-        setIsAdmin(true);
+        if(u.getPrivilege().equals(UserPrivilege.ADMIN)){
+           setIsAdmin(true);
+       }else{
+           setIsAdmin(false);
+       }
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setResizable(false);
