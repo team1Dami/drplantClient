@@ -35,15 +35,11 @@ public class MenuController {
     @FXML
     private MenuItem allPlantsItem;
     @FXML
-    private MenuItem myPlantsItem;
-    @FXML
     private MenuItem allPlaguesItem;
     @FXML
     private MenuItem allEquipmentItem;
     @FXML
     private MenuItem allShopsItem;
-    @FXML
-    private MenuItem myProfileItem;
     @FXML
     private MenuItem closeSesionItem;
 
@@ -61,7 +57,6 @@ public class MenuController {
         allPlaguesItem.setOnAction(this::handlePlagueViewAction);
         allEquipmentItem.setOnAction(this::handleEquipmentViewAction);
         allShopsItem.setOnAction(this::handleShopViewAction);
-        myProfileItem.setOnAction(this::handleViewProfileAction);
         closeSesionItem.setOnAction(this::handleCloseSessionAction);
 
     }
@@ -176,33 +171,6 @@ public class MenuController {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Ops! Ha ocurrido un error inesperado!", ButtonType.OK);
             alert.showAndWait();
         }
-    }
-
-    /**
-     * Method to show the personal profile's view when the user click on it
-     *
-     * @param event
-     */
-    @FXML
-    private void handleViewProfileAction(ActionEvent event) {
-
-        Parent root;
-        Stage stage2 = new Stage();
-
-        /* MyProfileViewController controller = new MyProfileViewController();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/MyProfileView.fxml"));
-        try {
-            root = (Parent) loader.load();
-            controller = (loader.getController());
-            controller.setStage(stage2);
-            controller.initStage(root);
-            stage.close();
-
-        } catch (IOException ex) {
-            logger.log(Level.SEVERE, "Can't open MyProfileView");
-            Alert alert = new Alert(Alert.AlertType.WARNING, "Ops! Ha ocurrido un error inesperado!", ButtonType.OK);
-            alert.showAndWait();
-        }*/
     }
 
     /**

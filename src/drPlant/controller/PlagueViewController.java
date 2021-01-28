@@ -50,166 +50,135 @@ import javax.ws.rs.core.GenericType;
 public class PlagueViewController {
 
     private static final Logger logger = Logger.getLogger("drPlant.controller.PlagueViewController");
-    /**
-     *
-     */
+    
     @FXML
     private Stage stage;
-    /**
-     *
-     */
+    
     @FXML
     private TextField tfSearch;
-    /**
-     *
-     */
+   
     @FXML
     private ChoiceBox chBox;
-    /**
-     *
-     */
+   
     @FXML
     private TableView tbPlague;
-    /**
-     *
-     */
+    
     @FXML
     private TableColumn colImage;
-    /**
-     *
-     */
+    
     @FXML
     private TableColumn colScientName;
-    /**
-     *
-     */
+    
     @FXML
     private TableColumn colCommonName;
-    /**
-     *
-     */
+    
     @FXML
     private TableColumn colType;
-    /**
-     *
-     */
+    
     @FXML
     private Button btnSearch;
-    /**
-     *
-     */
+    
     @FXML
     private Button btnAdd;
-    /**
-     *
-     */
+    
     @FXML
     private Button btnEdit;
-    /**
-     *
-     */
+    
     @FXML
     private Button btnDelete;
     
     @FXML 
     private MenuController menuControllerController;
-    /**
-     *
-     */
+    
     private boolean isAdmin;
     /**
      *
      */
     private PlagueManager plagueManager;
-    /**
-     *
-     */
+    
     private ObservableList<Plague> plagues;
-    /**
-     *
-     */
+    
     private User user;
-    /**
-     *
-     */
+    
     private Plague plague;
 
     /**
-     *
-     * @return
+     * Method to get the plagueManager
+     * @return plagueManager plagueManager to do the request
      */
     public PlagueManager getPlagueManager() {
         return plagueManager;
     }
 
     /**
-     *
-     * @param plagueManager
+     * Method to get the plagueManager
+     * @param plagueManager plagueManager to be set
      */
     public void setPlagueManager(PlagueManager plagueManager) {
         this.plagueManager = PlagueManagerFactory.getPlagueManager();
     }
 
     /**
-     *
-     * @return
+     * Method to get the user
+     * @return user the user who is connected
      */
     public User getUser() {
         return user;
     }
 
     /**
-     *
-     * @param user
+     * Method to set the user
+     * @param user user to be set
      */
     public void setUser(User user) {
         this.user = user;
     }
 
     /**
-     *
-     * @return
+     * Method to get the plague
+     * @return plague selected plague to view the information about it
      */
     public Plague getPlague() {
         return plague;
     }
 
     /**
-     *
-     * @param user
+     * Method to set the plague
+     * @param plague plague to be set
      */
     public void setPlague(Plague plague) {
         this.plague = plague;
     }
 
     /**
-     *
-     * @return
+     * Method to get isAdmin boolean value
+     * @return the isAdmin boolean value
      */
     public boolean isIsAdmin() {
         return isAdmin;
     }
 
     /**
-     *
-     * @param isAdmin
+     * Method to set the isAdmin boolean value, if the user is admin the boolean will be true 
+     * else if is user, the boolean will be false
+     * @param isAdmin is admin boolean value
      */
     public void setIsAdmin(boolean isAdmin) {
         this.isAdmin = isAdmin;
     }
 
     /**
-     *
-     * @param stage
+     * Method to set the stage
+     * @param stage stage to be set
      */
     public void setStage(Stage stage) {
         this.stage = stage;
     }
 
     /**
-     *
-     * @param root
-     * @param user
+     * Method to init stage
+     * @param root root - the root to be set
+     * @param user user - the user who is connected
      */
     public void initStage(Parent root, User u) {
         menuControllerController.setUser(u);

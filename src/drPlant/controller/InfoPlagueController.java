@@ -10,6 +10,7 @@ import drPlant.enumerations.PlagueType;
 import drPlant.factory.PlagueManagerFactory;
 import drPlant.interfaces.PlagueManager;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -29,11 +30,13 @@ import javafx.stage.WindowEvent;
 import javax.ws.rs.ClientErrorException;
 
 /**
- *
+ * Controller class for infoPlague' management view . 
+ * It contains event handlers and
+ * initialization code for the view defined in infoPlague.fmxl file.
  * @author saray
  */
 public class InfoPlagueController {
-
+    private static final Logger logger = Logger.getLogger("drPlant.controller.InfoPlagueController");
     @FXML
     private Stage stage;
 
@@ -73,48 +76,49 @@ public class InfoPlagueController {
     private Plague plague;
 
     /**
-     *
-     * @return
+     * Method to get the plague
+     * @return plague selected plague to view the information about it
      */
     public Plague getPlague() {
         return plague;
     }
 
     /**
-     *
-     * @param plague
+     * Method to set the plague
+     * @param plague plague to be set
      */
     public void setPlague(Plague plague) {
         this.plague = plague;
     }
 
     /**
-     *
-     * @return
+     * Method to get the plagueManager
+     * @return plagueManager plagueManager to do the request
      */
     public PlagueManager getPlagueManager() {
         return plagueManager;
     }
 
     /**
-     *
-     * @param plagueManager
+     * Method to get the plagueManager
+     * @param plagueManager plagueManager to be set
      */
     public void setPlagueManager(PlagueManager plagueManager) {
         this.plagueManager = PlagueManagerFactory.getPlagueManager();
     }
 
     /**
-     *
-     * @return
+     * Method to get isAdmin boolean value
+     * @return the isAdmin boolean value
      */
     public boolean isIsAdmin() {
         return isAdmin;
     }
 
     /**
-     *
-     * @param isAdmin
+     * Method to set the isAdmin boolean value, if the user is admin the boolean will be true 
+     * else if is user, the boolean will be false
+     * @param isAdmin is admin boolean value
      */
     public void setIsAdmin(boolean isAdmin) {
         this.isAdmin = isAdmin;
@@ -130,8 +134,10 @@ public class InfoPlagueController {
     }
 
     /**
-     *
-     * @param root
+     * Method to init the stage
+     * @param root the root Parent
+     * @param isAdmin the boolean value of the isAdmin 
+     * @param plague the plague to be show
      */
     public void initStage(Parent root, boolean isAdmin, Plague plague) {
         setIsAdmin(isAdmin);
@@ -147,9 +153,35 @@ public class InfoPlagueController {
     }
 
     /**
-     * Method to manage the button Accept and the button Cancel
+     * Method to show the information about the plague:
      *
-     * @param event onClick in button Accept and onClick in button Cancel
+     * Behaviour of the infoPlagueView: 
+     * In case of being <strong>Admin</strong> the
+     * following textFields of the view will be editable:
+     * <ul>
+     * <li>Common name</li>
+     * <li>Description</li>
+     * <li>Control</li>
+     * <li>Remedy</li>
+     * </ul>
+     * 
+     * * Radio Buttons for the type of plague that will be edited:
+     * <ul>
+     * <li> type: light </li>
+     * <li> type:middle </li>
+     * <li> type: severe </li>
+     * </ul>
+     * 
+     * Buttons will also be displayed at the bottom of the view:
+     * <ul>
+     * <li> Add to </li>
+     * <li> Remove (disabled when any row is selected)</li>
+     * </ul>
+     *
+     * If the user is not Admin, only can read the information about the plague
+     * and the buttons are not visibles
+     *
+     * @param event event type: Window event
      */
     private void handleWindowShowing(WindowEvent event) {
         if (plague != null) {
@@ -173,7 +205,9 @@ public class InfoPlagueController {
                 rbLight.setOnAction(this::handleCheckedRadioButton);
                 rbMedium.setOnAction(this::handleCheckedRadioButton);
                 rbSevere.setOnAction(this::handleCheckedRadioButton);
+                
             } else {
+                
                 tfScientName.setEditable(false);
                 tfCommonName.setEditable(false);
                 txAreaDescription.setEditable(false);
@@ -187,6 +221,7 @@ public class InfoPlagueController {
                 btnSaveChanges.setVisible(false);
                 btnDelete.setVisible(false);
             }
+            
             tfScientName.setText(plague.getScienceName());
             tfCommonName.setText(plague.getCommonName());
             txAreaDescription.setText(plague.getDescription());
@@ -205,7 +240,7 @@ public class InfoPlagueController {
         }
 
         if (plague == null) {
-            // codificar cuando no recibe una plaga
+            
             //   imgPlague.setVisible(false);
             tfScientName.setEditable(true);
             tfScientName.textProperty().addListener(this::handleTextChanged);
@@ -240,6 +275,12 @@ public class InfoPlagueController {
         scrollPaneRemedy.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
     }
 
+    /**
+     * Method to validate the fields against add a plague
+     * @param observable
+     * @param oldValue
+     * @param newValue 
+     */
     private void handleTextChanged(ObservableValue observable, String oldValue,
             String newValue) {
         Alert alert;
@@ -251,14 +292,22 @@ public class InfoPlagueController {
                         "Debes rellenar todos los campos!",
                         ButtonType.OK);
             }
-            if (!tfScientName.getText().isEmpty()) {
-                alert = new Alert(Alert.AlertType.INFORMATION,
-                        "Debes introducir un nombre de búsqueda",
+            if (!tfScientName.getText().isEmpty() && tfScientName.getText().matches("^[a-zA-Z\\s]*$")) {
+                try{
+                    plagueManager = PlagueManagerFactory.getPlagueManager();       
+                    Plague p = plagueManager.find(Plague.class, tfScientName.getText().toString());
+                    if(p!=null){
+                        alert = new Alert(Alert.AlertType.INFORMATION,
+                        "Esta plaga ya está registrada!",
                         ButtonType.OK);
+                    }
+                } catch (Exception e){
+                    logger.log(Level.SEVERE, "infoPlague find plague");
+                }              
             }
-            if (!tfCommonName.getText().isEmpty()) {
+            if (!tfCommonName.getText().isEmpty() && !tfCommonName.getText().matches("^[a-zA-Z\\s]*$")) {
                 alert = new Alert(Alert.AlertType.INFORMATION,
-                        "Debes introducir un nombre de búsqueda",
+                        "El nombre sólo puede contener letras!",
                         ButtonType.OK);
             }
             if (txAreaDescription.getText().isEmpty()) {
@@ -279,6 +328,10 @@ public class InfoPlagueController {
         }
     }
 
+    /**
+     * Method to get manage the radioButton checked
+     * @param event event - ActionEvent
+     */
     private void handleCheckedRadioButton(ActionEvent event) {
 
         if (rbLight.isSelected()) {
@@ -296,8 +349,8 @@ public class InfoPlagueController {
     }
 
     /**
-     *
-     * @param event
+     * Method to get the data of the plague to edit whe the admin clicks on the button save
+     * @param event event - ActionEvent
      */
     @FXML
     private void handleSaveChangesAction(ActionEvent event) {
@@ -338,19 +391,20 @@ public class InfoPlagueController {
                         stage.close();
                     }
                 } catch (ClientErrorException e) {
-
+                   logger.log(Level.SEVERE, "Error editanto plaga desde infoPlague");
                 }
             }
 
         } catch (ClientErrorException e) {
+            logger.log(Level.SEVERE, "Error editanto plaga desde infoPlague", e.getMessage());
             alert = new Alert(Alert.AlertType.WARNING, "Ops! Se ha producido un error inesperado.\nInténtelo de nuevo en unos minutos", ButtonType.OK);
             alert.showAndWait();
         }
     }
 
     /**
-     *
-     * @param event
+     * Method to manage the delete button action to delete the plague
+     * @param event event - ActionEvent
      */
     @FXML
     private void handleDeleteAction(ActionEvent event) {
@@ -377,6 +431,7 @@ public class InfoPlagueController {
                 }
 
             } catch (ClientErrorException e) {
+                logger.log(Level.SEVERE, "Error borrando plaga desde ninfoPlague");
                 alert = new Alert(Alert.AlertType.WARNING, "Ops! Se ha producido un error inesperado.\nInténtelo de nuevo en unos minutos", ButtonType.OK);
                 alert.showAndWait();
             }

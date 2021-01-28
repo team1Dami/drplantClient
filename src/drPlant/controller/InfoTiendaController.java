@@ -224,7 +224,12 @@ public class InfoTiendaController  {
                       //the gmail is not correct
                        alert = new Alert(Alert.AlertType.WARNING, "Error en el gmail", ButtonType.OK);
                        alert.showAndWait();
-                  }else{
+                       
+                  } else if(!OnlyNumer(tfComision.getText())){
+                      alert = new Alert(Alert.AlertType.WARNING, "solo se permiten numeros en la comision", ButtonType.OK);
+                       alert.showAndWait();
+                  
+                  } else{
                       
                        ShopManager manager = ShopManagerFactory.getShopManager();
 
