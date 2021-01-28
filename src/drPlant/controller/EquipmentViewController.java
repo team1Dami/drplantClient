@@ -45,10 +45,18 @@ public class EquipmentViewController {
 
     private static User user;
 
+    /**
+     *
+     * @return
+     */
     public static User getUser() {
         return user;
     }
 
+    /**
+     *
+     * @param user
+     */
     public static void setUser(User user) {
         EquipmentViewController.user = user;
     }
@@ -87,10 +95,18 @@ public class EquipmentViewController {
     private boolean isAdmin;
     private ObservableList<Equipment> equipments;
 
+    /**
+     *
+     * @return
+     */
     public boolean isIsAdmin() {
         return isAdmin;
     }
 
+    /**
+     *
+     * @param isAdmin
+     */
     public void setIsAdmin(boolean isAdmin) {
         this.isAdmin = isAdmin;
     }
@@ -108,6 +124,7 @@ public class EquipmentViewController {
      * Initialize the view and set actions on different widgets
      *
      * @param root
+     * @param u
      */
     public void initStage(Parent root, User u) {
         menuControllerController.setUser(u);
@@ -124,12 +141,14 @@ public class EquipmentViewController {
         stage.setOnShowing(this::handleWindowShowing);
         stage.setOnCloseRequest(this::setOncloseRequest);
         stage.show();
+        
+        setTableValues();
 
     }
 
     private void handleWindowShowing(WindowEvent event) {
 
-        setTableValues();
+        
 
         txtSearch.setPromptText("Introduce el equipamiento que quieres buscar");
         txtSearch.focusedProperty().addListener(this::focusChanged);

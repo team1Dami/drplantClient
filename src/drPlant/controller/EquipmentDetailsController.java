@@ -40,10 +40,18 @@ public class EquipmentDetailsController {
 
     private static User user;
 
+    /**
+     *
+     * @return
+     */
     public static User getUser() {
         return user;
     }
 
+    /**
+     *
+     * @param user
+     */
     public static void setUser(User user) {
         EquipmentDetailsController.user = user;
     }
@@ -74,10 +82,18 @@ public class EquipmentDetailsController {
 
     private static Equipment equip;
 
+    /**
+     *
+     * @return
+     */
     public static Equipment getEquip() {
         return equip;
     }
 
+    /**
+     *
+     * @param equip
+     */
     public static void setEquip(Equipment equip) {
         EquipmentDetailsController.equip = equip;
     }
@@ -109,7 +125,6 @@ public class EquipmentDetailsController {
     }
 
     private void handleWindowShowing(WindowEvent event) {
-        //btnGuardar.setDisable(true);
         try {
             choiceBoxUso.setItems(FXCollections.observableArrayList("General", "Sustrato", "Riego"));
             choiceBoxUso.setValue("General");
