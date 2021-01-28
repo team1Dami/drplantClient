@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="936.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@../css/drPlantstyles.css" fx:controller="drPlant.controller.InfoPlagueController">
+<VBox fx:id="infoPlague" prefHeight="936.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@../css/drPlantstyles.css" fx:controller="drPlant.controller.InfoPlagueController">
   <children>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="916.0" prefWidth="640.0" style="-fx-background-color: white;" VBox.vgrow="ALWAYS">
          <children>
