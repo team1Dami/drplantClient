@@ -233,7 +233,9 @@ public class InfoPlantController {
         btnCancel.setOnAction(this::handleButtonCancel);
         btnEdit.setOnAction(this::handleButtonEdit);
     }
-
+/**
+ * Set values of the attributes with the plant receive
+ */
     private void setValues() {
         txtScience.setText(plant.getScienceName());
         txtCommon.setText(plant.getCommonName());
@@ -267,7 +269,10 @@ public class InfoPlantController {
             cbClimate.setValue("Humedo");
         }
     }
-
+/**
+ * Set the view editable
+ * @param e 
+ */
     private void handleButtonEdit(ActionEvent e) {
         txtCares.setEditable(true);
         txtCommon.setEditable(true);
@@ -282,7 +287,10 @@ public class InfoPlantController {
 
         btnEdit.setVisible(false);
     }
-
+/**
+ * Save all the changes of the plant
+ * @param e 
+ */
     private void handleButtonSave(ActionEvent e) {
 
         /* if (!ValidateText(txtDescription.getText())) {
@@ -382,7 +390,10 @@ public class InfoPlantController {
         }
 
     }
-
+/**
+ * Disable the edit mode 
+ * @param e 
+ */
     private void handleButtonCancel(ActionEvent e) {
         btnCancel.setDisable(true);
         btnSave.setDisable(true);
@@ -399,20 +410,12 @@ public class InfoPlantController {
         setValues();
     }
 
-    /*    private void handleNameChange(ObservableValue observable,
-    Boolean oldValue,
-    Boolean newValue) {
-    if (newValue) {
-    LOGGER.info("onFocus");
-    } else if (oldValue) {
-    LOGGER.info("onBlur");
-    if (!ValidateText(txtScience.getText())) {
-    System.out.println("mal");
-    }
-    }
-    }*/
 
-
+/**
+ * Validate the textfieds before saving
+ * @param text
+ * @return 
+ */
     private boolean ValidateText(String text) {
 
         if (text.length() > 255) {
