@@ -227,7 +227,9 @@ public class ListPlantController {
 
     /**
      * Method that handle the clicks on the tableview
-     *
+     * If is admin and make 2 clicks can edit some columns
+     * If is user and maka 2 clicks enter in infoplant view
+     * Both can select and activate the bottons above
      * @param ev
      */
     private void handleClickTable(MouseEvent ev) {
@@ -305,7 +307,11 @@ public class ListPlantController {
         //Focus Search field
         txtSearch.requestFocus();
     }
-
+/**
+ * Handle add button
+ * open the info plant view without sending any plant
+ * @param e 
+ */
     private void handleAddButton(ActionEvent e) {
         InfoPlantController controller = new InfoPlantController();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/InfoPlanta.fxml"));
@@ -319,7 +325,10 @@ public class ListPlantController {
             System.out.println("Casca");
         }
     }
-
+/**
+ * Open info plant window with a plant information and editable
+ * @param e 
+ */
     private void handleEditButton(ActionEvent e) {
 
         Plant plant = (Plant) tblPlants.getSelectionModel().getSelectedItem();
@@ -338,9 +347,10 @@ public class ListPlantController {
 
     }
 
-    /*
- * Method that handle button remove
- * @param e 
+    /**
+     * Method that handle button remove
+     * Remove a plant from database 
+     * @param e 
      */
     private void handleRemoveButton(ActionEvent e) {
         Plant plant = (Plant) tblPlants.getSelectionModel().getSelectedItem();
@@ -358,7 +368,8 @@ public class ListPlantController {
     }
 
     /**
-     *
+     * Get the info that user introduce:
+     * Name, choicebox of Climate, pet and type
      * @param e
      */
     private void handleSearchButton(ActionEvent e) {
@@ -454,7 +465,10 @@ public class ListPlantController {
         }
         tblPlants.setItems(plants);
     }
-
+/**
+ * If user try to close the window show an alert for confirm the action
+ * @param we 
+ */
     private void setOncloseRequest(WindowEvent we) {
         Alert alert;
         try {
@@ -477,14 +491,20 @@ public class ListPlantController {
             alert.showAndWait();
         }
     }
-
+/**
+ * Update the cell of the common Name
+ * @param t 
+ */
     private void updateCommonName(CellEditEvent<Plant, String> t) {
         Plant p = t.getRowValue();
         p.setCommonName(t.getNewValue());
         PlantManagerFactory.getPlantManager().edit(p);
         tblPlants.refresh();
     }
-
+/**
+ * Update Climate after change in the table
+ * @param t 
+ */
     private void updateClimate(CellEditEvent<Plant, String> t) {
         Plant p = t.getRowValue();
         if (p.getClimate().equals(Climate.hot)) {
@@ -499,7 +519,10 @@ public class ListPlantController {
         PlantManagerFactory.getPlantManager().edit(p);
         //tblPlants.refresh();
     }
-
+/**
+ * search all the plant after click a botton
+ * @param e 
+ */
     private void refreshTable(ActionEvent e) {
         try {
             ObservableList<Plant> plants = FXCollections.observableArrayList(PlantManagerFactory.getPlantManager().getAllPlants(new GenericType<Set<Plant>>() {
@@ -510,7 +533,9 @@ public class ListPlantController {
             alert.show();
         }
     }
-
+/**
+ * search all the plant after a call
+ */
     private void refreshTable() {
         try {
             ObservableList<Plant> plants = FXCollections.observableArrayList(PlantManagerFactory.getPlantManager().getAllPlants(new GenericType<Set<Plant>>() {
@@ -521,11 +546,17 @@ public class ListPlantController {
             alert.show();
         }
     }
-
+/**
+ * 
+ * @param cellEditEvent 
+ */
     private void updateType(CellEditEvent<Plant, String> cellEditEvent) {
 
     }
-
+/**
+ * 
+ * @param cellEditEvent 
+ */
     private void updatePet(CellEditEvent<Plant, String> cellEditEvent) {
 
     }
