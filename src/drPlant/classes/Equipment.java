@@ -39,6 +39,9 @@ public class Equipment implements Serializable{
     private Shop shop;
     private Set<User> usuarios;
     
+    /**
+     *
+     */
     public Equipment(){}    
     /**
      *

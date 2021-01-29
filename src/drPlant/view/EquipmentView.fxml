@@ -25,7 +25,7 @@
                 </TableView>
                 <Button fx:id="btnSearch" layoutX="860.0" layoutY="106.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="142.0" text="Search" />
                 <Button fx:id="btnEdit" disable="true" layoutX="345.0" layoutY="612.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="80.0" text="Editar" />
-                <Button fx:id="btnDelete" disable="true" layoutX="523.0" layoutY="613.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="78.0" text="Eliminar" />
+                <Button fx:id="btnDelete" disable="true" layoutX="523.0" layoutY="613.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="100.0" text="Eliminar" />
                 <Button fx:id="btnAdd" layoutX="53.0" layoutY="155.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="82.0" text="Añadir" />
             </children>
         </AnchorPane>
