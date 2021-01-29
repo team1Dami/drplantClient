@@ -31,8 +31,7 @@
                </items>
             </Menu>
             <Menu fx:id="menuProfile" mnemonicParsing="false" text="Mi perfil">
-               <items>
-                  <MenuItem id="myProfileItem" fx:id="myProfileItem" mnemonicParsing="false" onAction="#handleViewProfileAction" text="Ver mis datos" />
+               <items>       
                   <MenuItem id="closeSesionItem" fx:id="closeSesionItem" mnemonicParsing="false" onAction="#handleCloseSessionAction" text="Cerrar sesión" />
                </items>
             </Menu>
