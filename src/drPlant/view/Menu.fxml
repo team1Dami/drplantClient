@@ -32,6 +32,7 @@
             </Menu>
             <Menu fx:id="menuProfile" mnemonicParsing="false" text="Mi perfil">
                <items>       
+                   <MenuItem id="changePassword" fx:id="changePassword" mnemonicParsing="false" onAction="#handleChangePasswordAction" text="Cambiar contraseña" />
                   <MenuItem id="closeSesionItem" fx:id="closeSesionItem" mnemonicParsing="false" onAction="#handleCloseSessionAction" text="Cerrar sesión" />
                </items>
             </Menu>

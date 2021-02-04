@@ -63,14 +63,11 @@ public class UserRESTClient implements UserManager {
     List <User> u = UserManagerFactory.getCustomerManager()
                     .findUserByLoginAndPasswd (User.class, login, password);
      */
-
     /**
      *
      * @param requestEntity
      * @throws ClientErrorException
      */
-
-
     public void edit(Object requestEntity) throws ClientErrorException {
         webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
                 .put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
@@ -113,7 +110,9 @@ public class UserRESTClient implements UserManager {
     }
 
     /**
-     *  Method that change your password for the user witch is asociated with the introduced e-mail
+     * Method that change your password for the user witch is asociated with the
+     * introduced e-mail
+     *
      * @param email
      * @throws ClientErrorException
      */
@@ -142,6 +141,23 @@ public class UserRESTClient implements UserManager {
         WebTarget resource = webTarget;
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
                 .get(responseType);
+    }
+
+    /**
+     *
+     * @param requestEntity
+     * @throws ClientErrorException
+     */
+    public void changeCustomPassword(Object requestEntity) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("email/", requestEntity));
+        resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
+                .put(javax.ws.rs.client.Entity
+                        .entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
+        
+        /*webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
+        .put(javax.ws.rs.client.Entity
+        .entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));*/
     }
 
 }

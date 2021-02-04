@@ -21,4 +21,5 @@ public interface UserManager {
     public <T> T findAll(GenericType<T> responseType) throws ClientErrorException;
     public void remove(String id) throws ClientErrorException;  
     public void resetPassword(String email) throws ClientErrorException;
+    public void changeCustomPassword(Object requestEntity) throws ClientErrorException;
 }

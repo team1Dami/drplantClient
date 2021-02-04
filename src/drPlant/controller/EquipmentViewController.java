@@ -79,8 +79,6 @@ public class EquipmentViewController {
     @FXML
     private TableView equipmentTable;
     @FXML
-    private TableColumn imageCol;
-    @FXML
     private TableColumn nameCol;
     @FXML
     private TableColumn descriptionCol;
@@ -88,8 +86,8 @@ public class EquipmentViewController {
     private TableColumn useCol;
     @FXML
     private TableColumn priceCol;
-    
-    @FXML 
+
+    @FXML
     private MenuController menuControllerController;
 
     private boolean isAdmin;
@@ -129,11 +127,11 @@ public class EquipmentViewController {
     public void initStage(Parent root, User u) {
         menuControllerController.setUser(u);
         menuControllerController.setStageOld(stage);
-        if(u.getPrivilege().equals(UserPrivilege.ADMIN)){
-           setIsAdmin(true);
-       }else{
-           setIsAdmin(false);
-       }
+        if (u.getPrivilege().equals(UserPrivilege.ADMIN)) {
+            setIsAdmin(true);
+        } else {
+            setIsAdmin(false);
+        }
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setResizable(false);
@@ -141,19 +139,16 @@ public class EquipmentViewController {
         stage.setOnShowing(this::handleWindowShowing);
         stage.setOnCloseRequest(this::setOncloseRequest);
         stage.show();
-        
+
         setTableValues();
 
     }
 
     private void handleWindowShowing(WindowEvent event) {
 
-        
-
         txtSearch.setPromptText("Introduce el equipamiento que quieres buscar");
         txtSearch.focusedProperty().addListener(this::focusChanged);
 
-        imageCol.setCellValueFactory(new PropertyValueFactory<>("image"));
         nameCol.setCellValueFactory(new PropertyValueFactory<>("equipment_name"));
         descriptionCol.setCellValueFactory(new PropertyValueFactory<>("equipment_description"));
         useCol.setCellValueFactory(new PropertyValueFactory<>("use"));
@@ -161,6 +156,8 @@ public class EquipmentViewController {
 
         choiceBoxFiltros.setItems(FXCollections.observableArrayList("", "General", "Sustrato", "Riego"));
         choiceBoxFiltros.setValue("");
+        
+        priceCol.setStyle( "-fx-alignment: CENTER-RIGHT;");
 
         // idea: en función de la selección del choice box se mostrará un promp text u otro
         if (!isAdmin) {
@@ -198,6 +195,8 @@ public class EquipmentViewController {
     private void handleSearchAction(ActionEvent event) {
         String filtroUso = (String) choiceBoxFiltros.getValue();
         String buscador = txtSearch.getText();
+        buscador = buscador.replaceAll("^\\s*", "");
+        buscador = buscador.replaceAll("\\s*$", "");
         if (!filtroUso.isEmpty() && buscador.isEmpty()) {
             setTableValuesWithFilters(filtroUso);
         } else if (!filtroUso.isEmpty() && !buscador.isEmpty()) {
@@ -231,9 +230,9 @@ public class EquipmentViewController {
             controller.initStage(root);
 
         } catch (IOException ex) {
-            Logger.getLogger(EquipmentViewController.class.getName()).log(Level.SEVERE, null, ex);
+            LOOGER.log(Level.SEVERE, "IO exception", ex.getMessage());
         } catch (Exception e) {
-            Logger.getLogger(EquipmentViewController.class.getName()).log(Level.SEVERE, null, e);
+            LOOGER.log(Level.SEVERE, "An exception ocurred", e.getMessage());
         }
         setTableValues();
     }
@@ -261,21 +260,20 @@ public class EquipmentViewController {
                 EquipmentDetailsController controller = new EquipmentDetailsController();
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/EquipmentDetails.fxml"));
 
-                try {
-                    controller.setEquip(equip);
-                    root = (Parent) loader.load();
-                    controller = (loader.getController());
-                    controller.setStage(newstage);
-                    controller.initStage(root);
+                controller.setEquip(equip);
+                root = (Parent) loader.load();
+                controller = (loader.getController());
+                controller.setStage(newstage);
+                controller.initStage(root);
 
-                } catch (IOException ex) {
-                    //Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            } catch (IOException ex) {
+                LOOGER.log(Level.SEVERE, "Exception while loading the new stage", ex.getMessage());
             } catch (Exception e) {
-                //Logger.getLogger(LoginLogoutCliente.class.getName()).log(Level.SEVERE, null, e);
+                LOOGER.log(Level.SEVERE, "Exception while loading the controller", e.getMessage());
             }
             setTableValues();
         } catch (NullPointerException ex) {
+            LOOGER.log(Level.SEVERE, "No row selected", ex.getMessage());
             Alert alert = new Alert(Alert.AlertType.WARNING,
                     "Primero seleccione una fila de la tabla", ButtonType.OK); //alert to ask the user to confirm
             alert.showAndWait();
@@ -301,18 +299,12 @@ public class EquipmentViewController {
             Alert alert = new Alert(Alert.AlertType.WARNING,
                     "¿Desea borrar el equipamiento " + equip.getEquipment_name() + "?", ButtonType.OK, ButtonType.CANCEL); //alert to ask the user to confirm
             alert.showAndWait();
-            if (alert.getResult().getButtonData().isCancelButton()) {
-                alert = new Alert(Alert.AlertType.WARNING,
-                        "Se ha cancelado el borrado", ButtonType.OK);//alert to advise that the action has being cancel
-                alert.showAndWait();
-            } else {
+            if (!alert.getResult().getButtonData().isCancelButton()) {
                 EquipmentManagerFactory.getEquipmentManager().remove(equip.getId_equipment().toString());
-                alert = new Alert(Alert.AlertType.WARNING,
-                        "Se ha borrado correctamente", ButtonType.OK);
-                alert.showAndWait();
                 setTableValues();
             }
         } catch (NullPointerException ex) {
+            LOOGER.log(Level.SEVERE, "No row selected", ex.getMessage());
             Alert alert = new Alert(Alert.AlertType.WARNING,
                     "Primero seleccione una fila de la tabla", ButtonType.OK); //alert to ask the user to confirm
             alert.showAndWait();
@@ -335,18 +327,14 @@ public class EquipmentViewController {
                     "¿Desea salir de la aplicacion?", ButtonType.OK, ButtonType.CANCEL);//alert to ask the user to confirm
             alert.showAndWait();
             if (alert.getResult().getButtonData().isCancelButton()) {
-                alert = new Alert(Alert.AlertType.WARNING,
-                        "Se ha cancelado la accion", ButtonType.OK);//alert to advise that the action has being cancel
-                alert.showAndWait();
                 we.consume();//do as nothing has happen
-
             }
         } catch (Exception ex) {
             LOOGER.log(Level.SEVERE,
-                    "UI LoginController: Error opening users managing window: {0}",
+                    "Error while closing",
                     ex.getMessage());
             alert = new Alert(Alert.AlertType.WARNING,
-                    "No se ha podido cargar la ventana", ButtonType.OK);
+                    "No se ha podido cerrar la ventana", ButtonType.OK);
             alert.showAndWait();
         }
     }

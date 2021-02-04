@@ -42,6 +42,8 @@ public class MenuController {
     private MenuItem allShopsItem;
     @FXML
     private MenuItem closeSesionItem;
+    @FXML
+    private MenuItem changePasswordAction;
 
     private static User user = null;
     private Stage stageViejo;
@@ -58,6 +60,7 @@ public class MenuController {
         allEquipmentItem.setOnAction(this::handleEquipmentViewAction);
         allShopsItem.setOnAction(this::handleShopViewAction);
         closeSesionItem.setOnAction(this::handleCloseSessionAction);
+        changePasswordAction.setOnAction(this::handleChangePasswordAction);
 
     }
 
@@ -200,6 +203,31 @@ public class MenuController {
             alert.showAndWait();
         }
     }
+    
+    @FXML
+    private void handleChangePasswordAction(ActionEvent event){
+        Parent root;
+        
+        Stage stage2 = new Stage();
+
+        ChangePasswordController controller = new ChangePasswordController();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/drPlant/view/ChangePassword.fxml"));
+        //stageViejo.close();//Close the stage of the old stage
+        try {
+            root = (Parent) loader.load();
+            controller = (loader.getController());
+            //controller = (ChangePasswordController)loader.getController();
+            //stage.close();
+            controller.setStage(stage2);  
+            controller.initStage(root, user);
+
+        } catch (IOException ex) {
+            logger.log(Level.SEVERE, "Can't open Change Password");
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Ops! Ha ocurrido un error inesperado!", ButtonType.OK);
+            alert.showAndWait();
+        }
+    }
+    
     /**
      * Method to take the user
      * @param user 

@@ -68,7 +68,7 @@ public class EquipmentDetailsController {
     @FXML
     private Label lblDescripcion;
     @FXML
-    private TextArea inputDescription;
+    private TextArea inputDescription = new TextArea();
     @FXML
     private Label lblUso;
     @FXML
@@ -125,6 +125,7 @@ public class EquipmentDetailsController {
     }
 
     private void handleWindowShowing(WindowEvent event) {
+
         try {
             choiceBoxUso.setItems(FXCollections.observableArrayList("General", "Sustrato", "Riego"));
             choiceBoxUso.setValue("General");
@@ -139,6 +140,9 @@ public class EquipmentDetailsController {
                 choiceBoxUso.setValue("General");
             }
         } catch (NullPointerException ex) {
+            LOOGER.log(Level.SEVERE,
+                    "Is not editing a row",
+                    ex.getMessage());
             editar = false;
         }
 
@@ -172,46 +176,39 @@ public class EquipmentDetailsController {
     private void handleSaveAction(ActionEvent event) {
         boolean correcto = true;
         try {
-            if (inputDescription.getText().isEmpty()) {
+
+            if (inputDescription.textProperty().getValueSafe().isEmpty()) {
                 correcto = false;
                 Alert alert = new Alert(Alert.AlertType.WARNING,
                         "Por favor, introduce una descripcion", ButtonType.OK);
                 alert.showAndWait();
             }
-        } catch (NullPointerException ex) {
-            correcto = false;
-            Alert alert = new Alert(Alert.AlertType.WARNING,
-                    "Por favor, introduce una descripcion", ButtonType.OK);
-            alert.showAndWait();
-        }
-        if (inputNombre.getText().isEmpty()) {
-            correcto = false;
-            Alert alert = new Alert(Alert.AlertType.WARNING,
-                    "Por favor, introduce un nombre", ButtonType.OK);
-            alert.showAndWait();
-        }
-        if (inputPrecio.getText().isEmpty()) {
-            correcto = false;
-            Alert alert = new Alert(Alert.AlertType.WARNING,
-                    "Por favor, introduce un precio", ButtonType.OK);
-            alert.showAndWait();
-        }
-        if (correcto) {
-            equip.setEquipment_description(inputDescription.getText());
-            equip.setEquipment_name(inputNombre.getText());
-            String precio;
-            float precioFinal;
-            precio = inputPrecio.getText();
-
-            if (choiceBoxUso.getValue().toString().equalsIgnoreCase("Sustrato")) {
-                equip.setUse(Use.sustrato);
-            } else if (choiceBoxUso.getValue().toString().equalsIgnoreCase("Riego")) {
-                equip.setUse(Use.riego);
-            } else {
-                equip.setUse(Use.general);
+            if (inputNombre.getText().isEmpty()) {
+                correcto = false;
+                Alert alert = new Alert(Alert.AlertType.WARNING,
+                        "Por favor, introduce un nombre", ButtonType.OK);
+                alert.showAndWait();
             }
+            if (inputPrecio.getText().isEmpty()) {
+                correcto = false;
+                Alert alert = new Alert(Alert.AlertType.WARNING,
+                        "Por favor, introduce un precio", ButtonType.OK);
+                alert.showAndWait();
+            }
+            if (correcto) {
+                equip.setEquipment_description(inputDescription.getText());
+                equip.setEquipment_name(inputNombre.getText());
+                String precio;
+                float precioFinal;
+                precio = inputPrecio.getText();
 
-            try {
+                if (choiceBoxUso.getValue().toString().equalsIgnoreCase("Sustrato")) {
+                    equip.setUse(Use.sustrato);
+                } else if (choiceBoxUso.getValue().toString().equalsIgnoreCase("Riego")) {
+                    equip.setUse(Use.riego);
+                } else {
+                    equip.setUse(Use.general);
+                }
                 precioFinal = Float.parseFloat(precio);
                 if (precioFinal < 0) {
                     Alert alert = new Alert(Alert.AlertType.WARNING,
@@ -219,32 +216,20 @@ public class EquipmentDetailsController {
                     alert.showAndWait();
                 } else {
                     equip.setPrice(precioFinal);
-                    Alert alert = new Alert(Alert.AlertType.WARNING,
-                            "¿Seguro que quieres guardar los datos?", ButtonType.OK, ButtonType.CANCEL);//alert to ask the user to confirm
-                    alert.showAndWait();
-                    if (alert.getResult().getButtonData().isCancelButton()) {
-                        alert = new Alert(Alert.AlertType.WARNING,
-                                "Se ha cancelado la accion", ButtonType.OK);//alert to advise that the action has being cancel
-                        alert.showAndWait();
-
+                    if (editar) {
+                        EquipmentManagerFactory.getEquipmentManager().edit(equip);
                     } else {
-                        if (editar) {
-                            EquipmentManagerFactory.getEquipmentManager().edit(equip);
-                        } else {
-                            EquipmentManagerFactory.getEquipmentManager().create(equip);
-                        }
-
-                        stage.close();
+                        EquipmentManagerFactory.getEquipmentManager().create(equip);
                     }
+                    stage.close();
                 }
-
-            } catch (NumberFormatException ex) {
-                Alert alert = new Alert(Alert.AlertType.WARNING,
-                        "El precio introducido no es valido, mete un numero por favor", ButtonType.OK);//alert to ask the user to confirm
-                alert.showAndWait();
             }
 
+        } catch (NumberFormatException ex) {
+            LOOGER.log(Level.SEVERE, "Bad price format", ex.getMessage());
+            Alert alert = new Alert(Alert.AlertType.WARNING,
+                    "El precio introducido no es valido, mete un numero por favor", ButtonType.OK);//alert to ask the user to confirm
+            alert.showAndWait();
         }
     }
-
 }
