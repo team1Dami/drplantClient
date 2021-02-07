@@ -36,7 +36,7 @@ import javafx.stage.WindowEvent;
 import javax.ws.rs.core.GenericType;
 
 /**
- * Controller class for equipment' management view . It contains event handlers
+ * Controller class for equipment management view. It contains event handlers
  * and initialization code for the view defined in EquipmentView.fmxl file.
  *
  * @author Eneko
@@ -173,7 +173,7 @@ public class EquipmentViewController {
     /**
      * Set the stage of the view
      *
-     * @param stage Stage 
+     * @param stage Stage
      */
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -411,9 +411,9 @@ public class EquipmentViewController {
     }
 
     /**
-     * Method that asks when you want to close the window if you want to exit of
-     * the application if you press OK the application will be closed otherwhise
-     * you stay in the EquipmentView
+     * Method that asks when you want to close the window if you want to exit
+     * from the application if you press OK the application will be closed
+     * otherwhise you stay in the actual window
      *
      * @param we The ActionEvent object for the event.
      */
